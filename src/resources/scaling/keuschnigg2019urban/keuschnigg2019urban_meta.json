@@ -1,0 +1,640 @@
+{
+  "table_of_contents": [
+    {
+      "title": "SOCIAL SCIENCES",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          34.224609375,
+          58.32421875
+        ],
+        [
+          124.5,
+          58.32421875
+        ],
+        [
+          124.5,
+          66.75
+        ],
+        [
+          34.224609375,
+          66.75
+        ]
+      ]
+    },
+    {
+      "title": "Urban scaling and the regional divide",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          34.5,
+          76.412109375
+        ],
+        [
+          335.25,
+          76.412109375
+        ],
+        [
+          335.25,
+          93.392578125
+        ],
+        [
+          34.5,
+          93.392578125
+        ]
+      ]
+    },
+    {
+      "title": "Marc Keuschnigg*, Selcan Mutgan, Peter Hedstr\u00f6m",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          34.5,
+          105.0
+        ],
+        [
+          267.0,
+          105.0
+        ],
+        [
+          267.0,
+          115.541015625
+        ],
+        [
+          34.5,
+          115.541015625
+        ]
+      ]
+    },
+    {
+      "title": "INTRODUCTION",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          34.5,
+          255.0
+        ],
+        [
+          99.75,
+          255.0
+        ],
+        [
+          99.75,
+          263.25
+        ],
+        [
+          34.5,
+          263.25
+        ]
+      ]
+    },
+    {
+      "title": "Population descriptives",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          302.25,
+          387.75
+        ],
+        [
+          404.25,
+          387.75
+        ],
+        [
+          404.25,
+          396.826171875
+        ],
+        [
+          302.25,
+          396.826171875
+        ]
+      ]
+    },
+    {
+      "title": "MATERIALS AND METHODS",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          34.5,
+          397.564453125
+        ],
+        [
+          148.7900390625,
+          397.564453125
+        ],
+        [
+          148.7900390625,
+          407.25
+        ],
+        [
+          34.5,
+          407.25
+        ]
+      ]
+    },
+    {
+      "title": "RESULTS",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          302.25,
+          376.5
+        ],
+        [
+          338.25,
+          376.5
+        ],
+        [
+          338.25,
+          385.013671875
+        ],
+        [
+          302.25,
+          385.013671875
+        ]
+      ]
+    },
+    {
+      "title": "Lower-bound estimate of the interconnectivity effect",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          301.5,
+          475.5
+        ],
+        [
+          532.5,
+          475.5
+        ],
+        [
+          532.5,
+          485.419921875
+        ],
+        [
+          301.5,
+          485.419921875
+        ]
+      ]
+    },
+    {
+      "title": "Upper-bound estimate of the interconnectivity effect",
+      "heading_level": null,
+      "page_id": 3,
+      "polygon": [
+        [
+          301.060546875,
+          639.720703125
+        ],
+        [
+          532.5,
+          639.720703125
+        ],
+        [
+          532.5,
+          648.75
+        ],
+        [
+          301.060546875,
+          648.75
+        ]
+      ]
+    },
+    {
+      "title": "DISCUSSION",
+      "heading_level": null,
+      "page_id": 4,
+      "polygon": [
+        [
+          302.220703125,
+          355.11328125
+        ],
+        [
+          352.5,
+          355.11328125
+        ],
+        [
+          352.5,
+          363.0
+        ],
+        [
+          302.220703125,
+          363.0
+        ]
+      ]
+    },
+    {
+      "title": "SUPPLEMENTARY MATERIALS",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          35.885658264160156,
+          349.20703125
+        ],
+        [
+          161.86990356445312,
+          349.20703125
+        ],
+        [
+          161.86990356445312,
+          358.8163146972656
+        ],
+        [
+          35.885658264160156,
+          358.8163146972656
+        ]
+      ]
+    },
+    {
+      "title": "REFERENCES AND NOTES",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          34.8046875,
+          533.408203125
+        ],
+        [
+          145.01953125,
+          533.408203125
+        ],
+        [
+          145.01953125,
+          543.1220550537109
+        ],
+        [
+          34.8046875,
+          543.1220550537109
+        ]
+      ]
+    },
+    {
+      "title": "SCIENCE ADVANCES | RESEARCH ARTICLE",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          35.384765625,
+          29.162109375
+        ],
+        [
+          281.9412536621094,
+          29.162109375
+        ],
+        [
+          281.9412536621094,
+          42.13018798828125
+        ],
+        [
+          35.384765625,
+          42.13018798828125
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          124
+        ],
+        [
+          "Span",
+          73
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "SectionHeader",
+          5
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "Footnote",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          113
+        ],
+        [
+          "Span",
+          108
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "Equation",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          101
+        ],
+        [
+          "Span",
+          70
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "Figure",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Equation",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Span",
+          310
+        ],
+        [
+          "Line",
+          101
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "FigureGroup",
+          2
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          108
+        ],
+        [
+          "Span",
+          68
+        ],
+        [
+          "Text",
+          6
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "Figure",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ],
+        [
+          "FigureGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          548
+        ],
+        [
+          "Line",
+          136
+        ],
+        [
+          "ListItem",
+          61
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "ListGroup",
+          3
+        ],
+        [
+          "PageHeader",
+          2
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "PageFooter",
+          2
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          83
+        ],
+        [
+          "Line",
+          21
+        ],
+        [
+          "Text",
+          4
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/keuschnigg2019urban"
+}

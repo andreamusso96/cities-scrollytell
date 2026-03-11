@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cities Scrollytell Mock Figures</title>
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --paper: #fffaf2;
+        --ink: #171512;
+        --muted: #6f685f;
+        --line: #d8cfbf;
+        --accent: #c55c32;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 48px 24px 64px;
+        background: radial-gradient(circle at top, #fffdf9 0%, var(--bg) 70%);
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+      }
+
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      p.lead {
+        max-width: 720px;
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.55;
+      }
+
+      ol {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 12px;
+      }
+
+      li {
+        background: rgba(255, 250, 242, 0.85);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px 18px;
+      }
+
+      a {
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      a:hover .label {
+        color: var(--accent);
+      }
+
+      .num {
+        display: inline-block;
+        width: 28px;
+        color: var(--muted);
+      }
+
+      .label {
+        font-size: 20px;
+      }
+
+      .status {
+        display: inline-block;
+        margin-left: 10px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #efe4d7;
+        color: var(--accent);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Mock Figure Set</h1>
+      <p class="lead">
+        This is the current 10-figure set for the scrollytell. Only figure 1 is
+        mocked so far. The rest are the planned scene components we agreed to
+        build next.
+      </p>
+
+      <ol>
+        <li>
+          <a href="./figure-01-stakes.html">
+            <span class="num">01</span>
+            <span class="label">Figure 1A: pinned chart opening</span>
+            <span class="status">mocked</span>
+          </a>
+        </li>
+        <li>
+          <a href="./figure-01-city-comparison.html">
+            <span class="num">01B</span>
+            <span class="label">Figure 1B: 100K vs 10M dot piles</span>
+            <span class="status">alternative</span>
+          </a>
+        </li>
+        <li><span class="num">02</span><span class="label">The urbanization tide and the three futures</span></li>
+        <li><span class="num">03</span><span class="label">What is a city? Paris boundary vs physical city</span></li>
+        <li><span class="num">04</span><span class="label">From satellites to cities: GHSL pipeline</span></li>
+        <li><span class="num">05</span><span class="label">The giants seem to be winning: Shanghai + runaway loop</span></li>
+        <li><span class="num">06</span><span class="label">The same tide lands differently: regional split</span></li>
+        <li><span class="num">07</span><span class="label">America in slow motion: deep-time urban system</span></li>
+        <li><span class="num">08</span><span class="label">Korea in fast-forward</span></li>
+        <li><span class="num">09</span><span class="label">Future scenarios: lifecycle vs extrapolation</span></li>
+        <li><span class="num">10</span><span class="label">A world of giants: closing skyline / rank-size image</span></li>
+      </ol>
+    </div>
+  </body>
+</html>

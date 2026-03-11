@@ -1,0 +1,631 @@
+{
+  "table_of_contents": [
+    {
+      "title": "Does Size Matter? Scaling of CO<sub>2</sub> Emissions and U.S. Urban Areas",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          56.272949816401464,
+          55.6171875
+        ],
+        [
+          522.9632802937576,
+          55.6171875
+        ],
+        [
+          522.9632802937576,
+          92.6953125
+        ],
+        [
+          56.272949816401464,
+          92.6953125
+        ]
+      ]
+    },
+    {
+      "title": "Michail Fragkias<sup>1</sup>*, Jos\u00e9 Lobo<sup>2</sup>, Deborah Strumsky<sup>3</sup>, Karen C. Seto<sup>4</sup>",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          56.272949816401464,
+          107.96587677725118
+        ],
+        [
+          382.65605875152994,
+          107.96587677725118
+        ],
+        [
+          382.65605875152994,
+          120.11767578125
+        ],
+        [
+          56.272949816401464,
+          120.11767578125
+        ]
+      ]
+    },
+    {
+      "title": "Abstract",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          72.77968176254589,
+          172.2587890625
+        ],
+        [
+          116.29742962056302,
+          172.2587890625
+        ],
+        [
+          116.29742962056302,
+          181.442654028436
+        ],
+        [
+          72.77968176254589,
+          181.442654028436
+        ]
+      ]
+    },
+    {
+      "title": "Introduction",
+      "heading_level": null,
+      "page_id": 0,
+      "polygon": [
+        [
+          56.272949816401464,
+          406.37156398104264
+        ],
+        [
+          118.5483476132191,
+          406.37156398104264
+        ],
+        [
+          118.5483476132191,
+          415.19775390625
+        ],
+        [
+          56.272949816401464,
+          415.19775390625
+        ]
+      ]
+    },
+    {
+      "title": "The Importance of Scale for Urban CO2 Emissions",
+      "heading_level": null,
+      "page_id": 1,
+      "polygon": [
+        [
+          57.46875,
+          242.552734375
+        ],
+        [
+          269.3187255859375,
+          242.552734375
+        ],
+        [
+          269.3187255859375,
+          253.65679931640625
+        ],
+        [
+          57.46875,
+          253.65679931640625
+        ]
+      ]
+    },
+    {
+      "title": "Materials and Methods",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          57.02325581395348,
+          60.251953125
+        ],
+        [
+          169.71240234375,
+          60.251953125
+        ],
+        [
+          169.71240234375,
+          69.72796208530805
+        ],
+        [
+          57.02325581395348,
+          69.72796208530805
+        ]
+      ]
+    },
+    {
+      "title": "Results",
+      "heading_level": null,
+      "page_id": 2,
+      "polygon": [
+        [
+          313.0849609375,
+          181.14208984375
+        ],
+        [
+          351.1432068543451,
+          181.14208984375
+        ],
+        [
+          351.1432068543451,
+          190.43981042654028
+        ],
+        [
+          313.0849609375,
+          190.43981042654028
+        ]
+      ]
+    },
+    {
+      "title": "Discussion",
+      "heading_level": null,
+      "page_id": 5,
+      "polygon": [
+        [
+          56.272949816401464,
+          431.41943359375
+        ],
+        [
+          110.29498164014687,
+          431.41943359375
+        ],
+        [
+          110.29498164014687,
+          441.6104265402843
+        ],
+        [
+          56.272949816401464,
+          441.6104265402843
+        ]
+      ]
+    },
+    {
+      "title": "References",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          58.053497314453125,
+          394.34130859375
+        ],
+        [
+          110.29737091064453,
+          394.34130859375
+        ],
+        [
+          110.29737091064453,
+          406.1118469238281
+        ],
+        [
+          58.053497314453125,
+          406.1118469238281
+        ]
+      ]
+    },
+    {
+      "title": "Supporting Information",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          313.0849609375,
+          177.27978515625
+        ],
+        [
+          430.1732177734375,
+          177.27978515625
+        ],
+        [
+          430.1732177734375,
+          188.5811767578125
+        ],
+        [
+          313.0849609375,
+          188.5811767578125
+        ]
+      ]
+    },
+    {
+      "title": "Acknowledgments",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          313.98291015625,
+          286.96923828125
+        ],
+        [
+          404.37646484375,
+          286.96923828125
+        ],
+        [
+          404.37646484375,
+          297.2047424316406
+        ],
+        [
+          313.98291015625,
+          297.2047424316406
+        ]
+      ]
+    },
+    {
+      "title": "Author Contributions",
+      "heading_level": null,
+      "page_id": 6,
+      "polygon": [
+        [
+          314.58154296875,
+          325.2060546875
+        ],
+        [
+          418.6773986816406,
+          325.2060546875
+        ],
+        [
+          418.6773986816406,
+          335.5858459472656
+        ],
+        [
+          314.58154296875,
+          335.5858459472656
+        ]
+      ]
+    }
+  ],
+  "page_stats": [
+    {
+      "page_id": 0,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          107
+        ],
+        [
+          "Span",
+          39
+        ],
+        [
+          "Text",
+          16
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "PageFooter",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Picture",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 1,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          439
+        ],
+        [
+          "Line",
+          121
+        ],
+        [
+          "Text",
+          9
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "Equation",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 2,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          134
+        ],
+        [
+          "Span",
+          88
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "SectionHeader",
+          2
+        ],
+        [
+          "Equation",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 3,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          15
+        ],
+        [
+          "Line",
+          7
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "Figure",
+          2
+        ],
+        [
+          "Caption",
+          2
+        ],
+        [
+          "FigureGroup",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 4,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          81
+        ],
+        [
+          "TableCell",
+          63
+        ],
+        [
+          "Span",
+          33
+        ],
+        [
+          "Text",
+          7
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Caption",
+          1
+        ],
+        [
+          "Table",
+          1
+        ],
+        [
+          "Equation",
+          1
+        ],
+        [
+          "TableGroup",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 5,
+      "text_extraction_method": "surya",
+      "block_counts": [
+        [
+          "Line",
+          136
+        ],
+        [
+          "Span",
+          72
+        ],
+        [
+          "Text",
+          10
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "PageHeader",
+          1
+        ],
+        [
+          "Equation",
+          1
+        ],
+        [
+          "SectionHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 6,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          296
+        ],
+        [
+          "Line",
+          138
+        ],
+        [
+          "ListItem",
+          35
+        ],
+        [
+          "Text",
+          8
+        ],
+        [
+          "SectionHeader",
+          4
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "ListGroup",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    },
+    {
+      "page_id": 7,
+      "text_extraction_method": "pdftext",
+      "block_counts": [
+        [
+          "Span",
+          117
+        ],
+        [
+          "Line",
+          57
+        ],
+        [
+          "ListItem",
+          23
+        ],
+        [
+          "PageFooter",
+          3
+        ],
+        [
+          "ListGroup",
+          2
+        ],
+        [
+          "PageHeader",
+          1
+        ]
+      ],
+      "block_metadata": {
+        "llm_request_count": 0,
+        "llm_error_count": 0,
+        "llm_tokens_used": 0,
+        "previous_text": "",
+        "previous_type": "",
+        "previous_order": 0
+      }
+    }
+  ],
+  "debug_data_path": "debug_data/fragkias2013does"
+}
