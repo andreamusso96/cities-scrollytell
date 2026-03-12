@@ -2,285 +2,175 @@
 
 ## Purpose
 
-This document records the architectural decisions for the scrollytelling piece before implementation starts.
+This document records the architecture we have actually built so far.
 
-The goal is to lock the main technical choices now, so that future prototype work in `src/mock` and later production work do not keep reopening the same framework questions.
+It is not a speculative design doc anymore. It is a high-level snapshot of the current app scaffold, the reusable pieces that exist, and the point the project has reached.
 
-## Project Shape
+## Current Stack
 
-- This repo is currently effectively greenfield from an app perspective.
-- There is no existing frontend scaffold that we need to preserve or migrate.
-- That means we should choose the stack that best fits an editorial scrollytell, not the stack that best fits an existing codebase.
-- The piece should be designed **mobile-first**.
-- Assume the overwhelming majority of readers are on phones.
-- Desktop matters, but desktop is a secondary adaptation, not the primary design target.
+- App framework: `SvelteKit`
+- Scrollytelling engine: `Scrollama`
+- Rendering approach: `SVG-first`
+- Deployment target: static site
+- Design priority: mobile first
 
-## Chosen Stack
+The current build is intentionally simple. We are building the scrollytell one reusable scene family at a time instead of trying to design the entire system upfront.
 
-### App framework
+## Current Page Model
 
-- Use **SvelteKit** as the main application framework.
+At the moment, the app has two scene types:
 
-Why:
+- `ProseSection`
+- `StickyScene`
 
-- It is a strong fit for editorial, interactive, stateful visual stories.
-- It keeps component code lighter than a React setup for this kind of work.
-- It gives us a proper app shell, static deployment options, routing if needed, and a clean component model.
-- Since there is no existing React app in the repo, React would add overhead without giving us a decisive advantage.
+The page alternates between normal prose blocks and full-screen sticky scenes.
 
-### Scrollytelling engine
+This is the current reading rhythm:
 
-- Use **Scrollama** as the primary scrollytelling engine.
+1. prose
+2. sticky scene
+3. prose
+4. sticky scene
 
-Why:
+That rhythm is deliberate. The sticky scene acts as a pause in the article where the reader stays with one visual while scrolling through its internal animation states.
 
-- It is still the cleanest step-based scrollytelling engine.
-- It uses `IntersectionObserver` rather than raw scroll event bookkeeping.
-- It works well with CSS `position: sticky`, which is the right base pattern for this piece.
-- It is lightweight and widely used in editorial interactive work.
+## Sticky Scene Shell
 
-### Animation layer
+The main reusable shell is [`StickyScene.svelte`](/Users/andrea/Desktop/PhD/scrollytell/cities-scrollytell/src/lib/components/StickyScene.svelte).
 
-- Use **state-driven scene changes** as the default animation model.
-- Use **GSAP ScrollTrigger only optionally**, and only for a few hero sequences if we later find that they genuinely need scrubbed or pinned timeline behavior.
+It currently provides:
 
-Why:
+- a centered full-viewport sticky stage
+- a fixed three-box layout:
+  - top card
+  - middle canvas
+  - bottom legend
+- Scrollama step handling
+- step progress
+- a short invisible tail at the end so the final animation can finish before the scene unsticks
 
-- We do not want ScrollTrigger to become the core scrollytelling framework.
-- ScrollTrigger is powerful, but it is better as a local animation tool than as the main narrative engine for this project.
-- Scrollama should own chapter activation. Visual components should react to chapter state.
+The visual layout is intentionally conservative for now. We stopped iterating on more complex card/canvas anchoring patterns and kept the simpler centered cluster because it is stable and good enough to build on.
 
-## Current Figure Framework
+## First Reusable Visual Family
 
-This section records the framework we are actually using in the mocks in
-`src/mock` right now.
+The first real reusable renderer is [`XYGraphCanvas.svelte`](/Users/andrea/Desktop/PhD/scrollytell/cities-scrollytell/src/lib/components/xy-graph/XYGraphCanvas.svelte).
 
-### Prototype medium
+This is the common analytic chart grammar for the piece.
 
-- Build each mock figure as a **standalone HTML file** in `src/mock`.
-- Use **plain HTML + CSS + vanilla JS** for the mock stage.
-- Do not pull the full app framework into early visual prototyping.
+It currently supports:
 
-Why:
+- x and y axes
+- `linear` and `log` scales
+- large mobile-readable axis typography
+- axis fade-in
+- one or more line series
+- line drawing with scroll progress
+- point annotations tied to a curve
+- endpoint labels for curves
+- per-chart margins
 
-- It keeps iteration fast while the figure grammar is still changing.
-- It makes each scene easy to open, inspect, and compare in isolation.
-- It lets us settle pacing, mobile layout, and visual hierarchy before wiring
-  figures into a full app.
+The type definitions for this family live in [`types.ts`](/Users/andrea/Desktop/PhD/scrollytell/cities-scrollytell/src/lib/components/xy-graph/types.ts).
 
-### Prototype scroll model
+This is the first important abstraction in the app. It already covers a large share of the charts we want later.
 
-- Use **CSS sticky sections** plus lightweight manual scroll-progress logic.
-- A typical mock structure is:
-  - prose above
-  - one sticky figure section
-  - prose below
-- Inside the sticky section, scroll progress maps to a small number of
-  **discrete scene states**.
+## Current State Management
 
-Implication:
+Right now the system is intentionally local and simple.
 
-- The current mocks are **not** using Scrollama yet.
-- Scrollama remains the planned production scrolly engine.
-- The mock logic is deliberately simpler: sticky stage + progress thresholds +
-  state changes.
+- Scene text is defined in [`+page.svelte`](/Users/andrea/Desktop/PhD/scrollytell/cities-scrollytell/src/routes/+page.svelte)
+- Demo chart data is also defined there
+- Graph configs are built with small helper functions in the page
+- `StickyScene` exposes `activeStepIndex` and `stepProgress` through slots
+- `XYGraphCanvas` receives a graph object and renders from it
 
-### Default figure anatomy
+So the current flow is:
 
-- Each figure should occupy a **full mobile viewport** while pinned.
-- The visual should get the full stage.
-- Use **one top scene card** for the active text state.
-- Keep the bottom of the figure available for a compact legend when needed.
-- Avoid extra floating labels, cards, or annotation boxes over the map/chart
-  unless they are truly necessary.
+`page state -> sticky scene step state -> graph config builder -> XY graph renderer`
 
-### Current text pattern inside figures
+There is no external data pipeline yet, and no global manifest system yet. That is intentional.
 
-- Prefer a **single top text box** rather than multiple scrolling overlay cards.
-- That box should swap only:
-  - kicker
-  - title
-  - short body copy
-  - accent color when relevant
-- If the figure already has a legend, do not duplicate that information with
-  extra on-figure label cards.
+## Interaction Model
 
-### Current rendering choice
+The current interaction model is:
 
-- Use **SVG first** for the current mocks.
-- Use HTML overlays only for text that must remain large and readable on
-  mobile.
-- Keep camera motion minimal. For map scenes, prefer **fixed camera reveals**
-  over zoom choreography unless motion is essential to the point.
+- step-based
+- scroll-driven
+- mostly discrete
 
-## Chosen Interaction Model
+We are not building a heavily scrubbed global animation system.
 
-### Default model: stateful chapters
+Instead:
 
-- Scroll should primarily choose the active **chapter / scene state**.
-- Each text step activates a new visual state.
-- The visual can animate into that state, but the state itself is discrete and stable.
+- axes fade in by step
+- lines draw as the reader scrolls through a step
+- annotations appear once a line reaches them
+- the scene remains pinned long enough for the last state to complete
 
-Examples:
+This is the right level of complexity for now. It keeps the piece readable and keeps the implementation controllable.
 
-- Map flies to a new location and then settles.
-- A chart highlights a new comparison and then holds.
-- A layer turns on, labels update, and the scene pauses while the user reads.
+## Mobile-First Decisions
 
-### Not the default: heavy scrub
+Several decisions are already locked in:
 
-- Do **not** build the piece as a continuously scroll-scrubbed timeline by default.
-- Scroll should not directly drive every animation frame of every visual.
+- chart typography should be as large as prose, or larger
+- the sticky scene width is constrained on desktop so it still feels close to phone proportions
+- labels and annotations are tuned for small screens first
+- endpoint labels are kept inside the canvas with reserved gutters when necessary
 
-Why:
+This is important: the visual system is not being designed desktop-first and then adapted later.
 
-- It is harder to implement and tune.
-- It is more fragile on mobile and touch devices.
-- It competes with reading.
-- It raises performance costs, especially for maps, canvases, and dense visuals.
+## What Exists Today
 
-### Allowed exception: local scrub
+The app currently has:
 
-- Some hero sequences may still use scrubbed progress inside a chapter.
-- This should be rare and intentional.
+- the SvelteKit scaffold
+- the prose component
+- the sticky scene shell
+- the reusable XY graph component
+- demo scenes that prove:
+  - axis fade-in
+  - line drawing
+  - point annotations
+  - endpoint labels
+  - sticky hold at the end of a scene
 
-Good candidates for local scrub:
+So the project is no longer at the mock-only stage. We now have a real app shell and one working reusable chart family.
 
-- satellite image -> built-up grid -> city boundary
-- a globe / world-to-city transition
-- a carefully designed future-scenario interpolation
+## What Does Not Exist Yet
 
-## Narrative Layout Pattern
+These pieces are not built yet:
 
-- The core layout pattern should be:
-  - foreground text steps
-  - sticky visual stage
-  - chapter-based state transitions
+- map / boundary reveal scene family
+- globe scene family
+- block histogram scene family
+- dot-cluster comparison scene family
+- real data ingestion pipeline
+- scene manifest system
 
-- In practice this should be interpreted as:
-  - article text above and below the sticky figure
-  - one persistent **top scene card** inside the figure
-  - optional compact legend near the bottom edge
-  - minimal obstruction of the visual area
-  - text sizes and figure pacing tuned first for phone screens
-  - desktop layouts derived from the mobile pattern, not invented separately
+Those can come later. The current rule is simple: only abstract what we have already proven we need.
 
-- This is close to the Mapbox storytelling pattern:
-  - text drives chapter changes
-  - the sticky visual updates scene by scene
-  - the user reads inside stable visual beats rather than fighting a constantly moving graphic
+## Guiding Principle
 
-- The Mapbox scrollytelling example is a **reference pattern**, not a full architecture choice.
-- The relevant lesson from it is:
-  - chapter-based camera / scene transitions are the right direction
-  - not that the whole project should be a map-first app
+The architecture is deliberately lean.
 
-## Visual Technology Policy
+We are not trying to build a perfect generalized storytelling engine upfront.
 
-- Use **SVG** for simpler charts, explanatory diagrams, and low-mark-count scenes.
-- Use **Canvas** for denser animations, larger particle/point counts, and possibly some map-like layers if performance requires it.
-- Use **D3** mainly for scales, layout math, axes, projections, and data transforms.
-- Do not let D3 own the whole rendering model by default.
+Instead, the current approach is:
 
-Current practical interpretation for mocks:
+1. build the shared shell
+2. build one reusable visual family
+3. tune it until it feels right
+4. add the next family only when needed
 
-- `src/mock/figure-01-city-comparison.html`: SVG dot-pile scene with a single
-  top card and discrete metric states
-- `src/mock/figure-02-futures.html`: SVG block histogram with fixed unit grammar
-  for incoming population and a single top card
-- `src/mock/figure-03-paris-boundaries.html`: fixed-camera SVG basemap with
-  traced boundaries, faded fills, bottom legend, and one top state card
+That is the point we have reached now.
 
-Implication:
+## Immediate Next Step
 
-- Component state should live in Svelte.
-- D3 should be a utility layer, not the overall application framework.
+The next phase is to add the next scene family on top of the same sticky shell.
 
-## Visual Density Decision
+The most likely candidates are:
 
-For a piece of roughly **2,000 words**:
+- a layered map / boundary reveal scene
+- a block-based histogram scene
 
-- Target **8 to 10 meaningful visual moments**
-- Aim for roughly **200 to 250 words per major visual**
-- Use **3 to 4 full-bleed hero visuals at most**
-
-Do not count every chart variant as a separate visual.
-
-Rules:
-
-- If two charts make the same argument in one section, they should usually be one visual chapter.
-- Prefer fewer, stronger, more legible visuals over many smaller ones.
-- A visual should earn its existence by advancing the story, not by merely varying presentation.
-
-## Current Practical Conclusion
-
-- `src/outline4.md` is still denser in visual slots than the final build should be.
-- Before implementation, the outlined visual beats should be merged into roughly **8 to 10 real scene components**.
-- Those components can contain internal sub-states, but they should not behave like 20 disconnected mini-viz blocks.
-
-## Options Considered And Rejected As Primary Architecture
-
-### React + react-scrollama
-
-Rejected as default.
-
-Why:
-
-- Good ecosystem, but unnecessary overhead here.
-- No existing React app in the repo.
-- Does not offer enough upside over SvelteKit for this editorial piece.
-
-### Plain Vite + Scrollama
-
-Rejected as default.
-
-Why:
-
-- Simpler at first, but becomes less ergonomic once the visuals become stateful and ambitious.
-- We want a real component framework for a project of this complexity.
-
-### GSAP ScrollTrigger as the main scrollytelling framework
-
-Rejected as default.
-
-Why:
-
-- Best used selectively for hero interactions, not as the main narrative controller.
-- Too easy to drift into over-scrubbed, over-animated, brittle behavior.
-
-### `@sveltejs/svelte-scroller`
-
-Not chosen as the core engine.
-
-Why:
-
-- Elegant, but narrower.
-- Scrollama is the more proven and flexible base for this particular piece.
-
-## Implementation Principles Going Forward
-
-- Build the story as **scene components**, not as a pile of one-off charts.
-- Keep the visual model **chapter-based by default**.
-- Only introduce scrub when a specific scene clearly benefits from it.
-- Prototype mock visuals in `src/mock` before building polished production versions.
-- Keep the story text-led. Visuals should support reading, not dominate it.
-- Default design decisions should be made for **phone reading**:
-  - text must remain readable while the figure is visible
-  - interactions must tolerate touch scrolling and uneven scroll velocity
-  - labels should be sized for mobile first, even if they feel slightly large on desktop
-  - labels, callouts, and legends should avoid requiring desktop hover behavior
-  - side-by-side desktop-only compositions should not be the default pattern
-  - avoid covering the map/chart with extra annotation cards when a top scene box and bottom legend are enough
-
-## Locked Decisions
-
-- Framework: **SvelteKit**
-- Scrolly engine: **Scrollama**
-- Mock figure framework: **standalone HTML/CSS/JS in `src/mock`**
-- Mock scroll model: **sticky section + manual progress thresholds**
-- Default interaction: **stateful chapters**
-- Scrub policy: **rare, local, opt-in**
-- Layout model: **sticky stage + prose above/below + one top scene card**
-- Primary target: **mobile-first**
-- Rendering mix: **Svelte + SVG/Canvas + D3 utilities**
-- Visual density: **8-10 major visual moments for ~2,000 words**
+But the important thing is that the scaffold is now in place and the first reusable graph system is working.
