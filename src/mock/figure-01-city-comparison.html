@@ -3,18 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Figure 01 Alternative - City Comparison</title>
+    <title>Figure 01 Alternative - 100K vs 10M Dot Piles</title>
     <style>
       :root {
         --bg: #050607;
         --panel: #0b0d10;
         --ink: #f5efe5;
         --muted: #b6ada2;
-        --line: #232930;
-        --small-city: #232c36;
-        --large-city: #3b4653;
+        --line: #1f252d;
+        --dot: #3b4653;
+        --dot-small: #4a5562;
         --upside: #59dec8;
-        --warning: #ff8da5;
+        --wealth: #8ac6ff;
+        --warning: #ff8d6b;
+        --co2: #f2c56f;
         --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
       }
 
@@ -44,7 +46,7 @@
       }
 
       .article.intro {
-        padding-bottom: 18px;
+        padding-bottom: 0;
       }
 
       h1 {
@@ -66,8 +68,8 @@
 
       .graph-section {
         position: relative;
-        height: 340vh;
-        margin: 0 calc(50% - 50vw) 7vh;
+        height: 240vh;
+        margin: 0 calc(50% - 50vw) 3vh;
       }
 
       .graph-stage {
@@ -77,20 +79,13 @@
         display: flex;
         align-items: flex-start;
         justify-content: center;
-        padding: 2px 14px 14px;
+        padding: 0 12px 0;
       }
 
       .figure-shell {
         position: relative;
-        width: min(100%, 760px);
-        height: min(78vh, 620px);
-        border: 1px solid #1f242b;
-        border-radius: 28px;
-        background:
-          radial-gradient(circle at top, rgba(255, 255, 255, 0.02), transparent 28%),
-          linear-gradient(180deg, #080a0d 0%, var(--panel) 100%);
-        box-shadow: var(--shadow);
-        overflow: hidden;
+        width: min(100%, 720px);
+        height: 100vh;
       }
 
       .chart-wrap {
@@ -104,22 +99,29 @@
         display: block;
       }
 
+      .dot {
+        transition:
+          fill 220ms ease,
+          opacity 220ms ease,
+          transform 220ms ease;
+      }
+
       .metric-panel {
         position: absolute;
-        top: 18px;
+        top: 16px;
         left: 50%;
-        width: min(290px, calc(100% - 28px));
-        padding: 12px 13px 11px;
+        z-index: 6;
+        width: min(340px, calc(100% - 24px));
+        padding: 12px 14px 13px;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 18px;
-        background: rgba(18, 21, 26, 0.9);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
-        transform: translateX(-50%) translateY(8px);
+        background: rgba(18, 21, 26, 0.92);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+        transform: translateX(-50%) translateY(10px);
         opacity: 0;
         transition:
-          opacity 260ms ease,
-          transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
-          border-color 220ms ease;
+          opacity 240ms ease,
+          transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .metric-panel.is-visible {
@@ -127,137 +129,41 @@
         transform: translateX(-50%) translateY(0);
       }
 
-      .metric-panel[data-tone="upside"] .metric-delta {
-        color: var(--upside);
-      }
-
-      .metric-panel[data-tone="warning"] .metric-delta {
-        color: var(--warning);
-      }
-
       .metric-kicker {
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         color: var(--muted);
         font-family: Arial, sans-serif;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
       .metric-title {
-        font-size: 18px;
-        line-height: 1.02;
-      }
-
-      .metric-copy {
-        margin-top: 5px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.35;
-      }
-
-      .metric-row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 10px;
-        align-items: end;
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .metric-compare {
-        display: flex;
-        gap: 8px;
-        color: var(--muted);
-        font-family: Arial, sans-serif;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .metric-compare strong {
-        display: block;
-        margin-top: 3px;
-        color: var(--ink);
-        font-size: 16px;
-        letter-spacing: 0;
-      }
-
-      .metric-delta {
-        font-family: Arial, sans-serif;
         font-size: 24px;
-        font-weight: 800;
-        line-height: 1;
-        white-space: nowrap;
-      }
-
-      .value-tag {
-        position: absolute;
-        padding: 7px 9px 6px;
-        border-radius: 999px;
-        background: rgba(17, 22, 29, 0.96);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: var(--ink);
-        font-family: Arial, sans-serif;
-        font-size: 13px;
         font-weight: 700;
         line-height: 1;
-        opacity: 0;
-        transform: translateY(8px);
-        transition:
-          opacity 220ms ease,
-          transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
-          border-color 220ms ease,
-          color 220ms ease;
       }
 
-      .value-tag.is-visible {
-        opacity: 1;
-        transform: translateY(0);
+      .metric-sentence {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
       }
 
-      .value-tag.small {
-        left: 14%;
-        top: 47%;
-      }
-
-      .value-tag.large {
-        right: 14%;
-        top: 35%;
-      }
-
-      .value-tag[data-tone="upside"] {
-        color: var(--upside);
-        border-color: rgba(89, 222, 200, 0.32);
-      }
-
-      .value-tag[data-tone="warning"] {
-        color: var(--warning);
-        border-color: rgba(255, 141, 165, 0.32);
+      .metric-sentence strong {
+        color: var(--ink);
+        font-size: 1.06em;
       }
 
       .city-label {
         fill: var(--ink);
         font-family: Arial, sans-serif;
-        font-size: 15px;
+        font-size: 21px;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-      }
-
-      .city-sub {
-        fill: var(--muted);
-        font-family: Arial, sans-serif;
-        font-size: 13px;
-      }
-
-      .city-note {
-        fill: var(--muted);
-        font-family: Arial, sans-serif;
-        font-size: 12px;
       }
 
       .outro-lead {
@@ -272,70 +178,39 @@
         }
 
         .article.intro {
-          padding-bottom: 10px;
+          padding-bottom: 0;
         }
 
         .graph-section {
-          height: 320vh;
-          margin-bottom: 6vh;
+          height: 230vh;
+          margin-bottom: 3vh;
         }
 
         .graph-stage {
-          padding: 0 10px 10px;
+          padding: 0 10px 0;
         }
 
         .figure-shell {
           width: 100%;
-          height: min(74vh, 540px);
-          border-radius: 22px;
+          height: 100vh;
         }
 
         .metric-panel {
           top: 12px;
-          width: min(270px, calc(100% - 18px));
-          padding: 10px 11px 10px;
+          width: min(304px, calc(100% - 18px));
+          padding: 10px 12px 11px;
         }
 
         .metric-title {
-          font-size: 16px;
+          font-size: 20px;
         }
 
-        .metric-copy {
-          font-size: 12px;
-        }
-
-        .metric-delta {
-          font-size: 22px;
-        }
-
-        .metric-compare strong {
-          font-size: 15px;
-        }
-
-        .value-tag {
-          font-size: 12px;
-        }
-
-        .value-tag.small {
-          left: 10%;
-          top: 50%;
-        }
-
-        .value-tag.large {
-          right: 10%;
-          top: 39%;
+        .metric-sentence {
+          font-size: 14px;
         }
 
         .city-label {
-          font-size: 12px;
-        }
-
-        .city-sub {
-          font-size: 11px;
-        }
-
-        .city-note {
-          font-size: 10px;
+          font-size: 18px;
         }
       }
     </style>
@@ -347,74 +222,88 @@
 
         <div class="prose">
           <p>
-            One way to open this story is not with an abstract curve, but with a
-            direct visual comparison. Put a city of 100,000 people next to one
-            of 10 million and ask what changes when the scale changes that much.
-            The answer is not only that one place contains more people. The
-            larger city becomes a different kind of machine. It can sustain more
-            occupations, more specialized firms, deeper supplier networks, and a
-            denser exchange of ideas.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
+            gravida, nibh non posuere vehicula, nibh turpis sodales est, vitae
+            feugiat purus dolor sit amet erat. Nulla facilisi. Integer sed
+            fermentum metus. Duis sit amet libero vitae nisl tristique
+            ullamcorper. Etiam luctus, nibh id tempor ultrices, purus lacus
+            pretium justo, sit amet auctor neque dolor ut leo. In hac habitasse
+            platea dictumst. Donec at lacus eu augue iaculis porta. Sed
+            porttitor, neque quis varius convallis, erat arcu pretium orci, vel
+            aliquam est libero a erat. Quisque sit amet justo tortor.
           </p>
           <p>
-            That does not mean giant cities are automatically better. It means
-            they amplify things. The same scale that makes a city more productive
-            can also make it more expensive, more pressurized, and harder to
-            inhabit. So the first scene should make that amplification intuitive
-            before the article moves on to the measurement problem.
+            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Aenean blandit massa sed sem faucibus, vitae
+            tincidunt est tempor. Nunc vulputate pulvinar nisl, sed bibendum
+            augue pellentesque quis. Aliquam erat volutpat. Sed rhoncus tempor
+            magna, in porta elit sagittis vel. Integer commodo, nibh in
+            scelerisque volutpat, leo sapien suscipit neque, non tristique
+            libero mi eget odio. In rhoncus, velit nec dictum aliquam, eros sem
+            ultrices tortor, vitae fermentum nibh justo in massa.
+          </p>
+          <p>
+            Morbi finibus nunc at nulla porttitor, non cursus lacus facilisis.
+            Praesent sollicitudin justo nec mi vulputate, nec efficitur sem
+            tincidunt. Vivamus luctus lacinia dolor, in tristique justo
+            suscipit sed. Pellentesque vel mi sem. Phasellus sit amet laoreet
+            nunc. Cras tempor diam id eros laoreet, ut ultrices augue
+            ullamcorper. Cras malesuada elit non mauris dictum, eget pretium
+            sem vulputate. Mauris viverra nulla quis tincidunt suscipit. In
+            viverra viverra magna, eu sodales turpis mollis et.
+          </p>
+          <p>
+            Suspendisse a ipsum dictum, finibus risus sit amet, fermentum nunc.
+            Integer ut porttitor magna. Pellentesque ac nisl lacus. Donec
+            faucibus est sit amet sem volutpat, sed ornare lacus consequat.
+            Maecenas porta varius lectus, id egestas tellus feugiat non. Nam
+            efficitur est non feugiat dictum. Sed tempus eros non dolor cursus,
+            sed elementum lacus feugiat. Fusce sollicitudin felis vel ante
+            feugiat, quis malesuada nunc aliquet.
           </p>
         </div>
       </article>
 
-      <section id="graph-section" class="graph-section" aria-label="Pinned city comparison">
+      <section id="graph-section" class="graph-section" aria-label="Pinned dot-pile comparison">
         <div class="graph-stage">
           <div class="figure-shell">
-            <div id="metric-panel" class="metric-panel" data-tone="upside">
-              <div class="metric-kicker">100K vs 10M</div>
-              <div id="metric-title" class="metric-title">Output per worker</div>
-              <div id="metric-copy" class="metric-copy">
-                Placeholder comparison copy for the opening scene.
-              </div>
-              <div class="metric-row">
-                <div class="metric-compare">
-                  <div>100K city<strong id="metric-small">1.00</strong></div>
-                  <div>10M city<strong id="metric-large">1.18</strong></div>
-                </div>
-                <div id="metric-delta" class="metric-delta">+18%</div>
+            <div id="metric-panel" class="metric-panel">
+              <div class="metric-kicker">100K metro vs 10M metro</div>
+              <div id="metric-title" class="metric-title">GDP</div>
+              <div id="metric-sentence" class="metric-sentence">
+                With respect to a person in a 100K metro, a person in a 10M city earns
+                <strong>24%</strong> more.
               </div>
             </div>
 
-            <div id="tag-small" class="value-tag small" data-tone="upside">1.00</div>
-            <div id="tag-large" class="value-tag large" data-tone="upside">1.18</div>
-
             <div class="chart-wrap">
-              <svg viewBox="0 0 640 500" role="img" aria-label="Two city silhouettes comparing a 100K city and a 10M city">
+              <svg viewBox="0 0 680 820" role="img" aria-label="Two dot piles comparing a 100K city with a 10M city">
                 <defs>
-                  <radialGradient id="glow-up" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#59dec8" stop-opacity="0.34"></stop>
+                  <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#59dec8" stop-opacity="0.22"></stop>
                     <stop offset="100%" stop-color="#59dec8" stop-opacity="0"></stop>
                   </radialGradient>
-                  <radialGradient id="glow-warn" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="#ff8da5" stop-opacity="0.28"></stop>
-                    <stop offset="100%" stop-color="#ff8da5" stop-opacity="0"></stop>
+                  <radialGradient id="warningGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ff8d6b" stop-opacity="0.18"></stop>
+                    <stop offset="100%" stop-color="#ff8d6b" stop-opacity="0"></stop>
+                  </radialGradient>
+                  <radialGradient id="co2Glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#f2c56f" stop-opacity="0.16"></stop>
+                    <stop offset="100%" stop-color="#f2c56f" stop-opacity="0"></stop>
                   </radialGradient>
                 </defs>
 
-                <rect x="22" y="20" width="596" height="456" rx="22" fill="#0d1014" stroke="#1d2229" stroke-width="2"></rect>
-                <line x1="66" y1="392" x2="574" y2="392" stroke="#232930" stroke-width="2"></line>
+                <line x1="340" y1="190" x2="340" y2="610" stroke="#1f252d" stroke-width="1.5"></line>
 
-                <circle id="glow-large" cx="448" cy="286" r="128" fill="url(#glow-up)" opacity="0.12"></circle>
-                <circle id="glow-warning" cx="448" cy="312" r="148" fill="url(#glow-warn)" opacity="0"></circle>
+                <circle id="rightGlow" cx="494" cy="372" r="176" fill="url(#centerGlow)" opacity="0.1"></circle>
+                <circle id="rightWarning" cx="494" cy="372" r="190" fill="url(#warningGlow)" opacity="0"></circle>
+                <circle id="rightCo2" cx="494" cy="372" r="198" fill="url(#co2Glow)" opacity="0"></circle>
 
-                <g id="small-city"></g>
-                <g id="large-city"></g>
+                <g id="smallPile"></g>
+                <g id="largePile"></g>
 
-                <text x="140" y="430" text-anchor="middle" class="city-label">100K city</text>
-                <text x="140" y="448" text-anchor="middle" class="city-sub">regional center</text>
-                <text x="448" y="430" text-anchor="middle" class="city-label">10M city</text>
-                <text x="448" y="448" text-anchor="middle" class="city-sub">giant metropolis</text>
-
-                <text x="140" y="466" text-anchor="middle" class="city-note">same grammar, smaller scale</text>
-                <text x="448" y="466" text-anchor="middle" class="city-note">same grammar, much denser stack</text>
+                <text x="186" y="674" text-anchor="middle" class="city-label">100K metro</text>
+                <text x="494" y="674" text-anchor="middle" class="city-label">10M metro</text>
               </svg>
             </div>
           </div>
@@ -423,21 +312,43 @@
 
       <article class="article">
         <div class="prose">
-          <p class="outro-lead">
-            If the opening works, the reader now feels the stakes without yet
-            needing a line chart.
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
+            eleifend, arcu id aliquam tempus, nulla lacus feugiat sem, a
+            pulvinar nisl ipsum eu lectus. Integer at erat non ipsum egestas
+            tincidunt. Proin sagittis blandit nibh, nec tincidunt augue
+            convallis at. Suspendisse nec malesuada tortor. Integer luctus
+            consectetur nibh, quis mattis libero venenatis at. Pellentesque
+            congue suscipit sem, at vehicula nibh pharetra et.
           </p>
           <p>
-            The next move in the article is to ask whether the world is really
-            moving toward that giant-city future. That is where the measurement
-            problem begins. To compare urban growth honestly, we first need a
-            stable idea of what a city is, how far it extends, and how to follow
-            the same city across decades while its physical footprint changes.
+            Aliquam commodo, metus ut pretium vulputate, nisl velit suscipit
+            nisi, a efficitur velit ipsum at risus. Fusce dictum, dolor nec
+            malesuada fermentum, ipsum tellus interdum turpis, vitae pretium
+            lorem leo eu purus. Sed eget aliquam ligula. Proin posuere, mi et
+            malesuada scelerisque, urna neque pretium risus, sed malesuada
+            mauris mi non est. Quisque id nunc malesuada, posuere leo vitae,
+            vulputate nisl. In id lectus dignissim, suscipit ligula vitae,
+            dapibus ipsum.
           </p>
           <p>
-            That is the bridge into the data section. The opening gives the
-            reader a reason to care; the methodology then earns the authority to
-            answer the larger question.
+            Curabitur lacinia sem in erat posuere, at faucibus turpis congue.
+            Vestibulum varius odio et sapien rhoncus malesuada. Maecenas at
+            augue in turpis cursus consequat. Vestibulum vulputate feugiat
+            felis, non malesuada odio volutpat vitae. Morbi facilisis nibh
+            vitae tincidunt suscipit. Duis elementum aliquet odio, non feugiat
+            arcu. Mauris dignissim consectetur ligula, non mollis neque
+            eleifend sed. Quisque efficitur sagittis tortor, non dictum tortor
+            euismod in.
+          </p>
+          <p>
+            Pellentesque sed eros neque. Integer commodo lacus a mauris
+            tincidunt, in viverra mi fermentum. Donec cursus pretium justo, nec
+            feugiat nisl volutpat vel. Suspendisse quis lorem ac augue placerat
+            mattis. Mauris commodo velit sit amet ante posuere, vitae rutrum
+            velit interdum. Nunc gravida tincidunt lorem, nec semper orci
+            ultricies sed. In et lectus vel sem tempor sollicitudin vel nec
+            eros.
           </p>
         </div>
       </article>
@@ -447,118 +358,229 @@
       const section = document.getElementById("graph-section");
       const metricPanel = document.getElementById("metric-panel");
       const metricTitle = document.getElementById("metric-title");
-      const metricCopy = document.getElementById("metric-copy");
-      const metricSmall = document.getElementById("metric-small");
-      const metricLarge = document.getElementById("metric-large");
-      const metricDelta = document.getElementById("metric-delta");
-      const tagSmall = document.getElementById("tag-small");
-      const tagLarge = document.getElementById("tag-large");
-      const glowLarge = document.getElementById("glow-large");
-      const glowWarning = document.getElementById("glow-warning");
-      const smallCity = document.getElementById("small-city");
-      const largeCity = document.getElementById("large-city");
+      const metricSentence = document.getElementById("metric-sentence");
+      const rightGlow = document.getElementById("rightGlow");
+      const rightWarning = document.getElementById("rightWarning");
+      const rightCo2 = document.getElementById("rightCo2");
+      const smallPile = document.getElementById("smallPile");
+      const largePile = document.getElementById("largePile");
 
       const scenes = [
         {
-          tone: "upside",
-          visible: false
+          visible: false,
+          glow: 0.1,
+          warning: 0
         },
         {
-          tone: "upside",
           visible: true,
-          title: "Output per worker",
-          copy: "Placeholder claim: bigger cities can raise wages and output by thickening labor markets.",
-          small: "1.00",
-          large: "1.18",
-          delta: "+18%",
-          glow: 0.18,
-          warningGlow: 0
+          title: "GDP",
+          verb: "earns",
+          delta: "24%",
+          tail: "more",
+          metric: "gdp"
         },
         {
-          tone: "upside",
           visible: true,
-          title: "Patents per person",
-          copy: "Placeholder claim: a giant city can concentrate inventors, labs, firms, and spillovers.",
-          small: "1.00",
-          large: "2.40",
-          delta: "x2.4",
-          glow: 0.26,
-          warningGlow: 0
+          title: "Patents",
+          verb: "produces",
+          delta: "109%",
+          tail: "more patents",
+          metric: "patents"
         },
         {
-          tone: "upside",
           visible: true,
-          title: "Specialized industries",
-          copy: "Placeholder claim: larger cities can support more niche suppliers and more complex sectors.",
-          small: "1.00",
-          large: "1.63",
-          delta: "+63%",
-          glow: 0.22,
-          warningGlow: 0
+          title: "Housing",
+          verb: "pays",
+          delta: "41%",
+          tail: "more for housing",
+          metric: "housing",
         },
         {
-          tone: "warning",
           visible: true,
-          title: "Housing pressure",
-          copy: "Placeholder caveat: the same scale that lifts output can also intensify scarcity and rent pressure.",
-          small: "1.00",
-          large: "1.72",
-          delta: "+72%",
-          glow: 0.08,
-          warningGlow: 0.2
+          title: "CO2",
+          verb: "consumes",
+          delta: "32%",
+          tail: "more CO2",
+          metric: "co2"
         }
       ];
-
-      const smallBuildings = [42, 56, 68, 84, 72, 58, 50, 38];
-      const largeBuildings = [34, 48, 64, 58, 82, 74, 102, 88, 122, 108, 146, 132, 118, 104, 110, 94, 76, 62, 48];
-
-      function renderSkyline(group, startX, baseline, heights, width, gap, fill, stroke) {
-        group.innerHTML = heights
-          .map((height, index) => {
-            const x = startX + index * (width + gap);
-            const y = baseline - height;
-            return `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="3" fill="${fill}" stroke="${stroke}" stroke-width="1"></rect>`;
-          })
-          .join("");
-      }
 
       function clamp(value, min = 0, max = 1) {
         return Math.min(Math.max(value, min), max);
       }
 
-      function getSceneIndex(progress) {
-        if (progress < 0.16) return 0;
-        if (progress < 0.36) return 1;
-        if (progress < 0.56) return 2;
-        if (progress < 0.76) return 3;
-        return 4;
+      function mulberry32(seed) {
+        return function () {
+          let t = (seed += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function buildGridPile(count, cx, cy, cols, spacing, jitter, r, seed) {
+        const rand = mulberry32(seed);
+        const points = [];
+        const rows = Math.ceil(count / cols);
+        for (let i = 0; i < count; i += 1) {
+          const col = i % cols;
+          const row = Math.floor(i / cols);
+          const width = (cols - 1) * spacing;
+          const height = (rows - 1) * spacing;
+          const x = cx - width / 2 + col * spacing + (rand() - 0.5) * jitter;
+          const y = cy + height / 2 - row * spacing + (rand() - 0.5) * jitter;
+          points.push({ x, y, r });
+        }
+        return points;
+      }
+
+      function buildDensePile(count, cx, cy, maxRadius, r, seed) {
+        const rand = mulberry32(seed);
+        const points = [];
+        for (let i = 0; i < count; i += 1) {
+          const angle = rand() * Math.PI * 2;
+          const radius = Math.pow(rand(), 0.62) * maxRadius;
+          const x = cx + Math.cos(angle) * radius;
+          const y = cy + Math.sin(angle) * radius * 0.86;
+          points.push({ x, y, r, dist: radius / maxRadius });
+        }
+        points.sort((a, b) => a.dist - b.dist);
+        return points;
+      }
+
+      const smallPoints = buildGridPile(72, 186, 404, 9, 18, 1.5, 5.2, 4);
+      const largePoints = buildDensePile(560, 494, 390, 144, 4.1, 9);
+
+      const gdpSmall = new Set([6, 8, 15, 17, 24, 26, 33, 35, 42, 44, 51, 53, 60, 62, 69, 71]);
+      const gdpLarge = new Set(Array.from({ length: 240 }, (_, i) => i));
+      const patentSmall = new Set([2, 6, 13, 20, 28, 35, 44, 51, 63]);
+      const patentLarge = new Set(Array.from({ length: 160 }, (_, i) => i));
+      const housingSmall = new Set([0, 1, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 53, 54, 62, 63, 70, 71]);
+      const housingLarge = new Set(
+        largePoints
+          .map((point, index) => ({ point, index }))
+          .filter(({ point }) => point.dist > 0.72)
+          .map(({ index }) => index)
+      );
+      const co2Small = new Set([0, 3, 8, 12, 17, 21, 26, 30, 35, 39, 44, 48, 53, 57, 62, 66, 69, 71]);
+      const co2Large = new Set(
+        largePoints
+          .map((point, index) => ({ point, index }))
+          .filter(({ point, index }) => point.dist < 0.9 && index % 2 === 0)
+          .map(({ index }) => index)
+      );
+
+      const metricStyles = {
+        gdp: {
+          smallSet: gdpSmall,
+          largeSet: gdpLarge,
+          color: "var(--wealth)",
+          smallFade: 0.18,
+          largeFade: 0.12,
+          glow: 0.24,
+          warning: 0,
+          co2: 0
+        },
+        patents: {
+          smallSet: patentSmall,
+          largeSet: patentLarge,
+          color: "var(--upside)",
+          smallFade: 0.18,
+          largeFade: 0.12,
+          glow: 0.2,
+          warning: 0,
+          co2: 0
+        },
+        housing: {
+          smallSet: housingSmall,
+          largeSet: housingLarge,
+          color: "var(--warning)",
+          smallFade: 0.22,
+          largeFade: 0.15,
+          glow: 0.08,
+          warning: 0.22,
+          co2: 0
+        },
+        co2: {
+          smallSet: co2Small,
+          largeSet: co2Large,
+          color: "var(--co2)",
+          smallFade: 0.2,
+          largeFade: 0.14,
+          glow: 0.12,
+          warning: 0.08,
+          co2: 0.14
+        }
+      };
+
+      function renderPile(group, points, type) {
+        group.innerHTML = points
+          .map((point, index) => {
+            const base = type === "small" ? "var(--dot-small)" : "var(--dot)";
+            return `
+              <circle
+                class="dot ${type}-dot"
+                data-index="${index}"
+                cx="${point.x}"
+                cy="${point.y}"
+                r="${point.r}"
+                fill="${base}"
+                opacity="${type === "small" ? 0.95 : 0.88}"
+              ></circle>
+            `;
+          })
+          .join("");
+      }
+
+      function applyMetricToGroup(selector, activeSet, color, fadeOpacity) {
+        document.querySelectorAll(selector).forEach((dot) => {
+          const index = Number(dot.dataset.index);
+          if (activeSet && activeSet.has(index)) {
+            dot.setAttribute("fill", color);
+            dot.setAttribute("opacity", "1");
+          } else {
+            dot.setAttribute("fill", selector.includes("small") ? "var(--dot-small)" : "var(--dot)");
+            dot.setAttribute("opacity", String(fadeOpacity));
+          }
+        });
+      }
+
+      function setBase() {
+        applyMetricToGroup(".small-dot", null, "", 0.96);
+        applyMetricToGroup(".large-dot", null, "", 0.9);
       }
 
       function applyScene(index) {
         const scene = scenes[index];
-        metricPanel.dataset.tone = scene.tone || "upside";
-        tagSmall.dataset.tone = scene.tone || "upside";
-        tagLarge.dataset.tone = scene.tone || "upside";
-
         if (!scene.visible) {
           metricPanel.classList.remove("is-visible");
-          tagSmall.classList.remove("is-visible");
-          tagLarge.classList.remove("is-visible");
+          setBase();
         } else {
-          metricTitle.textContent = scene.title;
-          metricCopy.textContent = scene.copy;
-          metricSmall.textContent = scene.small;
-          metricLarge.textContent = scene.large;
-          metricDelta.textContent = scene.delta;
-          tagSmall.textContent = scene.small;
-          tagLarge.textContent = scene.large;
+          const style = metricStyles[scene.metric];
           metricPanel.classList.add("is-visible");
-          tagSmall.classList.add("is-visible");
-          tagLarge.classList.add("is-visible");
+          metricTitle.textContent = scene.title;
+          metricSentence.innerHTML =
+            `With respect to a person in a 100K metro, a person in a 10M city ` +
+            `${scene.verb} <strong>${scene.delta}</strong> ${scene.tail}.`;
+          applyMetricToGroup(".small-dot", style.smallSet, style.color, style.smallFade);
+          applyMetricToGroup(".large-dot", style.largeSet, style.color, style.largeFade);
+          rightGlow.setAttribute("opacity", style.glow);
+          rightWarning.setAttribute("opacity", style.warning);
+          rightCo2.setAttribute("opacity", style.co2);
+          return;
         }
 
-        glowLarge.setAttribute("opacity", scene.glow || 0.12);
-        glowWarning.setAttribute("opacity", scene.warningGlow || 0);
+        rightGlow.setAttribute("opacity", scene.glow);
+        rightWarning.setAttribute("opacity", scene.warning);
+        rightCo2.setAttribute("opacity", 0);
+      }
+
+      function getSceneIndex(progress) {
+        if (progress < 0.16) return 0;
+        if (progress < 0.34) return 1;
+        if (progress < 0.53) return 2;
+        if (progress < 0.72) return 3;
+        return 4;
       }
 
       function update() {
@@ -566,15 +588,7 @@
         const total = section.offsetHeight - window.innerHeight;
         const traveled = clamp(-rect.top, 0, total);
         const progress = total > 0 ? traveled / total : 0;
-        const sceneIndex = getSceneIndex(progress);
-        applyScene(sceneIndex);
-      }
-
-      function init() {
-        renderSkyline(smallCity, 86, 392, smallBuildings, 14, 4, "#24303c", "#31404f");
-        renderSkyline(largeCity, 322, 392, largeBuildings, 10, 3, "#374251", "#4e5c6f");
-        applyScene(0);
-        update();
+        applyScene(getSceneIndex(progress));
       }
 
       let ticking = false;
@@ -585,6 +599,13 @@
           update();
           ticking = false;
         });
+      }
+
+      function init() {
+        renderPile(smallPile, smallPoints, "small");
+        renderPile(largePile, largePoints, "large");
+        applyScene(0);
+        update();
       }
 
       window.addEventListener("scroll", onScroll, { passive: true });

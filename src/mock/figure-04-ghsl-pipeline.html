@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 04 Mock - GHSL Built-Up to City Clusters</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --card: rgba(16, 19, 24, 0.92);
+        --built: #d7aa72;
+        --urban: #efe7db;
+        --cluster-a: #7ab6a7;
+        --cluster-b: #c8a264;
+        --cluster-c: #c68678;
+        --cluster-d: #8eaac3;
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(28, 36, 31, 0.42), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(24, 28, 34, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 280vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        z-index: 7;
+        width: min(370px, calc(100% - 20px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition: border-color 260ms ease;
+      }
+
+      .scene-copy.neutral {
+        border-left-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .scene-copy.built {
+        border-left-color: var(--built);
+      }
+
+      .scene-copy.urban {
+        border-left-color: var(--urban);
+      }
+
+      .scene-copy.clusters {
+        border-left-color: var(--cluster-a);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transition: color 260ms ease;
+      }
+
+      .scene-copy.built .scene-kicker {
+        color: var(--built);
+      }
+
+      .scene-copy.urban .scene-kicker {
+        color: var(--urban);
+      }
+
+      .scene-copy.clusters .scene-kicker {
+        color: var(--cluster-a);
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .map-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .grid-cell {
+        transition:
+          fill 300ms ease,
+          fill-opacity 300ms ease,
+          stroke 300ms ease,
+          stroke-opacity 300ms ease;
+      }
+
+      .cluster-link,
+      .cluster-label {
+        opacity: 0;
+        transition: opacity 320ms ease;
+      }
+
+      .cluster-link.is-visible,
+      .cluster-label.is-visible {
+        opacity: 1;
+      }
+
+      .legend {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 24px;
+        z-index: 6;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        align-items: center;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .legend-chip {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .legend-chip.surface {
+        background:
+          linear-gradient(135deg, #223127 0%, #5f734d 44%, #908e7b 66%, #46584a 100%);
+      }
+
+      .legend-chip.urban {
+        background: var(--urban);
+        border-color: rgba(255, 255, 255, 0.28);
+      }
+
+      .legend-chip.non-urban {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .legend-ramp {
+        width: 104px;
+        height: 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(90deg, rgba(215, 170, 114, 0.08) 0%, rgba(215, 170, 114, 0.92) 100%);
+      }
+
+      .legend-cluster {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+      }
+
+      .frame-label {
+        fill: rgba(245, 239, 229, 0.74);
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .frame-note {
+        fill: rgba(184, 173, 160, 0.8);
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+
+      .cluster-id {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 300vh;
+        }
+
+        .scene-copy {
+          top: 12px;
+          width: min(328px, calc(100% - 16px));
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+
+        .legend {
+          bottom: 18px;
+          gap: 8px 12px;
+        }
+
+        .legend-item {
+          font-size: 14px;
+        }
+
+        .frame-label {
+          font-size: 34px;
+        }
+
+        .frame-note {
+          font-size: 22px;
+        }
+
+        .cluster-id {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>From surfaces to city clusters</h1>
+        <div class="prose">
+          <p>
+            The GHSL pipeline starts from satellite surfaces. It sees land
+            cover, shadow, roads, roofs, and industrial patches, but it does
+            not see named cities.
+          </p>
+          <p>
+            This mock keeps one fixed frame and turns it into a sequence of
+            derivations: built-up fraction, urban classification, then
+            contiguous clusters.
+          </p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="GHSL pipeline from raw imagery to urban clusters">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy neutral">
+              <div id="scene-kicker" class="scene-kicker">Input surface</div>
+              <div id="scene-title" class="scene-title">Satellites see surfaces, not city names.</div>
+              <div id="scene-body" class="scene-body">
+                Start from raw imagery in a fixed frame. At this point the algorithm has not classified anything.
+              </div>
+            </div>
+
+            <div class="map-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="Mock fixed landscape transformed from imagery into built-up cells, urban cells, and colored clusters">
+                <defs>
+                  <linearGradient id="stageBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0b1014"></stop>
+                    <stop offset="100%" stop-color="#091016"></stop>
+                  </linearGradient>
+                  <clipPath id="mapClip">
+                    <rect x="88" y="158" width="584" height="584" rx="18"></rect>
+                  </clipPath>
+                  <filter id="satelliteBlur" x="-6%" y="-6%" width="112%" height="112%">
+                    <feGaussianBlur stdDeviation="5.4"></feGaussianBlur>
+                  </filter>
+                </defs>
+
+                <rect x="0" y="0" width="760" height="900" fill="url(#stageBg)"></rect>
+
+                <g clip-path="url(#mapClip)">
+                  <rect x="88" y="158" width="584" height="584" fill="#11161b"></rect>
+
+                  <g id="imagery-layer">
+                    <g id="imagery-raster" filter="url(#satelliteBlur)"></g>
+
+                    <g opacity="0.96">
+                      <path d="M82 350 C198 286, 314 288, 440 320 S610 362, 686 332" fill="none" stroke="#d9cfba" stroke-width="18" stroke-linecap="round" opacity="0.16"></path>
+                      <path d="M82 350 C198 286, 314 288, 440 320 S610 362, 686 332" fill="none" stroke="#f0e5cd" stroke-width="6" stroke-linecap="round" opacity="0.38"></path>
+                      <path d="M168 150 C230 230, 274 332, 306 470 S352 646, 384 744" fill="none" stroke="#d3c8b5" stroke-width="14" stroke-linecap="round" opacity="0.14"></path>
+                      <path d="M168 150 C230 230, 274 332, 306 470 S352 646, 384 744" fill="none" stroke="#f3e7d3" stroke-width="5" stroke-linecap="round" opacity="0.34"></path>
+                    </g>
+
+                    <g opacity="0.9">
+                      <path d="M122 212 C154 242, 166 294, 154 340 C142 384, 140 420, 170 460 C210 512, 286 522, 318 562 C352 606, 344 676, 316 738" fill="none" stroke="#5c8fbe" stroke-width="18" stroke-linecap="round" opacity="0.18"></path>
+                      <path d="M126 216 C156 246, 166 292, 156 336 C146 378, 146 418, 174 456 C212 508, 286 520, 316 560 C348 600, 340 668, 314 732" fill="none" stroke="#7db7f0" stroke-width="8" stroke-linecap="round" opacity="0.38"></path>
+                    </g>
+
+                    <g opacity="0.55">
+                      <path d="M518 182 C574 170, 626 206, 648 254 C620 282, 564 292, 520 278 C492 246, 492 198, 518 182 Z" fill="#26452f"></path>
+                      <path d="M470 582 C534 546, 620 568, 658 632 C632 684, 552 706, 486 680 C452 644, 448 604, 470 582 Z" fill="#2d4b35"></path>
+                      <path d="M116 560 C174 532, 254 552, 278 614 C246 656, 174 680, 126 656 C102 620, 98 582, 116 560 Z" fill="#2d472e"></path>
+                    </g>
+                  </g>
+
+                  <rect id="grid-backdrop" x="88" y="158" width="584" height="584" fill="#091015" opacity="0"></rect>
+
+                  <g id="connector-layer"></g>
+                  <g id="grid-layer"></g>
+                  <g id="label-layer"></g>
+                </g>
+
+                <rect x="88" y="158" width="584" height="584" rx="18" fill="none" stroke="rgba(255, 255, 255, 0.14)" stroke-width="2"></rect>
+                <text x="96" y="128" class="frame-label">Same spatial frame</text>
+                <text x="96" y="778" class="frame-note">15 x 15 cells. Each square = 1 km.</text>
+              </svg>
+            </div>
+
+            <div id="legend" class="legend"></div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            Once the urban cells are fixed, city construction is mechanical.
+            Neighboring urban cells are merged into contiguous clusters, and
+            each cluster becomes one city candidate.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneKicker = document.getElementById("scene-kicker");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const legend = document.getElementById("legend");
+      const imageryRaster = document.getElementById("imagery-raster");
+      const imageryLayer = document.getElementById("imagery-layer");
+      const gridBackdrop = document.getElementById("grid-backdrop");
+      const gridLayer = document.getElementById("grid-layer");
+      const connectorLayer = document.getElementById("connector-layer");
+      const labelLayer = document.getElementById("label-layer");
+
+      const svgNS = "http://www.w3.org/2000/svg";
+      const cols = 15;
+      const rows = 15;
+      const gridX = 88;
+      const gridY = 158;
+      const gridSize = 584;
+      const cellSize = gridSize / cols;
+      const threshold = 0.52;
+      const clusterPalette = ["#7ab6a7", "#c8a264", "#c68678", "#8eaac3"];
+
+      const terrainDark = [31, 48, 37];
+      const terrainMid = [105, 125, 84];
+      const urbanGray = [156, 148, 136];
+
+      const scenes = [
+        {
+          kicker: "Input surface",
+          title: "Satellites see surfaces, not city names.",
+          body: "Start from raw imagery in a fixed frame. At this point the algorithm has not classified anything.",
+          tone: "neutral"
+        },
+        {
+          kicker: "Built-up fraction",
+          title: "Estimate built-up share in each 1 km cell.",
+          body: "The image is sampled into a grid. Some cells are barely built up. Some are mostly settlement surface.",
+          tone: "built"
+        },
+        {
+          kicker: "Urban classification",
+          title: "Apply a cutoff: urban or non-urban.",
+          body: "The continuous surface becomes a clean classification. Cells above the threshold turn solid.",
+          tone: "urban"
+        },
+        {
+          kicker: "Cluster construction",
+          title: "Connect neighboring urban cells into clusters.",
+          body: "Adjacency does the rest. Each contiguous urban cluster gets a cluster ID and becomes one city candidate.",
+          tone: "clusters"
+        }
+      ];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function mixTriplet(a, b, amount) {
+        const t = clamp(amount);
+        return a.map((value, index) => Math.round(value + (b[index] - value) * t));
+      }
+
+      function rgb(values) {
+        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
+      }
+
+      function terrainNoise(col, row) {
+        return (
+          Math.sin(col * 1.7 + row * 0.8) * 0.5 +
+          Math.cos(col * 0.9 - row * 1.3) * 0.5
+        );
+      }
+
+      function lineInfluence(x, y, x1, y1, x2, y2, amp, width) {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const t = clamp(((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy));
+        const px = x1 + dx * t;
+        const py = y1 + dy * t;
+        const dist = Math.hypot(x - px, y - py);
+        return amp * Math.exp(-(dist * dist) / (2 * width * width));
+      }
+
+      function builtValue(col, row) {
+        const x = col + 0.5;
+        const y = row + 0.5;
+        const centers = [
+          { x: 6.4, y: 5.9, amp: 0.9, spread: 2.0 },
+          { x: 10.8, y: 4.7, amp: 0.78, spread: 1.5 },
+          { x: 3.6, y: 11.4, amp: 0.7, spread: 1.45 },
+          { x: 11.7, y: 11.2, amp: 0.58, spread: 1.25 }
+        ];
+
+        let value = 0.035;
+        centers.forEach((center) => {
+          const dist2 = (x - center.x) ** 2 + (y - center.y) ** 2;
+          value += center.amp * Math.exp(-dist2 / (2 * center.spread * center.spread));
+        });
+
+        value += lineInfluence(x, y, 3.0, 2.6, 8.6, 8.0, 0.12, 0.75);
+        value += lineInfluence(x, y, 8.2, 9.0, 12.5, 12.8, 0.08, 0.72);
+        value += terrainNoise(col, row) * 0.028 + 0.028;
+
+        return clamp(value);
+      }
+
+      function createSvgNode(name, attributes = {}) {
+        const node = document.createElementNS(svgNS, name);
+        Object.entries(attributes).forEach(([key, value]) => {
+          node.setAttribute(key, value);
+        });
+        return node;
+      }
+
+      const cells = [];
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+          const value = builtValue(col, row);
+          cells.push({
+            col,
+            row,
+            value,
+            urban: value >= threshold,
+            x: gridX + col * cellSize,
+            y: gridY + row * cellSize
+          });
+        }
+      }
+
+      function cellAt(row, col) {
+        if (row < 0 || row >= rows || col < 0 || col >= cols) return null;
+        return cells[row * cols + col];
+      }
+
+      function detectClusters() {
+        const visited = new Set();
+        const found = [];
+
+        cells.forEach((cell) => {
+          if (!cell.urban) return;
+          const key = `${cell.row}-${cell.col}`;
+          if (visited.has(key)) return;
+
+          const stack = [cell];
+          const members = [];
+          visited.add(key);
+
+          while (stack.length) {
+            const current = stack.pop();
+            members.push(current);
+
+            [
+              cellAt(current.row + 1, current.col),
+              cellAt(current.row - 1, current.col),
+              cellAt(current.row, current.col + 1),
+              cellAt(current.row, current.col - 1)
+            ].forEach((neighbor) => {
+              if (!neighbor || !neighbor.urban) return;
+              const neighborKey = `${neighbor.row}-${neighbor.col}`;
+              if (visited.has(neighborKey)) return;
+              visited.add(neighborKey);
+              stack.push(neighbor);
+            });
+          }
+
+          found.push({ members });
+        });
+
+        found.sort((a, b) => b.members.length - a.members.length);
+
+        found.forEach((cluster, index) => {
+          const color = clusterPalette[index % clusterPalette.length];
+          let sumX = 0;
+          let sumY = 0;
+
+          cluster.members.forEach((cell) => {
+            cell.clusterId = index;
+            cell.clusterColor = color;
+            sumX += cell.x + cellSize / 2;
+            sumY += cell.y + cellSize / 2;
+          });
+
+          cluster.color = color;
+          cluster.idLabel = `C${String(index + 1).padStart(2, "0")}`;
+          cluster.cx = sumX / cluster.members.length;
+          cluster.cy = sumY / cluster.members.length;
+        });
+
+        return found;
+      }
+
+      const clusters = detectClusters();
+
+      function renderImagery() {
+        const fragment = document.createDocumentFragment();
+
+        cells.forEach((cell) => {
+          const landColor = mixTriplet(
+            terrainDark,
+            terrainMid,
+            0.42 + terrainNoise(cell.col, cell.row) * 0.16
+          );
+          const mixed = mixTriplet(landColor, urbanGray, cell.value * 0.75);
+
+          fragment.appendChild(
+            createSvgNode("rect", {
+              x: cell.x,
+              y: cell.y,
+              width: cellSize + 1.4,
+              height: cellSize + 1.4,
+              fill: rgb(mixed)
+            })
+          );
+        });
+
+        imageryRaster.appendChild(fragment);
+      }
+
+      function renderGrid() {
+        const cellsFragment = document.createDocumentFragment();
+        const connectorsFragment = document.createDocumentFragment();
+        const labelsFragment = document.createDocumentFragment();
+
+        cells.forEach((cell) => {
+          const rect = createSvgNode("rect", {
+            class: "grid-cell",
+            x: cell.x,
+            y: cell.y,
+            width: cellSize,
+            height: cellSize,
+            fill: "rgb(215, 170, 114)",
+            "fill-opacity": "0",
+            stroke: "rgba(255, 255, 255, 0)",
+            "stroke-opacity": "0",
+            "stroke-width": "1"
+          });
+
+          cell.rect = rect;
+          cellsFragment.appendChild(rect);
+        });
+
+        clusters.forEach((cluster) => {
+          const group = createSvgNode("g", { class: "cluster-label" });
+          const bg = createSvgNode("circle", {
+            cx: cluster.cx,
+            cy: cluster.cy,
+            r: "22",
+            fill: cluster.color,
+            "fill-opacity": "0.92",
+            stroke: "rgba(255, 255, 255, 0.22)",
+            "stroke-width": "1.5"
+          });
+          const text = createSvgNode("text", {
+            x: cluster.cx,
+            y: cluster.cy + 4,
+            "text-anchor": "middle",
+            class: "cluster-id"
+          });
+          text.textContent = cluster.idLabel;
+          group.append(bg, text);
+          labelsFragment.appendChild(group);
+        });
+
+        cells.forEach((cell) => {
+          if (!cell.urban) return;
+
+          const right = cellAt(cell.row, cell.col + 1);
+          const down = cellAt(cell.row + 1, cell.col);
+
+          [right, down].forEach((neighbor) => {
+            if (!neighbor || !neighbor.urban || neighbor.clusterId !== cell.clusterId) return;
+
+            connectorsFragment.appendChild(
+              createSvgNode("line", {
+                class: "cluster-link",
+                x1: cell.x + cellSize / 2,
+                y1: cell.y + cellSize / 2,
+                x2: neighbor.x + cellSize / 2,
+                y2: neighbor.y + cellSize / 2,
+                stroke: cell.clusterColor,
+                "stroke-width": "8",
+                "stroke-linecap": "round",
+                "stroke-opacity": "0.54"
+              })
+            );
+          });
+        });
+
+        gridLayer.appendChild(cellsFragment);
+        connectorLayer.appendChild(connectorsFragment);
+        labelLayer.appendChild(labelsFragment);
+      }
+
+      function renderLegend(index) {
+        if (index === 0) {
+          legend.innerHTML = `
+            <div class="legend-item">
+              <span class="legend-chip surface"></span>
+              <span>Raw satellite surface</span>
+            </div>
+            <div class="legend-item">
+              <span>Unclassified frame</span>
+            </div>
+          `;
+          return;
+        }
+
+        if (index === 1) {
+          legend.innerHTML = `
+            <div class="legend-item">
+              <span class="legend-ramp"></span>
+              <span>Built-up share: low to high</span>
+            </div>
+            <div class="legend-item">
+              <span>Continuous surface</span>
+            </div>
+          `;
+          return;
+        }
+
+        if (index === 2) {
+          legend.innerHTML = `
+            <div class="legend-item">
+              <span class="legend-chip urban"></span>
+              <span>Urban cell</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-chip non-urban"></span>
+              <span>Non-urban cell</span>
+            </div>
+          `;
+          return;
+        }
+
+        legend.innerHTML = clusters
+          .map(
+            (cluster, indexValue) => `
+              <div class="legend-item">
+                <span class="legend-cluster" style="background:${cluster.color}"></span>
+                <span>Cluster ${String(indexValue + 1).padStart(2, "0")}</span>
+              </div>
+            `
+          )
+          .join("");
+      }
+
+      function applyScene(index) {
+        const scene = scenes[index];
+        sceneCopy.className = `scene-copy ${scene.tone}`;
+        sceneKicker.textContent = scene.kicker;
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+        renderLegend(index);
+
+        imageryLayer.style.opacity = String([1, 0.34, 0.14, 0.1][index]);
+        gridBackdrop.setAttribute("opacity", String([0, 0.18, 0.24, 0.26][index]));
+
+        cells.forEach((cell) => {
+          if (index === 0) {
+            cell.rect.setAttribute("fill-opacity", "0");
+            cell.rect.setAttribute("stroke-opacity", "0");
+            return;
+          }
+
+          if (index === 1) {
+            cell.rect.setAttribute("fill", "rgb(215, 170, 114)");
+            cell.rect.setAttribute("fill-opacity", String(0.08 + cell.value * 0.86));
+            cell.rect.setAttribute("stroke", "rgba(255, 255, 255, 0.15)");
+            cell.rect.setAttribute("stroke-opacity", "0.2");
+            return;
+          }
+
+          if (index === 2) {
+            cell.rect.setAttribute("fill", cell.urban ? "rgb(239, 231, 219)" : "rgba(255, 255, 255, 0.04)");
+            cell.rect.setAttribute("fill-opacity", cell.urban ? "0.98" : "0.14");
+            cell.rect.setAttribute("stroke", cell.urban ? "rgba(10, 14, 18, 0.86)" : "rgba(255, 255, 255, 0.08)");
+            cell.rect.setAttribute("stroke-opacity", cell.urban ? "0.74" : "0.24");
+            return;
+          }
+
+          cell.rect.setAttribute("fill", cell.urban ? cell.clusterColor : "rgba(255, 255, 255, 0.03)");
+          cell.rect.setAttribute("fill-opacity", cell.urban ? "0.9" : "0.1");
+          cell.rect.setAttribute("stroke", cell.urban ? "rgba(10, 14, 18, 0.92)" : "rgba(255, 255, 255, 0.08)");
+          cell.rect.setAttribute("stroke-opacity", cell.urban ? "0.7" : "0.18");
+        });
+
+        connectorLayer.querySelectorAll(".cluster-link").forEach((node) => {
+          node.classList.toggle("is-visible", index === 3);
+        });
+
+        labelLayer.querySelectorAll(".cluster-label").forEach((node) => {
+          node.classList.toggle("is-visible", index === 3);
+        });
+      }
+
+      function getSceneIndex(progress) {
+        if (progress < 0.22) return 0;
+        if (progress < 0.48) return 1;
+        if (progress < 0.74) return 2;
+        return 3;
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(getSceneIndex(progress));
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        renderImagery();
+        renderGrid();
+        applyScene(0);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

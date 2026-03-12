@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 10 Mock - Lifecycle Scatter</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --grid: rgba(255, 255, 255, 0.06);
+        --grid-strong: rgba(255, 255, 255, 0.1);
+        --card: rgba(16, 19, 24, 0.92);
+        --fit: #f2d29a;
+        --fit-glow: rgba(242, 210, 154, 0.16);
+        --africa: #f0c66f;
+        --asia: #67e0cc;
+        --europe: #9db9da;
+        --americas: #ff8b67;
+        --africa-muted: #8f7f60;
+        --asia-muted: #5e8a84;
+        --europe-muted: #6c7f95;
+        --americas-muted: #8d6a62;
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(28, 36, 48, 0.44), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(20, 24, 30, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 300vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 1180px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        z-index: 7;
+        width: min(388px, calc(100% - 20px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition:
+          border-color 260ms ease,
+          border-left-color 260ms ease;
+      }
+
+      .scene-copy.regions {
+        border-left-color: var(--asia);
+      }
+
+      .scene-copy.fit,
+      .scene-copy.muted {
+        border-left-color: var(--fit);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .scene-copy.regions .scene-kicker {
+        color: var(--asia);
+      }
+
+      .scene-copy.fit .scene-kicker,
+      .scene-copy.muted .scene-kicker {
+        color: var(--fit);
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .chart-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .plot-note {
+        fill: rgba(184, 173, 160, 0.78);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .axis-title {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .tick-text {
+        fill: rgba(245, 239, 229, 0.78);
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+      }
+
+      .grid-line {
+        stroke: var(--grid);
+        stroke-width: 1.4;
+      }
+
+      .grid-line.axis {
+        stroke: var(--grid-strong);
+        stroke-width: 1.8;
+      }
+
+      .point {
+        transition:
+          fill 260ms ease,
+          opacity 260ms ease,
+          stroke-opacity 260ms ease;
+      }
+
+      .fit-line,
+      .fit-glow {
+        fill: none;
+        opacity: 0;
+        transition: opacity 320ms ease;
+      }
+
+      .region-label {
+        font-family: Arial, sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        paint-order: stroke;
+        stroke: rgba(5, 6, 7, 0.86);
+        stroke-width: 6px;
+        transition:
+          fill 260ms ease,
+          opacity 260ms ease;
+      }
+
+      .legend {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 20px;
+        z-index: 6;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        align-items: center;
+        max-width: calc(100% - 36px);
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        opacity: 0.96;
+      }
+
+      .legend-item.is-dim {
+        opacity: 0.26;
+      }
+
+      .legend-item.is-active {
+        color: var(--ink);
+        opacity: 1;
+      }
+
+      .legend-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .legend-swatch.africa {
+        background: var(--africa);
+      }
+
+      .legend-swatch.asia {
+        background: var(--asia);
+      }
+
+      .legend-swatch.europe {
+        background: var(--europe);
+      }
+
+      .legend-swatch.americas {
+        background: var(--americas);
+      }
+
+      .legend-line {
+        width: 30px;
+        height: 0;
+        border-top: 3px solid var(--fit);
+        border-radius: 999px;
+        box-shadow: 0 0 16px var(--fit-glow);
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 320vh;
+        }
+
+        .scene-copy {
+          top: 12px;
+          width: min(326px, calc(100% - 16px));
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+
+        .legend {
+          bottom: 14px;
+          gap: 10px 12px;
+        }
+
+        .legend-item {
+          font-size: 11px;
+        }
+
+        .region-label {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>What looks like geography is mostly timing</h1>
+        <div class="prose">
+          <p>
+            At first glance, the global pattern reads like a regional split.
+            Asia and Africa sit high. Europe and the Americas sit low.
+          </p>
+          <p>
+            The point of this scene is to change the frame. Once beta is
+            plotted against urbanization instead of geography, the twist lands
+            much faster.
+          </p>
+        </div>
+      </article>
+
+      <section
+        id="graph-section"
+        class="graph-section"
+        aria-label="Scatter of country-year beta against urban population share"
+      >
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy regions">
+              <div id="scene-kicker" class="scene-kicker">Apparent geography</div>
+              <div id="scene-title" class="scene-title">It first reads like a regional map</div>
+              <div id="scene-body" class="scene-body">
+                Country-years cluster in familiar blocs: Asia and Africa higher
+                on beta, Europe and the Americas lower down.
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <svg
+                viewBox="0 0 1160 900"
+                role="img"
+                aria-label="Scatter plot of national urban population share on the x-axis and size-growth slope beta on the y-axis"
+              >
+                <defs>
+                  <linearGradient id="stage-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0b1015"></stop>
+                    <stop offset="100%" stop-color="#080b0f"></stop>
+                  </linearGradient>
+                  <radialGradient id="plot-glow" cx="50%" cy="42%" r="62%">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.05)"></stop>
+                    <stop offset="100%" stop-color="rgba(255,255,255,0)"></stop>
+                  </radialGradient>
+                </defs>
+
+                <rect x="0" y="0" width="1160" height="900" fill="url(#stage-bg)"></rect>
+                <rect x="66" y="124" width="1028" height="638" rx="32" fill="rgba(8, 12, 16, 0.56)"></rect>
+                <rect x="66" y="124" width="1028" height="638" rx="32" fill="url(#plot-glow)"></rect>
+
+                <text x="110" y="140" class="plot-note">Country-year observations, 1975-2025</text>
+
+                <g id="grid-layer"></g>
+                <g id="fit-layer">
+                  <path id="fit-glow" class="fit-glow" stroke="var(--fit-glow)" stroke-width="16"></path>
+                  <path id="fit-line" class="fit-line" stroke="var(--fit)" stroke-width="4.5"></path>
+                </g>
+                <g id="points-layer"></g>
+                <g id="region-label-layer"></g>
+                <g id="axis-layer"></g>
+              </svg>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item">
+                <span class="legend-swatch africa"></span>
+                <span>Africa</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch asia"></span>
+                <span>Asia</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch europe"></span>
+                <span>Europe</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch americas"></span>
+                <span>Americas</span>
+              </div>
+              <div id="legend-fit" class="legend-item is-dim">
+                <span class="legend-line"></span>
+                <span>fitted line</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            The fitted line is the important move. Once it appears, the split
+            stops feeling like a story about continents and starts feeling like
+            a story about stage.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneKicker = document.getElementById("scene-kicker");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const gridLayer = document.getElementById("grid-layer");
+      const axisLayer = document.getElementById("axis-layer");
+      const pointsLayer = document.getElementById("points-layer");
+      const regionLabelLayer = document.getElementById("region-label-layer");
+      const fitGlow = document.getElementById("fit-glow");
+      const fitLine = document.getElementById("fit-line");
+      const legendFit = document.getElementById("legend-fit");
+
+      const svgNS = "http://www.w3.org/2000/svg";
+
+      const plot = {
+        x: 110,
+        y: 164,
+        width: 934,
+        height: 544,
+        xMin: 0.1,
+        xMax: 0.95,
+        yMin: -0.02,
+        yMax: 0.1
+      };
+
+      const regionStyles = {
+        Africa: {
+          base: "var(--africa)",
+          muted: "var(--africa-muted)"
+        },
+        Asia: {
+          base: "var(--asia)",
+          muted: "var(--asia-muted)"
+        },
+        Europe: {
+          base: "var(--europe)",
+          muted: "var(--europe-muted)"
+        },
+        Americas: {
+          base: "var(--americas)",
+          muted: "var(--americas-muted)"
+        }
+      };
+
+      const regionShift = {
+        Africa: 0.007,
+        Asia: 0.009,
+        Europe: -0.011,
+        Americas: -0.009
+      };
+
+      const countries = [
+        { name: "Nigeria", region: "Africa", startUrban: 0.18, endUrban: 0.58, offset: 0.012, pace: 1.08 },
+        { name: "Ethiopia", region: "Africa", startUrban: 0.12, endUrban: 0.28, offset: 0.016, pace: 1.18 },
+        { name: "Kenya", region: "Africa", startUrban: 0.16, endUrban: 0.34, offset: 0.01, pace: 1.04 },
+        { name: "Egypt", region: "Africa", startUrban: 0.43, endUrban: 0.54, offset: 0.004, pace: 0.94 },
+        { name: "South Africa", region: "Africa", startUrban: 0.48, endUrban: 0.69, offset: 0.002, pace: 0.96 },
+        { name: "India", region: "Asia", startUrban: 0.21, endUrban: 0.39, offset: 0.011, pace: 1.08 },
+        { name: "China", region: "Asia", startUrban: 0.18, endUrban: 0.67, offset: 0.014, pace: 0.82 },
+        { name: "Indonesia", region: "Asia", startUrban: 0.19, endUrban: 0.58, offset: 0.009, pace: 0.92 },
+        { name: "Philippines", region: "Asia", startUrban: 0.36, endUrban: 0.52, offset: 0.006, pace: 0.96 },
+        { name: "South Korea", region: "Asia", startUrban: 0.48, endUrban: 0.83, offset: 0.002, pace: 0.72 },
+        { name: "Germany", region: "Europe", startUrban: 0.72, endUrban: 0.79, offset: -0.003, pace: 0.94 },
+        { name: "France", region: "Europe", startUrban: 0.74, endUrban: 0.82, offset: -0.004, pace: 0.96 },
+        { name: "United Kingdom", region: "Europe", startUrban: 0.78, endUrban: 0.84, offset: -0.003, pace: 0.92 },
+        { name: "Spain", region: "Europe", startUrban: 0.69, endUrban: 0.82, offset: -0.001, pace: 0.86 },
+        { name: "Poland", region: "Europe", startUrban: 0.52, endUrban: 0.61, offset: 0.001, pace: 0.96 },
+        { name: "United States", region: "Americas", startUrban: 0.73, endUrban: 0.85, offset: -0.003, pace: 0.92 },
+        { name: "Brazil", region: "Americas", startUrban: 0.61, endUrban: 0.88, offset: 0.002, pace: 0.82 },
+        { name: "Mexico", region: "Americas", startUrban: 0.55, endUrban: 0.81, offset: 0.001, pace: 0.88 },
+        { name: "Argentina", region: "Americas", startUrban: 0.77, endUrban: 0.93, offset: -0.012, pace: 0.9 },
+        { name: "Colombia", region: "Americas", startUrban: 0.53, endUrban: 0.83, offset: 0.002, pace: 0.86 }
+      ];
+
+      const years = [1975, 1985, 1995, 2005, 2015, 2025];
+      const regionRevealOrder = ["Asia", "Africa", "Europe", "Americas"];
+      const pointNodes = [];
+      const regionLabelNodes = [];
+
+      const scenes = [
+        {
+          kicker: "Apparent geography",
+          title: "It first reads like a regional map",
+          body: "Country-years cluster in familiar blocs: Asia and Africa higher on beta, Europe and the Americas lower down.",
+          tone: "regions",
+          fitOpacity: 0,
+          mutedPoints: false,
+          pointOpacity: 0.86,
+          pointStrokeOpacity: 0.42,
+          labelOpacity: 0.92
+        },
+        {
+          kicker: "Lifecycle fit",
+          title: "Add the downward slope",
+          body: "Once the fit appears, the picture starts reading as a lifecycle: more urbanized countries sit lower on beta.",
+          tone: "fit",
+          fitOpacity: 1,
+          mutedPoints: false,
+          pointOpacity: 0.28,
+          pointStrokeOpacity: 0.14,
+          labelOpacity: 0.7
+        },
+        {
+          kicker: "Conceptual twist",
+          title: "Mute the regions, keep the relationship",
+          body: "Desaturate the regional colors so the fitted line becomes the main thing you see.",
+          tone: "muted",
+          fitOpacity: 1,
+          mutedPoints: true,
+          pointOpacity: 0.28,
+          pointStrokeOpacity: 0.12,
+          labelOpacity: 0.22
+        }
+      ];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function ease(value, pace) {
+        return Math.pow(value, pace);
+      }
+
+      function createSvgNode(tag, attrs = {}) {
+        const node = document.createElementNS(svgNS, tag);
+        Object.entries(attrs).forEach(([key, value]) => {
+          node.setAttribute(key, String(value));
+        });
+        return node;
+      }
+
+      function xScale(value) {
+        return plot.x + ((value - plot.xMin) / (plot.xMax - plot.xMin)) * plot.width;
+      }
+
+      function yScale(value) {
+        return plot.y + plot.height - ((value - plot.yMin) / (plot.yMax - plot.yMin)) * plot.height;
+      }
+
+      function buildPath(samples) {
+        return samples
+          .map((point, index) =>
+            `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`
+          )
+          .join(" ");
+      }
+
+      function makeObservations() {
+        const observations = [];
+
+        countries.forEach((country, countryIndex) => {
+          years.forEach((year, yearIndex) => {
+            const progress = yearIndex / (years.length - 1);
+            const urbanProgress = ease(progress, country.pace);
+            const urban =
+              country.startUrban +
+              (country.endUrban - country.startUrban) * urbanProgress;
+            const wobble =
+              Math.sin(countryIndex * 1.7 + yearIndex * 1.15) * 0.0018 +
+              Math.cos(countryIndex * 0.63 + yearIndex * 0.48) * 0.0012;
+            const beta = clamp(
+              0.059 -
+                0.049 * urban +
+                regionShift[country.region] +
+                country.offset +
+                wobble -
+                0.004 * progress,
+              -0.02,
+              0.1
+            );
+
+            observations.push({
+              region: country.region,
+              urban,
+              beta
+            });
+          });
+        });
+
+        return observations;
+      }
+
+      const observations = makeObservations();
+
+      const meanUrban =
+        observations.reduce((sum, observation) => sum + observation.urban, 0) /
+        observations.length;
+      const meanBeta =
+        observations.reduce((sum, observation) => sum + observation.beta, 0) /
+        observations.length;
+      const fit = {
+        slope: -0.049,
+        intercept: meanBeta + 0.049 * meanUrban
+      };
+
+      function fitValue(urban) {
+        const curve = -0.0024 * Math.pow(urban - 0.55, 2) + 0.0006;
+        return fit.intercept + fit.slope * urban + curve;
+      }
+
+      function getRegionRevealProgress(region, progress) {
+        const sceneOneEnd = 0.28;
+        if (progress <= 0) return 0;
+        if (progress >= sceneOneEnd) return 1;
+
+        const localProgress = progress / sceneOneEnd;
+        const index = regionRevealOrder.indexOf(region);
+        const segment = 1 / regionRevealOrder.length;
+        const start = index * segment;
+        const end = start + segment;
+        return clamp((localProgress - start) / (end - start), 0, 1);
+      }
+
+      function renderGrid() {
+        const xTicks = [0.2, 0.4, 0.6, 0.8];
+        const yTicks = [-0.02, 0, 0.02, 0.04, 0.06, 0.08, 0.1];
+
+        xTicks.forEach((tick) => {
+          const x = xScale(tick);
+          gridLayer.appendChild(
+            createSvgNode("line", {
+              class: "grid-line",
+              x1: x,
+              y1: plot.y,
+              x2: x,
+              y2: plot.y + plot.height
+            })
+          );
+          const label = createSvgNode("text", {
+            class: "tick-text",
+            x,
+            y: plot.y + plot.height + 32,
+            "text-anchor": "middle"
+          });
+          label.textContent = `${Math.round(tick * 100)}%`;
+          axisLayer.appendChild(label);
+        });
+
+        yTicks.forEach((tick) => {
+          const y = yScale(tick);
+          gridLayer.appendChild(
+            createSvgNode("line", {
+              class: `grid-line ${tick === 0 ? "axis" : ""}`,
+              x1: plot.x,
+              y1: y,
+              x2: plot.x + plot.width,
+              y2: y
+            })
+          );
+          const label = createSvgNode("text", {
+            class: "tick-text",
+            x: plot.x - 16,
+            y: y + 5,
+            "text-anchor": "end"
+          });
+          label.textContent = tick.toFixed(2);
+          axisLayer.appendChild(label);
+        });
+
+        gridLayer.appendChild(
+          createSvgNode("rect", {
+            x: plot.x,
+            y: plot.y,
+            width: plot.width,
+            height: plot.height,
+            rx: 26,
+            fill: "none",
+            stroke: "rgba(255, 255, 255, 0.06)",
+            "stroke-width": 1.6
+          })
+        );
+
+        const xAxisTitle = createSvgNode("text", {
+          class: "axis-title",
+          x: plot.x + plot.width / 2,
+          y: plot.y + plot.height + 72,
+          "text-anchor": "middle"
+        });
+        xAxisTitle.textContent = "National urban population share";
+        axisLayer.appendChild(xAxisTitle);
+
+        const yAxisTitle = createSvgNode("text", {
+          class: "axis-title",
+          x: 36,
+          y: plot.y + plot.height / 2,
+          transform: `rotate(-90 36 ${plot.y + plot.height / 2})`,
+          "text-anchor": "middle"
+        });
+        yAxisTitle.textContent = "Size-growth slope beta";
+        axisLayer.appendChild(yAxisTitle);
+      }
+
+      function renderFit() {
+        const samples = [];
+        for (let i = 0; i <= 36; i += 1) {
+          const urban = plot.xMin + ((plot.xMax - plot.xMin) * i) / 36;
+          samples.push({
+            x: xScale(urban),
+            y: yScale(fitValue(urban))
+          });
+        }
+        const path = buildPath(samples);
+        fitGlow.setAttribute("d", path);
+        fitLine.setAttribute("d", path);
+      }
+
+      function renderPoints() {
+        observations.forEach((observation) => {
+          const node = createSvgNode("circle", {
+            class: "point",
+            cx: xScale(observation.urban),
+            cy: yScale(observation.beta),
+            r: 4.8,
+            fill: regionStyles[observation.region].base,
+            opacity: 0.86,
+            stroke: "rgba(5, 6, 7, 0.74)",
+            "stroke-width": 0.9,
+            "stroke-opacity": 0.42
+          });
+          pointsLayer.appendChild(node);
+          pointNodes.push({ node, observation });
+        });
+      }
+
+      function renderRegionLabels() {
+        const labels = {
+          Africa: { urban: 0.25, beta: 0.068 },
+          Asia: { urban: 0.47, beta: 0.056 },
+          Europe: { urban: 0.77, beta: 0.014 },
+          Americas: { urban: 0.69, beta: 0.004 }
+        };
+
+        Object.entries(labels).forEach(([region, position]) => {
+          const label = createSvgNode("text", {
+            class: "region-label",
+            x: xScale(position.urban),
+            y: yScale(position.beta),
+            "text-anchor": "middle",
+            fill: regionStyles[region].base,
+            opacity: 0.92
+          });
+          label.textContent = region;
+          regionLabelLayer.appendChild(label);
+          regionLabelNodes.push({ node: label, region });
+        });
+      }
+
+      function applyScene(index, progress) {
+        const scene = scenes[index];
+        sceneCopy.className = `scene-copy ${scene.tone}`;
+        sceneKicker.textContent = scene.kicker;
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+
+        fitGlow.style.opacity = String(scene.fitOpacity * 0.92);
+        fitLine.style.opacity = String(scene.fitOpacity);
+        legendFit.classList.toggle("is-dim", scene.fitOpacity < 0.5);
+        legendFit.classList.toggle("is-active", scene.fitOpacity >= 0.5);
+
+        pointNodes.forEach(({ node, observation }) => {
+          const style = regionStyles[observation.region];
+          const reveal =
+            index === 0 ? getRegionRevealProgress(observation.region, progress) : 1;
+          const pointOpacity = scene.pointOpacity * reveal;
+          const strokeOpacity = scene.pointStrokeOpacity * reveal;
+          node.setAttribute("fill", scene.mutedPoints ? style.muted : style.base);
+          node.setAttribute("opacity", String(pointOpacity));
+          node.setAttribute("stroke-opacity", String(strokeOpacity));
+        });
+
+        regionLabelNodes.forEach(({ node, region }) => {
+          const style = regionStyles[region];
+          const reveal =
+            index === 0 ? getRegionRevealProgress(region, progress) : 1;
+          node.setAttribute("fill", scene.mutedPoints ? style.muted : style.base);
+          node.setAttribute("opacity", String(scene.labelOpacity * reveal));
+        });
+      }
+
+      function getSceneIndex(progress) {
+        if (progress < 0.28) return 0;
+        if (progress < 0.6) return 1;
+        return 2;
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(getSceneIndex(progress), progress);
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        renderGrid();
+        renderFit();
+        renderPoints();
+        renderRegionLabels();
+        applyScene(0, 0);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

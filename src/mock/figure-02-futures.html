@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 02 Mock - Three Urban Futures</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --line: #1c232b;
+        --base: #2d3844;
+        --balanced: #67e0cc;
+        --giants: #ff8b67;
+        --distributed: #f0c66f;
+        --card: rgba(16, 19, 24, 0.92);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(26, 32, 40, 0.48), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(18, 22, 29, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 270vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        z-index: 5;
+        width: min(360px, calc(100% - 20px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .chart-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .axis-label {
+        fill: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .bin-label {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 21px;
+        font-weight: 700;
+      }
+
+      .bin-sub {
+        fill: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+      }
+
+      .legend {
+        position: absolute;
+        left: 18px;
+        bottom: 20px;
+        z-index: 5;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 14px;
+        max-width: calc(100% - 36px);
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .legend-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        background: var(--base);
+      }
+
+      .legend-swatch.future {
+        background: var(--balanced);
+      }
+
+      .block {
+        transition:
+          y 380ms cubic-bezier(0.16, 1, 0.3, 1),
+          fill 260ms ease,
+          opacity 260ms ease;
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 280vh;
+        }
+
+        .scene-copy {
+          top: 12px;
+          width: min(320px, calc(100% - 16px));
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+
+        .axis-label {
+          font-size: 34px;
+        }
+
+        .bin-label {
+          font-size: 34px;
+        }
+
+        .bin-sub {
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+        .legend {
+          bottom: 14px;
+          gap: 10px 12px;
+        }
+
+        .legend-item {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>Where do the next urban billions go?</h1>
+        <div class="prose">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            feugiat, nibh in consequat pharetra, massa lectus condimentum
+            libero, non tempus augue erat in velit. Sed at volutpat lectus.
+            Curabitur ac purus at nibh varius posuere. Etiam non nunc vitae
+            tellus dictum tincidunt. Cras eleifend, augue ac sollicitudin
+            porttitor, est justo scelerisque odio, vitae mollis arcu lectus in
+            erat.
+          </p>
+          <p>
+            In urban history, the scale of the wave matters less than the
+            landing point. Suspendisse potenti. Duis consequat, sapien a
+            posuere volutpat, augue nibh tristique magna, sit amet varius odio
+            risus vitae lorem. Pellentesque habitant morbi tristique senectus
+            et netus et malesuada fames ac turpis egestas. Integer sit amet
+            justo non erat facilisis semper.
+          </p>
+          <p>
+            Sed tempor sapien ut orci vulputate, a feugiat erat volutpat. Nulla
+            facilisi. Nunc luctus orci non fermentum tempus. Morbi dignissim
+            justo et justo tincidunt, nec pretium erat commodo. Aenean tempor
+            risus a lectus viverra, in suscipit lectus volutpat.
+          </p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="Three futures for urban growth">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div class="scene-copy">
+              <div class="scene-kicker">Urbanization futures</div>
+              <div id="scene-title" class="scene-title">Today</div>
+              <div id="scene-body" class="scene-body">
+                Start with the current distribution: most urban residents already live in large metros,
+                but the shape still has room to change.
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="Four urban size bins with alternate future distributions">
+                <g transform="translate(64 140)">
+                  <line x1="0" y1="620" x2="632" y2="620" stroke="#1c232b" stroke-width="2"></line>
+                  <line x1="0" y1="0" x2="0" y2="620" stroke="#1c232b" stroke-width="2"></line>
+
+                  <text x="0" y="-18" class="axis-label">Urban population by city-size bin</text>
+
+                  <g id="bars"></g>
+
+                  <g id="labels">
+                    <text x="70" y="692" text-anchor="middle" class="bin-label">&lt;100K</text>
+                    <text x="70" y="716" text-anchor="middle" class="bin-sub">small cities</text>
+
+                    <text x="228" y="692" text-anchor="middle" class="bin-label">100K–1M</text>
+                    <text x="228" y="716" text-anchor="middle" class="bin-sub">mid-size metros</text>
+
+                    <text x="386" y="692" text-anchor="middle" class="bin-label">1M–10M</text>
+                    <text x="386" y="716" text-anchor="middle" class="bin-sub">large metros</text>
+
+                    <text x="544" y="692" text-anchor="middle" class="bin-label">10M+</text>
+                    <text x="544" y="716" text-anchor="middle" class="bin-sub">megacities</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <div class="legend">
+              <div class="legend-item">
+                <span class="legend-swatch"></span>
+                <span>current urban population</span>
+              </div>
+              <div class="legend-item">
+                <span id="future-swatch" class="legend-swatch future"></span>
+                <span id="future-label">incoming future residents</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+            malesuada feugiat pharetra. Proin interdum tortor vitae est
+            eleifend, ut sodales arcu pulvinar. Sed sed nulla venenatis,
+            fermentum neque vitae, volutpat lacus. Vestibulum ante ipsum primis
+            in faucibus orci luctus et ultrices posuere cubilia curae.
+          </p>
+          <p>
+            Aliquam varius sem non diam finibus, et accumsan lectus hendrerit.
+            Curabitur aliquet efficitur augue, at tincidunt neque volutpat ut.
+            Maecenas finibus sem eget mauris consequat, vitae finibus erat
+            semper. Etiam egestas nisl sed mi fermentum, vitae feugiat turpis
+            tempus. Suspendisse potenti.
+          </p>
+          <p>
+            Praesent nec porttitor nisl. Nam ut tristique est. Integer luctus
+            erat ut accumsan luctus. Phasellus mollis purus ut nisl malesuada,
+            ac faucibus ipsum venenatis. Vivamus volutpat mi non luctus
+            consequat. Fusce viverra finibus volutpat.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const barsGroup = document.getElementById("bars");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const futureSwatch = document.getElementById("future-swatch");
+      const futureLabel = document.getElementById("future-label");
+
+      const chart = {
+        baselineY: 620,
+        blockHeight: 24,
+        blockGap: 7,
+        blockWidth: 110,
+        xPositions: [15, 173, 331, 489]
+      };
+
+      const baseCounts = [2, 8, 10, 4];
+      const futureLayouts = {
+        baseline: [0, 0, 0, 0],
+        balanced: [1, 4, 5, 2],
+        giants: [0, 2, 6, 4],
+        distributed: [4, 4, 3, 1]
+      };
+
+      const sceneConfig = [
+        {
+          title: "Today",
+          body: "Start with the current distribution. The baseline already leans toward large metros, but it does not settle the future.",
+          layout: futureLayouts.baseline,
+          color: "var(--base)",
+          label: "no future residents added yet"
+        },
+        {
+          title: "Balanced growth",
+          body: "Now add the next wave proportionally. Every bin grows, but the overall shape stays almost unchanged.",
+          layout: futureLayouts.balanced,
+          color: "var(--balanced)",
+          label: "incoming residents: proportional growth"
+        },
+        {
+          title: "Giants win",
+          body: "In this scenario, most new residents funnel into the large-metro bins. The right side swells fast.",
+          layout: futureLayouts.giants,
+          color: "var(--giants)",
+          label: "incoming residents: concentrated in large metros"
+        },
+        {
+          title: "Smaller cities catch up",
+          body: "Here the added population spreads leftward. Growth still happens everywhere, but much more of it lands in smaller places.",
+          layout: futureLayouts.distributed,
+          color: "var(--distributed)",
+          label: "incoming residents: spread toward smaller cities"
+        }
+      ];
+
+      const blocks = [];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function createBlock(x, y, width, height, fill, opacity, type, index) {
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("class", "block");
+        rect.setAttribute("data-type", type);
+        rect.setAttribute("data-index", index);
+        rect.setAttribute("x", String(x));
+        rect.setAttribute("y", String(y));
+        rect.setAttribute("width", String(width));
+        rect.setAttribute("height", String(height));
+        rect.setAttribute("rx", "4");
+        rect.setAttribute("fill", fill);
+        rect.setAttribute("opacity", String(opacity));
+        return rect;
+      }
+
+      function drawBars() {
+        barsGroup.innerHTML = "";
+
+        chart.xPositions.forEach((x, binIndex) => {
+          const baseTotal = baseCounts[binIndex];
+          for (let i = 0; i < baseTotal; i += 1) {
+            const y = chart.baselineY - (i + 1) * chart.blockHeight - i * chart.blockGap;
+            const rect = createBlock(x, y, chart.blockWidth, chart.blockHeight, "var(--base)", 1, "base", `${binIndex}-${i}`);
+            barsGroup.appendChild(rect);
+          }
+
+          const futureMax = Math.max(
+            futureLayouts.balanced[binIndex],
+            futureLayouts.giants[binIndex],
+            futureLayouts.distributed[binIndex]
+          );
+
+          const futureRects = [];
+          for (let i = 0; i < futureMax; i += 1) {
+            const restY = chart.baselineY - (baseTotal + i + 1) * chart.blockHeight - (baseTotal + i) * chart.blockGap;
+            const startY = -140 - i * (chart.blockHeight + 18);
+            const rect = createBlock(x, startY, chart.blockWidth, chart.blockHeight, "var(--balanced)", 0, "future", `${binIndex}-${i}`);
+            rect.dataset.restY = String(restY);
+            rect.dataset.startY = String(startY);
+            barsGroup.appendChild(rect);
+            futureRects.push(rect);
+          }
+          blocks.push(futureRects);
+        });
+      }
+
+      function applyScene(index) {
+        const scene = sceneConfig[index];
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+        futureSwatch.style.background = scene.color;
+        futureLabel.textContent = scene.label;
+
+        blocks.forEach((binBlocks, binIndex) => {
+          const activeCount = scene.layout[binIndex];
+          binBlocks.forEach((rect, i) => {
+            const active = i < activeCount;
+            rect.setAttribute("fill", scene.color);
+            rect.setAttribute("opacity", active ? "1" : "0");
+            rect.setAttribute("y", active ? rect.dataset.restY : rect.dataset.startY);
+          });
+        });
+      }
+
+      function getSceneIndex(progress) {
+        if (progress < 0.2) return 0;
+        if (progress < 0.44) return 1;
+        if (progress < 0.7) return 2;
+        return 3;
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(getSceneIndex(progress));
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        drawBars();
+        applyScene(0);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

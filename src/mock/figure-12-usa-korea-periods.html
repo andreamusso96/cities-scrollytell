@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 12 Mock - USA and South Korea Periods</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --axis: #2c3946;
+        --usa-early: #ff8b67;
+        --usa-late: #8ac6ff;
+        --korea-early: #f1c56d;
+        --korea-late: #b6dc7c;
+        --card: rgba(16, 19, 24, 0.92);
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(26, 32, 40, 0.48), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(18, 22, 29, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page { width: 100%; overflow-x: clip; }
+      .article { max-width: 720px; margin: 0 auto; padding: 26px 18px 56px; }
+      .article.intro { padding-bottom: 0; }
+      h1 { margin: 0 0 18px; font-size: clamp(34px, 7vw, 64px); line-height: 0.95; letter-spacing: -0.03em; }
+      .prose { font-size: clamp(19px, 4.6vw, 24px); line-height: 1.52; }
+      .prose p { margin: 0 0 1.1em; color: #ddd4c8; }
+
+      .graph-section { position: relative; height: 320vh; margin: 0 calc(50% - 50vw) 4vh; }
+      .graph-stage { position: sticky; top: 0; height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 0 10px; }
+      .figure-shell { position: relative; width: min(100%, 760px); height: 100vh; }
+
+      .scene-copy {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        z-index: 7;
+        width: min(430px, calc(100% - 16px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-left: 4px solid rgba(255,255,255,0.1);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition: border-color 220ms ease;
+      }
+
+      .scene-copy.korea-early { border-left-color: var(--korea-early); }
+      .scene-copy.korea-late { border-left-color: var(--korea-late); }
+
+      .scene-kicker { margin-bottom: 8px; color: var(--muted); font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+      .scene-title { font-size: 24px; font-weight: 700; line-height: 1; }
+      .scene-body { margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.42; }
+
+      .chart-wrap { position: absolute; inset: 0; }
+      svg { width: 100%; height: 100%; display: block; }
+      .axis-line { stroke: var(--axis); stroke-width: 2; }
+      .reference-line { stroke: rgba(255,255,255,0.2); stroke-width: 2.5; stroke-dasharray: 8 7; }
+      .tick-line { stroke: var(--axis); stroke-width: 1.5; }
+      .axis-label, .tick-text { fill: var(--ink); font-family: Arial, sans-serif; font-weight: 700; }
+      .axis-label { font-size: 18px; }
+      .tick-text { font-size: 16px; }
+      .tick-sub { fill: var(--muted); font-family: Arial, sans-serif; font-size: 16px; font-weight: 700; }
+      .curve { fill: none; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+      .curve.usa-early { stroke: var(--usa-early); }
+      .curve.usa-late { stroke: var(--usa-late); }
+      .curve.korea-early { stroke: var(--korea-early); }
+      .curve.korea-late { stroke: var(--korea-late); }
+
+      .period-label { font-family: Arial, sans-serif; font-size: 16px; font-weight: 800; opacity: 0; transition: opacity 220ms ease; }
+      .period-label.usa-early { fill: var(--usa-early); }
+      .period-label.usa-late { fill: var(--usa-late); }
+      .period-label.korea-early { fill: var(--korea-early); }
+      .period-label.korea-late { fill: var(--korea-late); }
+      .period-label.is-visible { opacity: 1; }
+
+      .period-legend {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 18px;
+        z-index: 6;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+
+      .legend-item { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-family: Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+      .legend-line { width: 18px; height: 0; border-top: 3px solid; }
+      .legend-line.usa-early { border-color: var(--usa-early); }
+      .legend-line.usa-late { border-color: var(--usa-late); }
+      .legend-line.korea-early { border-color: var(--korea-early); }
+      .legend-line.korea-late { border-color: var(--korea-late); }
+
+      @media (max-width: 720px) {
+        .article { padding: 20px 16px 54px; }
+        .graph-section { height: 340vh; }
+        .scene-copy { top: 10px; width: calc(100% - 12px); padding: 10px 12px 11px; }
+        .scene-title { font-size: 20px; }
+        .scene-body { font-size: 14px; }
+        .axis-label { font-size: 28px; }
+        .tick-text { font-size: 24px; }
+        .tick-sub { font-size: 22px; }
+        .period-label { font-size: 18px; }
+        .legend-item { font-size: 13px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>The same transition can unfold on very different timescales</h1>
+        <div class="prose">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis lorem id justo gravida cursus. Mauris placerat porta faucibus.</p>
+          <p>Start exactly where the U.S. scene ended, then add South Korea in two steps. The point is not a loose international comparison, but the reappearance of the same lifecycle shape on a compressed clock.</p>
+          <p>Vestibulum eget nisi nec lectus malesuada efficitur. Etiam vel ligula ac justo ultrices tincidunt.</p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="USA and South Korea period curves">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy korea-early">
+              <div class="scene-kicker">South Korea in fast-forward</div>
+              <div id="scene-title" class="scene-title">Add South Korea (1975-2000)</div>
+              <div id="scene-body" class="scene-body">South Korea’s earlier period is very steep. The fast-development phase looks like a compressed version of an earlier U.S.-style big-city surge.</div>
+            </div>
+
+            <div class="chart-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="USA and South Korea period curves">
+                <g transform="translate(88 182)">
+                  <g>
+                    <line x1="0" y1="494" x2="592" y2="494" class="axis-line"></line>
+                    <line x1="0" y1="100" x2="0" y2="494" class="axis-line"></line>
+                    <line x1="0" y1="494" x2="0" y2="506" class="tick-line"></line>
+                    <line x1="197.3" y1="494" x2="197.3" y2="506" class="tick-line"></line>
+                    <line x1="394.6" y1="494" x2="394.6" y2="506" class="tick-line"></line>
+                    <line x1="592" y1="494" x2="592" y2="506" class="tick-line"></line>
+                    <line x1="0" y1="312" x2="592" y2="312" class="reference-line"></line>
+                    <line x1="-10" y1="404" x2="0" y2="404" class="tick-line"></line>
+                    <line x1="-10" y1="312" x2="0" y2="312" class="tick-line"></line>
+                    <line x1="-10" y1="220" x2="0" y2="220" class="tick-line"></line>
+                    <line x1="-10" y1="128" x2="0" y2="128" class="tick-line"></line>
+                    <text x="0" y="548" text-anchor="middle" class="tick-text">10K</text>
+                    <text x="197.3" y="548" text-anchor="middle" class="tick-text">100K</text>
+                    <text x="394.6" y="548" text-anchor="middle" class="tick-text">1M</text>
+                    <text x="592" y="548" text-anchor="middle" class="tick-text">10M</text>
+                    <text x="296" y="598" text-anchor="middle" class="axis-label">City population</text>
+                    <text x="-18" y="410" text-anchor="end" class="tick-sub">-10%</text>
+                    <text x="-18" y="318" text-anchor="end" class="tick-sub">0%</text>
+                    <text x="-18" y="226" text-anchor="end" class="tick-sub">+10%</text>
+                    <text x="-18" y="134" text-anchor="end" class="tick-sub">+20%</text>
+                    <text x="0" y="42" class="axis-label">Growth relative to national urban average</text>
+                  </g>
+
+                  <g id="usa-early-group">
+                    <path class="curve usa-early" d="M 0.0 390.0 L 94.0 381.0 L 197.3 363.0 L 291.0 326.0 L 394.6 271.0 L 488.0 202.0 L 592.0 120.0"></path>
+                    <text x="608" y="124" text-anchor="start" class="period-label usa-early is-visible" style="opacity:1">US1</text>
+                  </g>
+
+                  <g id="usa-late-group">
+                    <path class="curve usa-late" d="M 0.0 304.0 L 94.0 304.0 L 197.3 307.0 L 291.0 313.0 L 394.6 323.0 L 488.0 338.0 L 592.0 352.0"></path>
+                    <text x="608" y="354" text-anchor="start" class="period-label usa-late is-visible" style="opacity:1">US2</text>
+                  </g>
+
+                  <g id="korea-early-group">
+                    <path id="korea-early-path" class="curve korea-early" d="M 0.0 394.0 L 94.0 384.0 L 197.3 370.0 L 291.0 336.0 L 394.6 254.0 L 488.0 168.0 L 592.0 96.0"></path>
+                    <text id="korea-early-label" x="608" y="98" text-anchor="start" class="period-label korea-early">KR1</text>
+                  </g>
+
+                  <g id="korea-late-group">
+                    <path id="korea-late-path" class="curve korea-late" d="M 0.0 302.0 L 94.0 303.0 L 197.3 305.0 L 291.0 309.0 L 394.6 317.0 L 488.0 329.0 L 592.0 338.0"></path>
+                    <text id="korea-late-label" x="608" y="336" text-anchor="start" class="period-label korea-late">KR2</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <div class="period-legend">
+              <div class="legend-item"><span class="legend-line usa-early"></span><span>USA (1850-1930)</span></div>
+              <div class="legend-item"><span class="legend-line usa-late"></span><span>USA (1930-2020)</span></div>
+              <div class="legend-item"><span class="legend-line korea-early"></span><span>South Korea (1975-2000)</span></div>
+              <div class="legend-item"><span class="legend-line korea-late"></span><span>South Korea (2000-2025)</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer luctus, nulla vitae aliquet dictum, lectus nunc convallis tortor, ac tempus lorem lacus eu dui.</p>
+          <p>Once South Korea is added, the lifecycle argument becomes easier to see. The same basic shapes appear again, but compressed into a much shorter historical interval.</p>
+          <p>Donec vitae dolor sed justo varius placerat. Suspendisse potenti. Nulla id neque a lorem vestibulum luctus.</p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const koreaEarlyPath = document.getElementById("korea-early-path");
+      const koreaLatePath = document.getElementById("korea-late-path");
+      const koreaEarlyLabel = document.getElementById("korea-early-label");
+      const koreaLateLabel = document.getElementById("korea-late-label");
+
+      const scenes = [
+        {
+          tone: "korea-early",
+          title: "Add South Korea (1975-2000)",
+          body: "South Korea’s earlier period is very steep. The fast-development phase looks like a compressed version of an earlier U.S.-style big-city surge."
+        },
+        {
+          tone: "korea-late",
+          title: "Add South Korea (2000-2025)",
+          body: "By the later South Korean period, the line flattens. The special growth advantage of the largest cities fades again."
+        }
+      ];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function rangeProgress(progress, start, end) {
+        return clamp((progress - start) / (end - start), 0, 1);
+      }
+
+      function setupPath(path) {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = String(length);
+        path.style.strokeDashoffset = String(length);
+      }
+
+      function setCurve(path, label, progress) {
+        const length = path.getTotalLength();
+        path.style.strokeDashoffset = String(length * (1 - progress));
+        label.classList.toggle("is-visible", progress > 0.85);
+        label.style.opacity = String(clamp((progress - 0.75) / 0.25, 0, 1));
+      }
+
+      function applyScene(progress) {
+        const koreaEarlyProgress = rangeProgress(progress, 0.12, 0.48);
+        const koreaLateProgress = rangeProgress(progress, 0.48, 0.84);
+        const scene = progress >= 0.48 ? scenes[1] : scenes[0];
+
+        sceneCopy.className = `scene-copy ${scene.tone}`;
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+
+        setCurve(koreaEarlyPath, koreaEarlyLabel, koreaEarlyProgress);
+        setCurve(koreaLatePath, koreaLateLabel, koreaLateProgress);
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(progress);
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        setupPath(koreaEarlyPath);
+        setupPath(koreaLatePath);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

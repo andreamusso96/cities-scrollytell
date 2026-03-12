@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 09 Mock - Shanghai Footprint Expansion</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --card: rgba(16, 19, 24, 0.92);
+        --y1975: #eee5d8;
+        --y1985: #d7c8b2;
+        --y1995: #c8af8d;
+        --y2005: #d69162;
+        --y2025: #ff8b67;
+        --water: #77aee8;
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(26, 32, 40, 0.48), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(36, 24, 18, 0.45), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 340vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        z-index: 8;
+        width: min(372px, calc(100% - 20px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition: border-color 260ms ease;
+      }
+
+      .scene-copy.s1975 {
+        border-left-color: var(--y1975);
+      }
+
+      .scene-copy.s1985 {
+        border-left-color: var(--y1985);
+      }
+
+      .scene-copy.s1995 {
+        border-left-color: var(--y1995);
+      }
+
+      .scene-copy.s2005 {
+        border-left-color: var(--y2005);
+      }
+
+      .scene-copy.s2025 {
+        border-left-color: var(--y2025);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .scene-copy.s1975 .scene-kicker {
+        color: var(--y1975);
+      }
+
+      .scene-copy.s1985 .scene-kicker {
+        color: var(--y1985);
+      }
+
+      .scene-copy.s1995 .scene-kicker {
+        color: var(--y1995);
+      }
+
+      .scene-copy.s2005 .scene-kicker {
+        color: var(--y2005);
+      }
+
+      .scene-copy.s2025 .scene-kicker {
+        color: var(--y2025);
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .map-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .footprint {
+        opacity: 0;
+        transform: scale(0.992);
+        transform-origin: center;
+        transition:
+          opacity 360ms ease,
+          transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
+          fill-opacity 360ms ease,
+          stroke-opacity 360ms ease,
+          stroke-width 360ms ease;
+      }
+
+      .footprint.is-visible {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 360vh;
+        }
+
+        .scene-copy {
+          top: 12px;
+          width: min(332px, calc(100% - 16px));
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>How a giant city absorbs land</h1>
+        <div class="prose">
+          <p>
+            Some giant cities grow so fast that one fixed map frame is enough
+            to make the point. Shanghai is a good candidate because the visual
+            story is not subtle.
+          </p>
+          <p>
+            This mock holds the camera still and layers five morphological
+            footprints on top of one another. The effect should be spatial
+            shock, not a case study full of annotation.
+          </p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="Shanghai footprint expansion across time">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy s1975">
+              <div id="scene-kicker" class="scene-kicker">Urban footprint</div>
+              <div id="scene-title" class="scene-title">1975 · ~11M people</div>
+              <div id="scene-body" class="scene-body">
+                The built-up shell is already large, but it still reads as a compact river city.
+              </div>
+            </div>
+
+            <div class="map-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="Mock Shanghai built-up footprint expansion from 1975 to 2025">
+                <defs>
+                  <linearGradient id="stageBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0b1014"></stop>
+                    <stop offset="100%" stop-color="#091016"></stop>
+                  </linearGradient>
+                  <linearGradient id="landBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#12191f"></stop>
+                    <stop offset="100%" stop-color="#10171d"></stop>
+                  </linearGradient>
+                  <clipPath id="mapClip">
+                    <rect x="88" y="158" width="584" height="584" rx="18"></rect>
+                  </clipPath>
+                  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+                    <feGaussianBlur stdDeviation="10"></feGaussianBlur>
+                  </filter>
+                </defs>
+
+                <rect x="0" y="0" width="760" height="900" fill="url(#stageBg)"></rect>
+
+                <g clip-path="url(#mapClip)">
+                  <rect x="88" y="158" width="584" height="584" fill="url(#landBg)"></rect>
+
+                  <path
+                    d="M570 126 C632 146, 668 194, 678 266 L678 744 L760 744 L760 126 Z"
+                    fill="rgba(88, 132, 198, 0.18)"
+                  ></path>
+                  <path
+                    d="M396 176 C366 232, 360 302, 374 366 C392 444, 438 506, 478 564 C504 604, 520 664, 522 742"
+                    fill="none"
+                    stroke="rgba(119, 174, 232, 0.46)"
+                    stroke-width="22"
+                    stroke-linecap="round"
+                  ></path>
+                  <path
+                    d="M396 176 C366 232, 360 302, 374 366 C392 444, 438 506, 478 564 C504 604, 520 664, 522 742"
+                    fill="none"
+                    stroke="rgba(162, 204, 255, 0.88)"
+                    stroke-width="6"
+                    stroke-linecap="round"
+                  ></path>
+
+                  <g opacity="0.22">
+                    <path d="M118 250 C198 218, 282 214, 356 228 S510 278, 664 244" fill="none" stroke="#24303b" stroke-width="8"></path>
+                    <path d="M118 386 C220 344, 324 346, 442 372 S586 432, 666 410" fill="none" stroke="#1d2630" stroke-width="10"></path>
+                    <path d="M118 540 C210 504, 320 510, 416 540 S564 608, 660 598" fill="none" stroke="#24303b" stroke-width="8"></path>
+                    <path d="M164 172 L228 734" stroke="#1a222b" stroke-width="8"></path>
+                    <path d="M284 160 L332 742" stroke="#1d2630" stroke-width="8"></path>
+                    <path d="M602 162 L578 742" stroke="#1a222b" stroke-width="8"></path>
+                  </g>
+
+                  <g filter="url(#glow)" opacity="0.12">
+                    <path d="M126 690 C100 602 100 488 132 366 C176 228 286 154 420 148 C548 142 636 192 668 292 C696 380 696 512 660 620 C610 704 518 742 404 742 C262 742 160 724 126 690 Z" fill="#ff8b67"></path>
+                  </g>
+
+                  <g id="footprint-layer">
+                    <path
+                      id="footprint-1975"
+                      class="footprint"
+                      d="M238 466 C224 416 228 356 254 312 C282 264 332 236 386 238 C428 240 460 262 474 302 C492 354 490 416 466 468 C438 530 386 564 322 560 C280 556 250 532 238 466 Z"
+                      fill="var(--y1975)"
+                      stroke="var(--y1975)"
+                    ></path>
+                    <path
+                      id="footprint-1985"
+                      class="footprint"
+                      d="M214 528 C190 466 190 382 220 318 C254 246 320 208 394 208 C456 208 506 242 530 296 C556 356 556 438 530 512 C500 594 438 634 358 640 C290 642 238 614 214 528 Z"
+                      fill="var(--y1985)"
+                      stroke="var(--y1985)"
+                    ></path>
+                    <path
+                      id="footprint-1995"
+                      class="footprint"
+                      d="M184 604 C152 526 148 420 184 330 C226 230 314 176 412 176 C502 176 576 226 610 304 C644 382 646 488 614 572 C574 676 492 724 384 724 C286 724 212 684 184 604 Z"
+                      fill="var(--y1995)"
+                      stroke="var(--y1995)"
+                    ></path>
+                    <path
+                      id="footprint-2005"
+                      class="footprint"
+                      d="M156 648 C120 564 116 454 152 340 C198 214 304 158 428 156 C548 154 638 204 670 292 C700 374 698 500 666 594 C620 690 530 734 412 736 C286 738 190 706 156 648 Z"
+                      fill="var(--y2005)"
+                      stroke="var(--y2005)"
+                    ></path>
+                    <path
+                      id="footprint-2025"
+                      class="footprint"
+                      d="M126 690 C100 602 100 488 132 366 C176 228 286 154 420 148 C548 142 636 192 668 292 C696 380 696 512 660 620 C610 704 518 742 404 742 C262 742 160 724 126 690 Z"
+                      fill="var(--y2025)"
+                      stroke="var(--y2025)"
+                    ></path>
+                  </g>
+                </g>
+
+                <rect
+                  x="88"
+                  y="158"
+                  width="584"
+                  height="584"
+                  rx="18"
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.14)"
+                  stroke-width="2"
+                ></rect>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            The useful thing about a scene like this is that it does not need
+            much explanation. If the geometry is clean, the land absorption is
+            the argument.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneKicker = document.getElementById("scene-kicker");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const scenes = [
+        {
+          year: "1975",
+          pop: "~11M",
+          kicker: "Urban footprint",
+          title: "1975 · ~11M people",
+          body: "The built-up shell is already large, but it still reads as a compact river city.",
+          tone: "s1975",
+          color: "var(--y1975)"
+        },
+        {
+          year: "1985",
+          pop: "~13M",
+          kicker: "Urban footprint",
+          title: "1985 · ~13M people",
+          body: "The second shell spills beyond the 1975 core on every side and begins to push farther east.",
+          tone: "s1985",
+          color: "var(--y1985)"
+        },
+        {
+          year: "1995",
+          pop: "~15M",
+          kicker: "Urban footprint",
+          title: "1995 · ~15M people",
+          body: "By the mid-1990s the city is no longer just thickening. It is becoming a much larger spatial object.",
+          tone: "s1995",
+          color: "var(--y1995)"
+        },
+        {
+          year: "2005",
+          pop: "~21M",
+          kicker: "Urban footprint",
+          title: "2005 · ~21M people",
+          body: "The footprint surges outward. The older city looks small against the new metropolitan shell.",
+          tone: "s2005",
+          color: "var(--y2005)"
+        },
+        {
+          year: "2025",
+          pop: "~30M",
+          kicker: "Urban footprint",
+          title: "2025 · ~30M people",
+          body: "Compared with 1975, the built-up form now fills most of the frame. The shock is the land absorption itself.",
+          tone: "s2025",
+          color: "var(--y2025)"
+        }
+      ];
+
+      const footprintNodes = scenes.map((scene) =>
+        document.getElementById(`footprint-${scene.year}`)
+      );
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function applyScene(index) {
+        const scene = scenes[index];
+        sceneCopy.className = `scene-copy ${scene.tone}`;
+        sceneKicker.textContent = scene.kicker;
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+
+        footprintNodes.forEach((node, nodeIndex) => {
+          const visible = nodeIndex <= index;
+          const active = nodeIndex === index;
+          node.classList.toggle("is-visible", visible);
+          node.style.fillOpacity = visible ? (active ? "0.42" : "0.15") : "0";
+          node.style.strokeOpacity = visible ? (active ? "0.98" : "0.55") : "0";
+          node.style.strokeWidth = active ? "4.5" : "2.2";
+        });
+      }
+
+      function getSceneIndex(progress) {
+        if (progress < 0.18) return 0;
+        if (progress < 0.36) return 1;
+        if (progress < 0.54) return 2;
+        if (progress < 0.74) return 3;
+        return 4;
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(getSceneIndex(progress));
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        applyScene(0);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

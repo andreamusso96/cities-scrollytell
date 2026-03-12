@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 06 Mock - Global City Polygons Globe</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --line: #1b222a;
+        --card: rgba(16, 19, 24, 0.92);
+        --sphere: #091017;
+        --sphere-edge: #16222c;
+        --grid: #1e2a34;
+        --grid-strong: #283844;
+        --poly-fill: rgba(103, 224, 204, 0.24);
+        --poly-stroke: rgba(103, 224, 204, 0.8);
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(26, 32, 40, 0.48), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(18, 22, 29, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 320vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .stats-bar {
+        position: absolute;
+        inset: 0;
+        z-index: 7;
+        opacity: 0;
+        transition: opacity 260ms ease;
+        pointer-events: none;
+      }
+
+      .stats-kicker {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        opacity: 0;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transform: translateY(6px);
+        transition:
+          opacity 220ms ease,
+          transform 220ms ease;
+      }
+
+      .stats-kicker.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        position: absolute;
+        left: 12px;
+        right: 12px;
+      }
+
+      .stats-row.top {
+        top: 44px;
+      }
+
+      .stats-row.bottom {
+        bottom: 18px;
+      }
+
+      .stat-card {
+        min-width: 0;
+        padding: 10px 10px 11px;
+        border-radius: 14px;
+        background: transparent;
+        border: 1px solid transparent;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(8px);
+        transition:
+          opacity 220ms ease,
+          border-color 220ms ease,
+          background-color 220ms ease,
+          transform 220ms ease;
+      }
+
+      .stat-card.is-visible {
+        visibility: visible;
+        background: rgba(10, 13, 17, 0.78);
+        border-color: rgba(255, 255, 255, 0.06);
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .stat-card.is-active {
+        border-color: rgba(103, 224, 204, 0.28);
+        background: rgba(12, 18, 24, 0.96);
+      }
+
+      .stat-value {
+        display: block;
+        font-family: Arial, sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+
+      .stat-label {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-transform: uppercase;
+      }
+
+      .globe-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 340vh;
+        }
+
+        .stats-bar {
+          inset: 0;
+        }
+
+        .stats-kicker {
+          top: 12px;
+          left: 12px;
+        }
+
+        .stat-card {
+          padding: 10px 9px 10px;
+        }
+
+        .stat-value {
+          font-size: 32px;
+        }
+
+        .stat-label {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>How much of the world can we measure as cities?</h1>
+        <div class="prose">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc
+            posuere, ex vitae tristique vestibulum, urna nibh tincidunt turpis,
+            sed posuere sem dui vel nibh. Duis quis orci a lorem dictum
+            iaculis. Sed commodo, sapien sit amet porta vestibulum, augue
+            mauris gravida risus, at volutpat lectus justo in arcu.
+          </p>
+          <p>
+            The important move here is scale. We are no longer dealing with one
+            city, or one country, or one decade. We are dealing with a global
+            panel that keeps the same logic as the planet turns underneath it.
+            That is what this scene is meant to make visible before we explain
+            the construction in detail.
+          </p>
+          <p>
+            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Nullam eget sapien a justo pulvinar
+            facilisis. Pellentesque fermentum velit in lectus pellentesque, sed
+            efficitur nisi iaculis.
+          </p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="Rotating world with city polygons">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="stats-bar" class="stats-bar">
+              <div class="stats-kicker">Global city panel</div>
+              <div class="stats-row top">
+                <div id="card-countries" class="stat-card">
+                  <span id="stat-countries" class="stat-value">0</span>
+                  <span class="stat-label">countries</span>
+                </div>
+                <div id="card-population" class="stat-card">
+                  <span id="stat-population" class="stat-value">0%</span>
+                  <span class="stat-label">of world population</span>
+                </div>
+              </div>
+              <div class="stats-row bottom">
+                <div id="card-observations" class="stat-card">
+                  <span id="stat-observations" class="stat-value">0</span>
+                  <span class="stat-label">city-year observations</span>
+                </div>
+                <div id="card-years" class="stat-card">
+                  <span id="stat-years" class="stat-value">1975-1975</span>
+                  <span class="stat-label">panel window</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="globe-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="Rotating globe with many city polygons">
+                <defs>
+                  <radialGradient id="sphereFill" cx="42%" cy="36%" r="70%">
+                    <stop offset="0%" stop-color="#12202b"></stop>
+                    <stop offset="55%" stop-color="#0a131a"></stop>
+                    <stop offset="100%" stop-color="#070c11"></stop>
+                  </radialGradient>
+                  <radialGradient id="atmosphere" cx="50%" cy="48%" r="52%">
+                    <stop offset="72%" stop-color="rgba(103, 224, 204, 0)"></stop>
+                    <stop offset="92%" stop-color="rgba(103, 224, 204, 0.08)"></stop>
+                    <stop offset="100%" stop-color="rgba(103, 224, 204, 0.18)"></stop>
+                  </radialGradient>
+                  <clipPath id="globe-clip">
+                    <circle cx="380" cy="500" r="246"></circle>
+                  </clipPath>
+                </defs>
+
+                <circle cx="380" cy="500" r="258" fill="rgba(0, 0, 0, 0.2)"></circle>
+                <circle cx="380" cy="500" r="246" fill="url(#sphereFill)" stroke="var(--sphere-edge)" stroke-width="2"></circle>
+                <circle cx="380" cy="500" r="252" fill="url(#atmosphere)" opacity="0.9"></circle>
+
+                <g clip-path="url(#globe-clip)">
+                  <g id="graticule-back" opacity="0.32"></g>
+                  <g id="polygon-shadows" opacity="0.18"></g>
+                  <g id="polygon-layer"></g>
+                  <g id="graticule-front" opacity="0.7"></g>
+                </g>
+
+                <circle cx="380" cy="500" r="246" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1.5"></circle>
+              </svg>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer
+            dictum massa vel velit pretium, nec pretium purus faucibus. Cras
+            vitae lacus orci. Sed volutpat posuere metus, a vulputate mauris
+            lacinia at. Curabitur tempus mattis sem, ac convallis enim posuere
+            vel.
+          </p>
+          <p>
+            Once that global coverage feels tangible, the rest of the method
+            has somewhere to land. The point is not just that there are many
+            polygons. It is that they are measured consistently enough to make
+            the later comparisons believable.
+          </p>
+          <p>
+            Mauris sed aliquam justo. Aliquam erat volutpat. Integer consequat
+            lectus at nisl tempus, eu egestas enim faucibus. Maecenas luctus
+            turpis nec aliquet tristique.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const statsBar = document.getElementById("stats-bar");
+      const statsKicker = document.querySelector(".stats-kicker");
+      const cardCountries = document.getElementById("card-countries");
+      const cardPopulation = document.getElementById("card-population");
+      const cardObservations = document.getElementById("card-observations");
+      const cardYears = document.getElementById("card-years");
+      const statCountries = document.getElementById("stat-countries");
+      const statPopulation = document.getElementById("stat-population");
+      const statObservations = document.getElementById("stat-observations");
+      const statYears = document.getElementById("stat-years");
+      const graticuleBack = document.getElementById("graticule-back");
+      const graticuleFront = document.getElementById("graticule-front");
+      const polygonShadows = document.getElementById("polygon-shadows");
+      const polygonLayer = document.getElementById("polygon-layer");
+
+      const globe = {
+        cx: 380,
+        cy: 500,
+        r: 246,
+        lat0: -12
+      };
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function mulberry32(seed) {
+        return function () {
+          let t = (seed += 0x6d2b79f5);
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function degToRad(value) {
+        return (value * Math.PI) / 180;
+      }
+
+      function projectPoint(lon, lat, rotation) {
+        const lambda = degToRad(lon - rotation);
+        const phi = degToRad(lat);
+        const phi0 = degToRad(globe.lat0);
+        const cosPhi = Math.cos(phi);
+        const sinPhi = Math.sin(phi);
+        const cosPhi0 = Math.cos(phi0);
+        const sinPhi0 = Math.sin(phi0);
+        const cosLambda = Math.cos(lambda);
+        const sinLambda = Math.sin(lambda);
+
+        const x = cosPhi * sinLambda;
+        const y = cosPhi0 * sinPhi - sinPhi0 * cosPhi * cosLambda;
+        const z = sinPhi0 * sinPhi + cosPhi0 * cosPhi * cosLambda;
+
+        return {
+          x: globe.cx + globe.r * x,
+          y: globe.cy - globe.r * y,
+          z,
+          visible: z > 0
+        };
+      }
+
+      function buildLinePath(points) {
+        const segments = [];
+        let current = [];
+
+        points.forEach((point) => {
+          if (point.visible) {
+            current.push(point);
+          } else if (current.length) {
+            segments.push(current);
+            current = [];
+          }
+        });
+
+        if (current.length) {
+          segments.push(current);
+        }
+
+        return segments
+          .filter((segment) => segment.length > 1)
+          .map((segment) => {
+            const first = segment[0];
+            const rest = segment.slice(1).map((point) => `L ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+            return `M ${first.x.toFixed(1)} ${first.y.toFixed(1)} ${rest}`;
+          })
+          .join(" ");
+      }
+
+      function renderGraticule(rotation) {
+        const meridians = [];
+        const parallels = [];
+
+        for (let lon = -150; lon <= 180; lon += 30) {
+          const samples = [];
+          for (let lat = -80; lat <= 80; lat += 4) {
+            samples.push(projectPoint(lon, lat, rotation));
+          }
+          meridians.push(samples);
+        }
+
+        for (let lat = -60; lat <= 60; lat += 30) {
+          const samples = [];
+          for (let lon = -180; lon <= 180; lon += 4) {
+            samples.push(projectPoint(lon, lat, rotation));
+          }
+          parallels.push(samples);
+        }
+
+        const backPaths = [];
+        const frontPaths = [];
+
+        [...meridians, ...parallels].forEach((line, index) => {
+          const visible = line.filter((point) => point.visible);
+          if (!visible.length) return;
+
+          const backLine = line.map((point) => ({
+            ...point,
+            visible: point.z > -0.35 && point.z <= 0
+          }));
+          const frontLine = line.map((point) => ({
+            ...point,
+            visible: point.z > 0
+          }));
+
+          const backPath = buildLinePath(backLine);
+          const frontPath = buildLinePath(frontLine);
+
+          if (backPath) {
+            backPaths.push(
+              `<path d="${backPath}" fill="none" stroke="var(--grid)" stroke-width="${index < meridians.length ? 1.4 : 1.2}" />`
+            );
+          }
+          if (frontPath) {
+            frontPaths.push(
+              `<path d="${frontPath}" fill="none" stroke="${index < meridians.length ? "var(--grid-strong)" : "var(--grid)"}" stroke-width="${index < meridians.length ? 1.5 : 1.2}" />`
+            );
+          }
+        });
+
+        graticuleBack.innerHTML = backPaths.join("");
+        graticuleFront.innerHTML = frontPaths.join("");
+      }
+
+      function createCityPolygons() {
+        const centers = [
+          [-122.4, 37.8], [-118.25, 34.05], [-99.13, 19.43], [-74.0, 40.7], [-87.62, 41.88],
+          [-46.63, -23.55], [-58.38, -34.6], [-70.66, -33.45], [-77.04, -12.05], [-74.08, 4.61],
+          [-0.12, 51.5], [2.35, 48.86], [13.4, 52.52], [12.49, 41.89], [37.62, 55.75],
+          [31.24, 30.04], [3.38, 6.52], [28.04, -26.2], [36.82, -1.29], [-7.59, 33.57],
+          [77.21, 28.61], [72.88, 19.08], [88.36, 22.57], [67.01, 24.86], [90.41, 23.81],
+          [100.5, 13.75], [106.82, -6.2], [121.0, 14.6], [103.82, 1.35], [114.17, 22.32],
+          [121.47, 31.23], [116.4, 39.9], [139.69, 35.69], [126.98, 37.56], [151.21, -33.87],
+          [144.96, -37.81], [174.76, -36.85], [55.27, 25.2], [51.39, 35.69], [44.37, 33.31]
+        ];
+
+        const rand = mulberry32(12);
+        const polygons = [];
+
+        centers.forEach(([lon, lat], centerIndex) => {
+          const count = 4 + Math.floor(rand() * 4);
+          for (let i = 0; i < count; i += 1) {
+            const jitterLon = lon + (rand() - 0.5) * 7.5;
+            const jitterLat = lat + (rand() - 0.5) * 5.5;
+            const radiusLon = 1.2 + rand() * 1.7;
+            const radiusLat = 0.7 + rand() * 1.2;
+            const points = [];
+            const sides = 5 + Math.floor(rand() * 3);
+            for (let s = 0; s < sides; s += 1) {
+              const angle = (Math.PI * 2 * s) / sides;
+              const wobble = 0.82 + rand() * 0.45;
+              points.push([
+                jitterLon + Math.cos(angle) * radiusLon * wobble,
+                jitterLat + Math.sin(angle) * radiusLat * wobble
+              ]);
+            }
+            polygons.push({
+              id: `${centerIndex}-${i}`,
+              points
+            });
+          }
+        });
+
+        return polygons;
+      }
+
+      const polygons = createCityPolygons();
+
+      function renderPolygons(rotation) {
+        const shadowPaths = [];
+        const polygonPaths = [];
+
+        polygons.forEach((polygon) => {
+          const projected = polygon.points.map(([lon, lat]) => projectPoint(lon, lat, rotation));
+          const avgZ = projected.reduce((sum, point) => sum + point.z, 0) / projected.length;
+          if (avgZ <= 0.05) return;
+
+          const path = projected
+            .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`)
+            .join(" ") + " Z";
+
+          const opacity = clamp((avgZ - 0.03) / 0.92, 0.18, 1);
+          shadowPaths.push(
+            `<path d="${path}" fill="rgba(0,0,0,0.35)" transform="translate(0 3)" opacity="${(opacity * 0.6).toFixed(2)}"></path>`
+          );
+          polygonPaths.push(
+            `<path d="${path}" fill="var(--poly-fill)" stroke="var(--poly-stroke)" stroke-width="${(0.9 + opacity * 0.55).toFixed(2)}" opacity="${opacity.toFixed(2)}"></path>`
+          );
+        });
+
+        polygonShadows.innerHTML = shadowPaths.join("");
+        polygonLayer.innerHTML = polygonPaths.join("");
+      }
+
+      function rangeProgress(progress, start, end) {
+        return clamp((progress - start) / (end - start), 0, 1);
+      }
+
+      function updateStats(progress) {
+        const countriesProgress = rangeProgress(progress, 0.08, 0.25);
+        const populationProgress = rangeProgress(progress, 0.25, 0.42);
+        const observationsProgress = rangeProgress(progress, 0.42, 0.62);
+        const yearsProgress = rangeProgress(progress, 0.62, 0.82);
+        const countriesVisible = progress >= 0.08;
+        const populationVisible = progress >= 0.25;
+        const observationsVisible = progress >= 0.42;
+        const yearsVisible = progress >= 0.62;
+
+        statsBar.style.opacity = countriesVisible ? "1" : "0";
+
+        statCountries.textContent = String(Math.round(99 * countriesProgress));
+        statPopulation.textContent = `${Math.round(94 * populationProgress)}%`;
+        statObservations.textContent = Math.round(1604593 * observationsProgress).toLocaleString("en-US");
+        const endYear = 1975 + Math.round((2025 - 1975) * yearsProgress);
+        statYears.textContent = `1975-${endYear}`;
+
+        statsKicker.classList.toggle("is-visible", countriesVisible);
+        cardCountries.classList.toggle("is-visible", countriesVisible);
+        cardPopulation.classList.toggle("is-visible", populationVisible);
+        cardObservations.classList.toggle("is-visible", observationsVisible);
+        cardYears.classList.toggle("is-visible", yearsVisible);
+        cardCountries.classList.toggle("is-active", countriesProgress > 0 && countriesProgress < 1);
+        cardPopulation.classList.toggle("is-active", populationProgress > 0 && populationProgress < 1);
+        cardObservations.classList.toggle("is-active", observationsProgress > 0 && observationsProgress < 1);
+        cardYears.classList.toggle("is-active", yearsProgress > 0 && yearsProgress < 1);
+      }
+
+      function updateGlobe(progress) {
+        const rotation = -165 + progress * 330;
+        renderGraticule(rotation);
+        renderPolygons(rotation);
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+
+        updateStats(progress);
+        updateGlobe(progress);
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

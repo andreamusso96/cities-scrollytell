@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 07 Mock - World Size-Growth Curve</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --line: #1a222a;
+        --axis: #2c3946;
+        --world: #67e0cc;
+        --card: rgba(16, 19, 24, 0.92);
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(26, 32, 40, 0.48), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(18, 22, 29, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 280vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        z-index: 7;
+        width: min(380px, calc(100% - 16px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition: border-color 220ms ease;
+      }
+
+      .scene-copy.world {
+        border-left-color: var(--world);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .chart-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .axis-group,
+      .world-group,
+      .annotation-group {
+        opacity: 0;
+        transition: opacity 260ms ease;
+      }
+
+      .axis-group.is-visible,
+      .world-group.is-visible,
+      .annotation-group.is-visible {
+        opacity: 1;
+      }
+
+      .axis-line {
+        stroke: var(--axis);
+        stroke-width: 2;
+      }
+
+      .reference-line {
+        stroke: rgba(255, 255, 255, 0.2);
+        stroke-width: 2.5;
+        stroke-dasharray: 8 7;
+      }
+
+      .tick-line {
+        stroke: var(--axis);
+        stroke-width: 1.5;
+      }
+
+      .axis-label,
+      .tick-text {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-weight: 700;
+      }
+
+      .axis-label {
+        font-size: 18px;
+      }
+
+      .tick-text {
+        font-size: 16px;
+      }
+
+      .tick-sub {
+        fill: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .y-note {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .world-path {
+        fill: none;
+        stroke: var(--world);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .world-label {
+        fill: var(--world);
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .avg-label {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .annotation-dot {
+        fill: var(--world);
+      }
+
+      .annotation-stem {
+        stroke: rgba(103, 224, 204, 0.5);
+        stroke-width: 1.5;
+      }
+
+      .annotation-text {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .annotation-sub {
+        fill: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .curve-legend {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 18px;
+        z-index: 6;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .legend-line {
+        width: 18px;
+        height: 0;
+        border-top: 3px solid var(--world);
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 300vh;
+        }
+
+        .scene-copy {
+          top: 10px;
+          width: calc(100% - 12px);
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+
+        .axis-label {
+          font-size: 28px;
+        }
+
+        .tick-text {
+          font-size: 24px;
+        }
+
+        .tick-sub {
+          font-size: 22px;
+        }
+
+        .y-note {
+          font-size: 22px;
+        }
+
+        .world-label {
+          font-size: 28px;
+        }
+
+        .avg-label {
+          font-size: 18px;
+        }
+
+        .annotation-text {
+          font-size: 22px;
+        }
+
+        .annotation-sub {
+          font-size: 17px;
+        }
+
+        .legend-item {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>One chart carries the rest of the argument</h1>
+        <div class="prose">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id
+            dui convallis, tincidunt nulla eget, suscipit nibh. Sed luctus
+            massa at ipsum laoreet, non vulputate massa imperdiet. Maecenas
+            euismod gravida nisi, et tristique ligula lobortis eu.
+          </p>
+          <p>
+            This is the one analytic object the reader needs to learn. If the
+            line rises, larger cities have a growth advantage. If it flattens,
+            that advantage disappears. If it bends down, large cities are no
+            longer pulling away.
+          </p>
+          <p>
+            Nulla facilisi. Integer non volutpat ex. Sed sit amet vestibulum
+            leo, non volutpat massa. Suspendisse a risus in justo pellentesque
+            accumsan sed ut ipsum.
+          </p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="World size-growth curve">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy">
+              <div class="scene-kicker">Size-growth curve</div>
+              <div id="scene-title" class="scene-title">Population on the x-axis</div>
+              <div id="scene-body" class="scene-body">
+                Read city size from left to right on a log scale. The spacing is not linear: each big step is an order of magnitude.
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="World size-growth curve with log-scaled population axis">
+                <g transform="translate(88 182)">
+                  <g id="x-axis-group" class="axis-group">
+                    <line x1="0" y1="494" x2="592" y2="494" class="axis-line"></line>
+                    <line x1="0" y1="494" x2="0" y2="506" class="tick-line"></line>
+                    <line x1="197.3" y1="494" x2="197.3" y2="506" class="tick-line"></line>
+                    <line x1="394.6" y1="494" x2="394.6" y2="506" class="tick-line"></line>
+                    <line x1="592" y1="494" x2="592" y2="506" class="tick-line"></line>
+                    <text x="0" y="548" text-anchor="middle" class="tick-text">10K</text>
+                    <text x="197.3" y="548" text-anchor="middle" class="tick-text">100K</text>
+                    <text x="394.6" y="548" text-anchor="middle" class="tick-text">1M</text>
+                    <text x="592" y="548" text-anchor="middle" class="tick-text">10M</text>
+                    <text x="296" y="598" text-anchor="middle" class="axis-label">City population</text>
+                  </g>
+
+                  <g id="y-axis-group" class="axis-group">
+                    <line x1="0" y1="100" x2="0" y2="494" class="axis-line"></line>
+                    <line x1="-10" y1="404" x2="0" y2="404" class="tick-line"></line>
+                    <line x1="-10" y1="312" x2="0" y2="312" class="tick-line"></line>
+                    <line x1="-10" y1="220" x2="0" y2="220" class="tick-line"></line>
+                    <line x1="-10" y1="128" x2="0" y2="128" class="tick-line"></line>
+                    <line x1="0" y1="312" x2="592" y2="312" class="reference-line"></line>
+                    <text x="-18" y="410" text-anchor="end" class="tick-sub">-10%</text>
+                    <text x="-18" y="318" text-anchor="end" class="tick-sub">0%</text>
+                    <text x="-18" y="226" text-anchor="end" class="tick-sub">+10%</text>
+                    <text x="-18" y="134" text-anchor="end" class="tick-sub">+20%</text>
+                    <text x="0" y="42" class="axis-label">Growth relative to national urban average</text>
+                    <text x="476" y="346" text-anchor="middle" class="avg-label">0% = national urban</text>
+                    <text x="476" y="364" text-anchor="middle" class="avg-label">average</text>
+                  </g>
+
+                  <g id="world-group" class="world-group">
+                    <path id="world-path" class="world-path" d="M 0.0 404.0 L 94.0 394.8 L 197.3 376.4 L 291.0 348.8 L 394.6 293.6 L 488.0 238.4 L 592.0 155.6"></path>
+                    <text id="world-label" x="608" y="166" text-anchor="start" class="world-label">WR</text>
+                  </g>
+
+                  <g id="annotation-group" class="annotation-group">
+                    <line x1="197.3" y1="376.4" x2="197.3" y2="332" class="annotation-stem"></line>
+                    <circle cx="197.3" cy="376.4" r="6" class="annotation-dot"></circle>
+                    <text x="197.3" y="314" text-anchor="middle" class="annotation-text">100K</text>
+                    <text x="197.3" y="338" text-anchor="middle" class="annotation-sub">-7% next-decade growth</text>
+
+                    <line x1="394.6" y1="293.6" x2="394.6" y2="226" class="annotation-stem"></line>
+                    <circle cx="394.6" cy="293.6" r="6" class="annotation-dot"></circle>
+                    <text x="394.6" y="206" text-anchor="middle" class="annotation-text">1M</text>
+                    <text x="394.6" y="230" text-anchor="middle" class="annotation-sub">+2% next-decade growth</text>
+
+                    <line x1="592" y1="155.6" x2="592" y2="104" class="annotation-stem"></line>
+                    <circle cx="592" cy="155.6" r="6" class="annotation-dot"></circle>
+                    <text x="582" y="86" text-anchor="end" class="annotation-text">10M</text>
+                    <text x="582" y="110" text-anchor="end" class="annotation-sub">+17% next-decade growth</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <div class="curve-legend">
+              <div class="legend-item"><span class="legend-line"></span><span>World</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed
+            mauris sed urna efficitur luctus. Vivamus a lectus vitae orci
+            commodo ullamcorper. Quisque sed metus nec dui volutpat tincidunt.
+          </p>
+          <p>
+            Once this grammar is clear, the next scene can vary the line rather
+            than re-explain the axes. That is what lets the regional split read
+            quickly instead of feeling like a new lesson.
+          </p>
+          <p>
+            Integer egestas nibh ut est porttitor, sed pulvinar orci pulvinar.
+            Aenean ut dignissim lectus. Suspendisse at elit sed risus bibendum
+            sollicitudin sed vitae quam.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const xAxisGroup = document.getElementById("x-axis-group");
+      const yAxisGroup = document.getElementById("y-axis-group");
+      const worldGroup = document.getElementById("world-group");
+      const worldPath = document.getElementById("world-path");
+      const worldLabel = document.getElementById("world-label");
+      const annotationGroup = document.getElementById("annotation-group");
+
+      const scenes = [
+        {
+          title: "Population on the x-axis",
+          body: "Read city size from left to right on a log scale. The spacing is not linear: each big step is an order of magnitude.",
+          tone: ""
+        },
+        {
+          title: "Growth on the y-axis",
+          body: "Now add next-decade growth relative to the national urban average. Above 0% means faster than average.",
+          tone: ""
+        },
+        {
+          title: "Draw the world curve",
+          body: "Here is the fitted world relationship. An upward slope means larger cities are growing faster than smaller ones.",
+          tone: "world"
+        },
+        {
+          title: "How to read the slope",
+          body: "At 100K the curve sits below the big-city end. By 10M it is clearly above. Positive slope means big-city advantage.",
+          tone: "world"
+        }
+      ];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function rangeProgress(progress, start, end) {
+        return clamp((progress - start) / (end - start), 0, 1);
+      }
+
+      function applyScene(progress) {
+        const xProgress = rangeProgress(progress, 0.06, 0.24);
+        const yProgress = rangeProgress(progress, 0.24, 0.42);
+        const curveProgress = rangeProgress(progress, 0.42, 0.7);
+        const annotationProgress = rangeProgress(progress, 0.7, 0.9);
+
+        let sceneIndex = 0;
+        if (progress >= 0.24) sceneIndex = 1;
+        if (progress >= 0.42) sceneIndex = 2;
+        if (progress >= 0.7) sceneIndex = 3;
+
+        const scene = scenes[sceneIndex];
+        sceneCopy.className = `scene-copy ${scene.tone}`.trim();
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+
+        xAxisGroup.classList.toggle("is-visible", xProgress > 0);
+        yAxisGroup.classList.toggle("is-visible", yProgress > 0);
+        worldGroup.classList.toggle("is-visible", curveProgress > 0);
+        annotationGroup.classList.toggle("is-visible", annotationProgress > 0);
+
+        xAxisGroup.style.opacity = String(xProgress);
+        yAxisGroup.style.opacity = String(yProgress);
+        worldGroup.style.opacity = String(curveProgress);
+        annotationGroup.style.opacity = String(annotationProgress);
+
+        const pathLength = worldPath.getTotalLength();
+        worldPath.style.strokeDasharray = String(pathLength);
+        worldPath.style.strokeDashoffset = String(pathLength * (1 - curveProgress));
+        worldLabel.style.opacity = String(curveProgress);
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(progress);
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        const pathLength = worldPath.getTotalLength();
+        worldPath.style.strokeDasharray = String(pathLength);
+        worldPath.style.strokeDashoffset = String(pathLength);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

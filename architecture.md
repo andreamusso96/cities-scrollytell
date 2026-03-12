@@ -50,6 +50,69 @@ Why:
 - ScrollTrigger is powerful, but it is better as a local animation tool than as the main narrative engine for this project.
 - Scrollama should own chapter activation. Visual components should react to chapter state.
 
+## Current Figure Framework
+
+This section records the framework we are actually using in the mocks in
+`src/mock` right now.
+
+### Prototype medium
+
+- Build each mock figure as a **standalone HTML file** in `src/mock`.
+- Use **plain HTML + CSS + vanilla JS** for the mock stage.
+- Do not pull the full app framework into early visual prototyping.
+
+Why:
+
+- It keeps iteration fast while the figure grammar is still changing.
+- It makes each scene easy to open, inspect, and compare in isolation.
+- It lets us settle pacing, mobile layout, and visual hierarchy before wiring
+  figures into a full app.
+
+### Prototype scroll model
+
+- Use **CSS sticky sections** plus lightweight manual scroll-progress logic.
+- A typical mock structure is:
+  - prose above
+  - one sticky figure section
+  - prose below
+- Inside the sticky section, scroll progress maps to a small number of
+  **discrete scene states**.
+
+Implication:
+
+- The current mocks are **not** using Scrollama yet.
+- Scrollama remains the planned production scrolly engine.
+- The mock logic is deliberately simpler: sticky stage + progress thresholds +
+  state changes.
+
+### Default figure anatomy
+
+- Each figure should occupy a **full mobile viewport** while pinned.
+- The visual should get the full stage.
+- Use **one top scene card** for the active text state.
+- Keep the bottom of the figure available for a compact legend when needed.
+- Avoid extra floating labels, cards, or annotation boxes over the map/chart
+  unless they are truly necessary.
+
+### Current text pattern inside figures
+
+- Prefer a **single top text box** rather than multiple scrolling overlay cards.
+- That box should swap only:
+  - kicker
+  - title
+  - short body copy
+  - accent color when relevant
+- If the figure already has a legend, do not duplicate that information with
+  extra on-figure label cards.
+
+### Current rendering choice
+
+- Use **SVG first** for the current mocks.
+- Use HTML overlays only for text that must remain large and readable on
+  mobile.
+- Keep camera motion minimal. For map scenes, prefer **fixed camera reveals**
+  over zoom choreography unless motion is essential to the point.
+
 ## Chosen Interaction Model
 
 ### Default model: stateful chapters
@@ -95,10 +158,12 @@ Good candidates for local scrub:
   - chapter-based state transitions
 
 - In practice this should be interpreted as:
-  - **overlay text cards on top of the visual**
-  - generous vertical breaks between cards so the figure gets breathing room
-  - card widths, text sizes, and step pacing tuned first for phone screens
-  - desktop layouts should be derived from the mobile pattern, not invented separately
+  - article text above and below the sticky figure
+  - one persistent **top scene card** inside the figure
+  - optional compact legend near the bottom edge
+  - minimal obstruction of the visual area
+  - text sizes and figure pacing tuned first for phone screens
+  - desktop layouts derived from the mobile pattern, not invented separately
 
 - This is close to the Mapbox storytelling pattern:
   - text drives chapter changes
@@ -116,6 +181,15 @@ Good candidates for local scrub:
 - Use **Canvas** for denser animations, larger particle/point counts, and possibly some map-like layers if performance requires it.
 - Use **D3** mainly for scales, layout math, axes, projections, and data transforms.
 - Do not let D3 own the whole rendering model by default.
+
+Current practical interpretation for mocks:
+
+- `src/mock/figure-01-city-comparison.html`: SVG dot-pile scene with a single
+  top card and discrete metric states
+- `src/mock/figure-02-futures.html`: SVG block histogram with fixed unit grammar
+  for incoming population and a single top card
+- `src/mock/figure-03-paris-boundaries.html`: fixed-camera SVG basemap with
+  traced boundaries, faded fills, bottom legend, and one top state card
 
 Implication:
 
@@ -193,16 +267,20 @@ Why:
 - Default design decisions should be made for **phone reading**:
   - text must remain readable while the figure is visible
   - interactions must tolerate touch scrolling and uneven scroll velocity
+  - labels should be sized for mobile first, even if they feel slightly large on desktop
   - labels, callouts, and legends should avoid requiring desktop hover behavior
   - side-by-side desktop-only compositions should not be the default pattern
+  - avoid covering the map/chart with extra annotation cards when a top scene box and bottom legend are enough
 
 ## Locked Decisions
 
 - Framework: **SvelteKit**
 - Scrolly engine: **Scrollama**
+- Mock figure framework: **standalone HTML/CSS/JS in `src/mock`**
+- Mock scroll model: **sticky section + manual progress thresholds**
 - Default interaction: **stateful chapters**
 - Scrub policy: **rare, local, opt-in**
-- Layout model: **sticky stage + foreground steps**
+- Layout model: **sticky stage + prose above/below + one top scene card**
 - Primary target: **mobile-first**
 - Rendering mix: **Svelte + SVG/Canvas + D3 utilities**
 - Visual density: **8-10 major visual moments for ~2,000 words**

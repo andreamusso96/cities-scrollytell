@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 05 Mock - Residential Volume to Population Grid</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --card: rgba(16, 19, 24, 0.92);
+        --volume: #8db8ca;
+        --census: #efc684;
+        --district-a: #7ab6a7;
+        --district-b: #c8a264;
+        --district-c: #c68678;
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(24, 34, 38, 0.44), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(34, 27, 20, 0.52), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 250vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 18px;
+        left: 50%;
+        z-index: 8;
+        width: min(372px, calc(100% - 20px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition: border-color 260ms ease;
+      }
+
+      .scene-copy.neutral {
+        border-left-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .scene-copy.volume {
+        border-left-color: var(--volume);
+      }
+
+      .scene-copy.census {
+        border-left-color: var(--census);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transition: color 260ms ease;
+      }
+
+      .scene-copy.volume .scene-kicker {
+        color: var(--volume);
+      }
+
+      .scene-copy.census .scene-kicker {
+        color: var(--census);
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .map-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .ground-cell {
+        opacity: 0;
+        transition:
+          opacity 260ms ease,
+          fill 260ms ease,
+          stroke 260ms ease;
+      }
+
+      .bar-group,
+      .district-area,
+      .district-label,
+      .allocation-link {
+        opacity: 0;
+        transition: opacity 320ms ease;
+      }
+
+      .bar-group.is-visible,
+      .district-area.is-visible,
+      .district-label.is-visible,
+      .allocation-link.is-visible {
+        opacity: 1;
+      }
+
+      .legend {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 24px;
+        z-index: 7;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        align-items: center;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .legend-chip {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .legend-chip.surface {
+        background:
+          linear-gradient(135deg, #223127 0%, #5f734d 44%, #908e7b 66%, #46584a 100%);
+      }
+
+      .legend-chip.volume {
+        background: linear-gradient(180deg, #d8eef6 0%, #8db8ca 100%);
+        border-color: rgba(141, 184, 202, 0.6);
+      }
+
+      .legend-chip.census {
+        border-color: rgba(239, 198, 132, 0.5);
+        background: rgba(239, 198, 132, 0.16);
+      }
+
+      .legend-line {
+        width: 24px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(239, 198, 132, 0.9);
+      }
+
+      .frame-label {
+        fill: rgba(245, 239, 229, 0.74);
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .frame-note {
+        fill: rgba(184, 173, 160, 0.8);
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+
+      .district-name {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .district-total {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .district-boundary,
+      .district-hub {
+        opacity: 0;
+        transition: opacity 320ms ease;
+      }
+
+      .district-boundary.is-visible,
+      .district-hub.is-visible {
+        opacity: 1;
+      }
+
+      .district-boundary {
+        stroke: rgba(248, 242, 231, 0.88);
+        stroke-width: 5;
+        stroke-linecap: round;
+      }
+
+      .district-hub {
+        fill: rgba(248, 242, 231, 0.16);
+        stroke: rgba(248, 242, 231, 0.88);
+        stroke-width: 3;
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 270vh;
+        }
+
+        .scene-copy {
+          top: 12px;
+          width: min(332px, calc(100% - 16px));
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+
+        .legend {
+          bottom: 18px;
+          gap: 8px 12px;
+        }
+
+        .legend-item {
+          font-size: 14px;
+        }
+
+        .frame-label {
+          font-size: 34px;
+        }
+
+        .frame-note {
+          font-size: 22px;
+        }
+
+        .district-name {
+          font-size: 16px;
+        }
+
+        .district-total {
+          font-size: 34px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>From residential volume to population</h1>
+        <div class="prose">
+          <p>
+            The next step is not just to know whether land is built up. It is
+            to estimate how much residential volume sits inside each cell.
+          </p>
+          <p>
+            Then census totals reported for administrative areas can be pushed
+            back down into the grid, weighted by that residential volume.
+          </p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="Population allocation from residential volume">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy neutral">
+              <div id="scene-kicker" class="scene-kicker">Residential signal</div>
+              <div id="scene-title" class="scene-title">Estimate residential building heights.</div>
+              <div id="scene-body" class="scene-body">
+                Start from imagery again. Roof texture and shadow hint at how much residential volume each cell contains.
+              </div>
+            </div>
+
+            <div class="map-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="Mock residential volume pipeline showing raw imagery, 3D volume bars, and census totals redistributed into cells">
+                <defs>
+                  <linearGradient id="stageBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0b1014"></stop>
+                    <stop offset="100%" stop-color="#091016"></stop>
+                  </linearGradient>
+                  <clipPath id="mapClip">
+                    <rect x="88" y="158" width="584" height="584" rx="18"></rect>
+                  </clipPath>
+                  <filter id="satelliteBlur" x="-6%" y="-6%" width="112%" height="112%">
+                    <feGaussianBlur stdDeviation="5.2"></feGaussianBlur>
+                  </filter>
+                </defs>
+
+                <rect x="0" y="0" width="760" height="900" fill="url(#stageBg)"></rect>
+
+                <g clip-path="url(#mapClip)">
+                  <rect x="88" y="158" width="584" height="584" fill="#10161b"></rect>
+
+                  <g id="imagery-layer">
+                    <g id="imagery-raster" filter="url(#satelliteBlur)"></g>
+
+                    <g opacity="0.94">
+                      <path d="M108 314 C212 286, 318 300, 430 344 S606 384, 686 350" fill="none" stroke="#dfd5be" stroke-width="20" stroke-linecap="round" opacity="0.18"></path>
+                      <path d="M108 314 C212 286, 318 300, 430 344 S606 384, 686 350" fill="none" stroke="#efe3ca" stroke-width="6" stroke-linecap="round" opacity="0.34"></path>
+                      <path d="M202 158 C252 248, 282 348, 316 492 S374 650, 432 742" fill="none" stroke="#d9cfbc" stroke-width="14" stroke-linecap="round" opacity="0.16"></path>
+                      <path d="M202 158 C252 248, 282 348, 316 492 S374 650, 432 742" fill="none" stroke="#f2e7d2" stroke-width="5" stroke-linecap="round" opacity="0.32"></path>
+                    </g>
+
+                    <g opacity="0.82">
+                      <path d="M524 198 C572 184, 628 214, 648 258 C620 286, 570 294, 524 280 C500 248, 500 212, 524 198 Z" fill="#384138"></path>
+                      <path d="M470 558 C542 526, 630 552, 658 620 C628 676, 548 696, 484 672 C452 636, 446 586, 470 558 Z" fill="#364535"></path>
+                    </g>
+                  </g>
+
+                  <g id="ground-layer"></g>
+                  <g id="district-area-layer"></g>
+                  <g id="bar-layer"></g>
+                  <g id="district-boundary-layer"></g>
+                  <g id="flow-layer"></g>
+                  <g id="district-label-layer"></g>
+                </g>
+
+                <rect x="88" y="158" width="584" height="584" rx="18" fill="none" stroke="rgba(255, 255, 255, 0.14)" stroke-width="2"></rect>
+                <text x="96" y="128" class="frame-label">Same spatial frame</text>
+                <text x="96" y="778" class="frame-note">12 x 12 cells. Bar height = residential volume.</text>
+              </svg>
+            </div>
+
+            <div id="legend" class="legend"></div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>
+            Once each cell has an estimated population, the final city
+            population is just the sum of populated cells inside the city
+            boundary from the previous step.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneKicker = document.getElementById("scene-kicker");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const legend = document.getElementById("legend");
+      const imageryRaster = document.getElementById("imagery-raster");
+      const imageryLayer = document.getElementById("imagery-layer");
+      const groundLayer = document.getElementById("ground-layer");
+      const districtAreaLayer = document.getElementById("district-area-layer");
+      const barLayer = document.getElementById("bar-layer");
+      const districtBoundaryLayer = document.getElementById("district-boundary-layer");
+      const flowLayer = document.getElementById("flow-layer");
+      const districtLabelLayer = document.getElementById("district-label-layer");
+
+      const svgNS = "http://www.w3.org/2000/svg";
+      const cols = 12;
+      const rows = 12;
+      const gridX = 88;
+      const gridY = 158;
+      const gridSize = 584;
+      const cellSize = gridSize / cols;
+      const heightScale = 74;
+
+      const terrainDark = [34, 49, 38];
+      const terrainMid = [108, 126, 84];
+      const urbanGray = [153, 148, 136];
+      const volumeFrontA = [84, 126, 142];
+      const volumeFrontB = [160, 205, 222];
+      const volumeSideA = [61, 93, 110];
+      const volumeSideB = [120, 164, 182];
+      const volumeTopA = [190, 220, 232];
+      const volumeTopB = [227, 241, 247];
+      const popFrontA = [154, 118, 88];
+      const popFrontB = [237, 190, 124];
+      const popTopA = [222, 193, 151];
+      const popTopB = [255, 232, 184];
+
+      const districtConfigs = [
+        {
+          key: "A",
+          color: "#7ab6a7",
+          points: [
+            [88, 158],
+            [380, 158],
+            [380, 432],
+            [88, 742]
+          ],
+          anchorX: 228,
+          anchorY: 278,
+          linkDirection: "down"
+        },
+        {
+          key: "B",
+          color: "#c8a264",
+          points: [
+            [380, 158],
+            [672, 158],
+            [672, 742],
+            [380, 432]
+          ],
+          anchorX: 532,
+          anchorY: 278,
+          linkDirection: "down"
+        },
+        {
+          key: "C",
+          color: "#c68678",
+          points: [
+            [88, 742],
+            [380, 432],
+            [672, 742]
+          ],
+          anchorX: 380,
+          anchorY: 656,
+          linkDirection: "up"
+        }
+      ];
+
+      const districtLabelWidth = 124;
+      const districtLabelHeight = 62;
+
+      const scenes = [
+        {
+          kicker: "Residential signal",
+          title: "Estimate residential building heights.",
+          body: "Start from imagery again. Roof texture and shadow hint at how much residential volume each cell contains.",
+          tone: "neutral"
+        },
+        {
+          kicker: "Residential volume",
+          title: "Turn the grid into a 3D residential volume map.",
+          body: "Bars rise where residential built volume is larger. This is the weight used for the next step.",
+          tone: "volume"
+        },
+        {
+          kicker: "Census redistribution",
+          title: "Administrative totals are redistributed into cells by residential volume.",
+          body: "Each district total is split across its cells. More residential volume receives a larger population share.",
+          tone: "census"
+        }
+      ];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function mixTriplet(a, b, amount) {
+        const t = clamp(amount);
+        return a.map((value, index) => Math.round(value + (b[index] - value) * t));
+      }
+
+      function rgb(values) {
+        return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
+      }
+
+      function gauss(x, y, cx, cy, amp, spread) {
+        const dist2 = (x - cx) ** 2 + (y - cy) ** 2;
+        return amp * Math.exp(-dist2 / (2 * spread * spread));
+      }
+
+      function noise(col, row) {
+        return Math.sin(col * 1.4 + row * 0.7) * 0.5 + Math.cos(col * 0.8 - row * 1.1) * 0.5;
+      }
+
+      function surfaceValue(col, row) {
+        const x = col + 0.5;
+        const y = row + 0.5;
+
+        let value = 0.05;
+        value += gauss(x, y, 4.3, 3.8, 0.82, 1.8);
+        value += gauss(x, y, 8.1, 4.2, 0.72, 1.6);
+        value += gauss(x, y, 3.2, 8.4, 0.56, 1.5);
+        value += gauss(x, y, 8.6, 8.0, 0.6, 1.7);
+        value += gauss(x, y, 6.6, 6.3, 0.22, 3.0);
+        value += noise(col, row) * 0.03 + 0.03;
+
+        return clamp(value);
+      }
+
+      function residentialVolume(col, row) {
+        const x = col + 0.5;
+        const y = row + 0.5;
+
+        let value = surfaceValue(col, row) * 0.68;
+        value += gauss(x, y, 4.4, 3.7, 0.32, 1.4);
+        value += gauss(x, y, 8.2, 4.0, 0.26, 1.2);
+        value += gauss(x, y, 3.1, 8.6, 0.28, 1.25);
+        value -= gauss(x, y, 8.8, 8.0, 0.32, 1.3);
+        value -= gauss(x, y, 10.3, 8.8, 0.12, 0.9);
+
+        return clamp(value);
+      }
+
+      function pointsToPath(points) {
+        return `M${points.map((point) => point.join(" ")).join(" L")} Z`;
+      }
+
+      function pointInPolygon(x, y, points) {
+        let inside = false;
+        for (let i = 0, j = points.length - 1; i < points.length; j = i, i += 1) {
+          const xi = points[i][0];
+          const yi = points[i][1];
+          const xj = points[j][0];
+          const yj = points[j][1];
+          const intersects =
+            yi > y !== yj > y &&
+            x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+          if (intersects) inside = !inside;
+        }
+        return inside;
+      }
+
+      function districtIndex(col, row) {
+        const px = gridX + col * cellSize + cellSize / 2;
+        const py = gridY + row * cellSize + cellSize / 2;
+
+        for (let index = 0; index < districtConfigs.length; index += 1) {
+          if (pointInPolygon(px, py, districtConfigs[index].points)) return index;
+        }
+
+        return 2;
+      }
+
+      function createSvgNode(name, attributes = {}) {
+        const node = document.createElementNS(svgNS, name);
+        Object.entries(attributes).forEach(([key, value]) => {
+          node.setAttribute(key, value);
+        });
+        return node;
+      }
+
+      const cells = [];
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+          const surface = surfaceValue(col, row);
+          const volume = residentialVolume(col, row);
+          const district = districtIndex(col, row);
+          cells.push({
+            col,
+            row,
+            surface,
+            volume,
+            district,
+            x: gridX + col * cellSize,
+            y: gridY + row * cellSize
+          });
+        }
+      }
+
+      const districts = districtConfigs.map((config, index) => ({
+        ...config,
+        index,
+        cells: [],
+        totalVolume: 0,
+        totalPopulation: 0
+      }));
+
+      cells.forEach((cell) => {
+        const district = districts[cell.district];
+        district.cells.push(cell);
+        district.totalVolume += cell.volume;
+      });
+
+      districts.forEach((district) => {
+        district.totalPopulation = Math.round((district.totalVolume * 15000) / 1000) * 1000;
+        district.cells.forEach((cell) => {
+          const share = district.totalVolume > 0 ? cell.volume / district.totalVolume : 0;
+          cell.population = district.totalPopulation * share;
+          cell.share = share;
+        });
+      });
+
+      const maxPopulation = Math.max(...cells.map((cell) => cell.population));
+
+      function renderImagery() {
+        const fragment = document.createDocumentFragment();
+
+        cells.forEach((cell) => {
+          const landColor = mixTriplet(
+            terrainDark,
+            terrainMid,
+            0.4 + noise(cell.col, cell.row) * 0.15
+          );
+          const mixed = mixTriplet(landColor, urbanGray, cell.surface * 0.76);
+
+          fragment.appendChild(
+            createSvgNode("rect", {
+              x: cell.x,
+              y: cell.y,
+              width: cellSize + 1.4,
+              height: cellSize + 1.4,
+              fill: rgb(mixed)
+            })
+          );
+        });
+
+        imageryRaster.appendChild(fragment);
+      }
+
+      function buildBar(cell) {
+        const barWidth = cellSize * 0.56;
+        const depth = 9;
+        const slant = 7;
+        const height = Math.max(8, cell.volume * heightScale);
+        const x = cell.x + cellSize * 0.18;
+        const yBase = cell.y + cellSize - 7;
+        const topY = yBase - height;
+
+        const front = createSvgNode("polygon", {
+          points: `${x},${topY} ${x + barWidth},${topY} ${x + barWidth},${yBase} ${x},${yBase}`
+        });
+        const side = createSvgNode("polygon", {
+          points: `${x + barWidth},${topY} ${x + barWidth + depth},${topY - slant} ${x + barWidth + depth},${yBase - slant} ${x + barWidth},${yBase}`
+        });
+        const top = createSvgNode("polygon", {
+          points: `${x},${topY} ${x + barWidth},${topY} ${x + barWidth + depth},${topY - slant} ${x + depth},${topY - slant}`
+        });
+
+        const group = createSvgNode("g", { class: "bar-group" });
+        group.append(front, side, top);
+
+        cell.barGroup = group;
+        cell.barFront = front;
+        cell.barSide = side;
+        cell.barTop = top;
+        cell.barCenterX = x + barWidth / 2 + depth / 2;
+        cell.barTopY = topY - slant * 0.5;
+
+        return group;
+      }
+
+      function applyBarColors(mode) {
+        cells.forEach((cell) => {
+          if (!cell.barGroup) return;
+
+          const volumeNorm = cell.volume;
+          const populationNorm = maxPopulation > 0 ? cell.population / maxPopulation : 0;
+
+          if (mode === "volume") {
+            cell.barFront.setAttribute("fill", rgb(mixTriplet(volumeFrontA, volumeFrontB, volumeNorm)));
+            cell.barSide.setAttribute("fill", rgb(mixTriplet(volumeSideA, volumeSideB, volumeNorm)));
+            cell.barTop.setAttribute("fill", rgb(mixTriplet(volumeTopA, volumeTopB, volumeNorm)));
+            return;
+          }
+
+          cell.barFront.setAttribute("fill", rgb(mixTriplet(popFrontA, popFrontB, populationNorm)));
+          cell.barSide.setAttribute("fill", rgb(mixTriplet(volumeSideA, volumeSideB, Math.max(volumeNorm * 0.7, populationNorm * 0.5))));
+          cell.barTop.setAttribute("fill", rgb(mixTriplet(popTopA, popTopB, populationNorm)));
+        });
+      }
+
+      function formatThousands(value) {
+        return `${Math.round(value / 1000)}k`;
+      }
+
+      function renderStructure() {
+        const groundFragment = document.createDocumentFragment();
+        const districtAreaFragment = document.createDocumentFragment();
+        const barFragment = document.createDocumentFragment();
+        const districtBoundaryFragment = document.createDocumentFragment();
+        const flowFragment = document.createDocumentFragment();
+        const districtLabelFragment = document.createDocumentFragment();
+
+        cells.forEach((cell) => {
+          const ground = createSvgNode("rect", {
+            class: "ground-cell",
+            x: cell.x,
+            y: cell.y,
+            width: cellSize,
+            height: cellSize,
+            fill: "rgba(255, 255, 255, 0.03)",
+            stroke: "rgba(255, 255, 255, 0.08)",
+            "stroke-width": "1"
+          });
+
+          cell.ground = ground;
+          groundFragment.appendChild(ground);
+
+          if (cell.volume > 0.08) {
+            barFragment.appendChild(buildBar(cell));
+          }
+        });
+
+        districts.forEach((district) => {
+          districtAreaFragment.appendChild(
+            createSvgNode("path", {
+              class: "district-area",
+              d: pointsToPath(district.points),
+              fill: district.color,
+              "fill-opacity": "0.15",
+              stroke: district.color,
+              "stroke-width": "3",
+              "stroke-opacity": "0.88"
+            })
+          );
+
+          const labelGroup = createSvgNode("g", { class: "district-label" });
+          const labelBg = createSvgNode("rect", {
+            x: district.anchorX - districtLabelWidth / 2,
+            y: district.anchorY - districtLabelHeight / 2,
+            width: String(districtLabelWidth),
+            height: String(districtLabelHeight),
+            rx: "14",
+            fill: district.color,
+            "fill-opacity": "0.94"
+          });
+          const districtName = createSvgNode("text", {
+            x: district.anchorX,
+            y: district.anchorY - 8,
+            "text-anchor": "middle",
+            class: "district-name"
+          });
+          districtName.textContent = `ADMIN ${district.key}`;
+          const districtTotal = createSvgNode("text", {
+            x: district.anchorX,
+            y: district.anchorY + 20,
+            "text-anchor": "middle",
+            class: "district-total"
+          });
+          districtTotal.textContent = formatThousands(district.totalPopulation);
+          labelGroup.append(labelBg, districtName, districtTotal);
+          districtLabelFragment.appendChild(labelGroup);
+
+          const linkOriginY =
+            district.linkDirection === "up"
+              ? district.anchorY - districtLabelHeight / 2 + 6
+              : district.anchorY + districtLabelHeight / 2 - 6;
+
+          district.cells
+            .slice()
+            .sort((a, b) => b.population - a.population)
+            .slice(0, 7)
+            .forEach((cell) => {
+              if (!cell.barGroup) return;
+
+              flowFragment.appendChild(
+                createSvgNode("line", {
+                  class: "allocation-link",
+                  x1: district.anchorX,
+                  y1: linkOriginY,
+                  x2: cell.barCenterX,
+                  y2: cell.barTopY,
+                  stroke: district.color,
+                  "stroke-linecap": "round",
+                  "stroke-width": String(1.4 + cell.share * 45),
+                  "stroke-opacity": "0.52"
+                })
+              );
+            });
+        });
+
+        [
+          [380, 158],
+          [88, 742],
+          [672, 742]
+        ].forEach(([x2, y2]) => {
+          districtBoundaryFragment.appendChild(
+            createSvgNode("line", {
+              class: "district-boundary",
+              x1: "380",
+              y1: "432",
+              x2: String(x2),
+              y2: String(y2)
+            })
+          );
+        });
+
+        districtBoundaryFragment.appendChild(
+          createSvgNode("circle", {
+            class: "district-hub",
+            cx: "380",
+            cy: "432",
+            r: "14"
+          })
+        );
+
+        groundLayer.appendChild(groundFragment);
+        districtAreaLayer.appendChild(districtAreaFragment);
+        barLayer.appendChild(barFragment);
+        districtBoundaryLayer.appendChild(districtBoundaryFragment);
+        flowLayer.appendChild(flowFragment);
+        districtLabelLayer.appendChild(districtLabelFragment);
+      }
+
+      function renderLegend(index) {
+        if (index === 0) {
+          legend.innerHTML = `
+            <div class="legend-item">
+              <span class="legend-chip surface"></span>
+              <span>Raw satellite surface</span>
+            </div>
+            <div class="legend-item">
+              <span>Same frame, no allocation yet</span>
+            </div>
+          `;
+          return;
+        }
+
+        if (index === 1) {
+          legend.innerHTML = `
+            <div class="legend-item">
+              <span class="legend-chip volume"></span>
+              <span>Residential volume bar</span>
+            </div>
+            <div class="legend-item">
+              <span>Higher bar = more housing volume</span>
+            </div>
+          `;
+          return;
+        }
+
+        legend.innerHTML = `
+          <div class="legend-item">
+            <span class="legend-chip census"></span>
+            <span>Administrative census total</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-line"></span>
+            <span>Weighted redistribution</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-chip volume"></span>
+            <span>Cell population estimate</span>
+          </div>
+        `;
+      }
+
+      function applyScene(index) {
+        const scene = scenes[index];
+        sceneCopy.className = `scene-copy ${scene.tone}`;
+        sceneKicker.textContent = scene.kicker;
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+        renderLegend(index);
+
+        imageryLayer.style.opacity = String([1, 0.18, 0.08][index]);
+
+        cells.forEach((cell) => {
+          cell.ground.style.opacity = index === 0 ? "0" : "1";
+          if (index === 2) {
+            cell.ground.setAttribute("fill", districts[cell.district].color);
+            cell.ground.setAttribute("fill-opacity", "0.11");
+            cell.ground.setAttribute("stroke", "rgba(255, 255, 255, 0.14)");
+          } else {
+            cell.ground.setAttribute("fill", "rgba(255, 255, 255, 0.03)");
+            cell.ground.setAttribute("fill-opacity", "1");
+            cell.ground.setAttribute("stroke", "rgba(255, 255, 255, 0.08)");
+          }
+          if (cell.barGroup) {
+            cell.barGroup.classList.toggle("is-visible", index > 0);
+          }
+        });
+
+        applyBarColors(index < 2 ? "volume" : "population");
+
+        districtAreaLayer.querySelectorAll(".district-area").forEach((node) => {
+          node.classList.toggle("is-visible", index === 2);
+        });
+
+        districtLabelLayer.querySelectorAll(".district-label").forEach((node) => {
+          node.classList.toggle("is-visible", index === 2);
+        });
+
+        districtBoundaryLayer.querySelectorAll(".district-boundary, .district-hub").forEach((node) => {
+          node.classList.toggle("is-visible", index === 2);
+        });
+
+        flowLayer.querySelectorAll(".allocation-link").forEach((node) => {
+          node.classList.toggle("is-visible", index === 2);
+        });
+      }
+
+      function getSceneIndex(progress) {
+        if (progress < 0.3) return 0;
+        if (progress < 0.62) return 1;
+        return 2;
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(getSceneIndex(progress));
+      }
+
+      let ticking = false;
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        renderImagery();
+        renderStructure();
+        applyScene(0);
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>

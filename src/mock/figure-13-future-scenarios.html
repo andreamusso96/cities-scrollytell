@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figure 13 Mock - Future Scenarios</title>
+    <style>
+      :root {
+        --bg: #050607;
+        --ink: #f5efe5;
+        --muted: #b8ada0;
+        --axis: #2c3946;
+        --runaway: #ff8b67;
+        --extrapolation: #f1c56d;
+        --lifecycle: #67e0cc;
+        --proportional: #8ac6ff;
+        --card: rgba(16, 19, 24, 0.92);
+        --shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+        background:
+          radial-gradient(circle at top left, rgba(26, 32, 40, 0.48), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(18, 22, 29, 0.56), transparent 24%),
+          linear-gradient(180deg, #080a0d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: 100%;
+        overflow-x: clip;
+      }
+
+      .article {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 26px 18px 56px;
+      }
+
+      .article.intro {
+        padding-bottom: 0;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .prose {
+        font-size: clamp(19px, 4.6vw, 24px);
+        line-height: 1.52;
+      }
+
+      .prose p {
+        margin: 0 0 1.1em;
+        color: #ddd4c8;
+      }
+
+      .graph-section {
+        position: relative;
+        height: 360vh;
+        margin: 0 calc(50% - 50vw) 4vh;
+      }
+
+      .graph-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 0 10px;
+      }
+
+      .figure-shell {
+        position: relative;
+        width: min(100%, 760px);
+        height: 100vh;
+      }
+
+      .scene-copy {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        z-index: 7;
+        width: min(440px, calc(100% - 16px));
+        padding: 12px 14px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        background: var(--card);
+        transform: translateX(-50%);
+        box-shadow: var(--shadow);
+        transition: border-color 220ms ease;
+      }
+
+      .scene-copy.setup {
+        border-left-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .scene-copy.runaway {
+        border-left-color: var(--runaway);
+      }
+
+      .scene-copy.extrapolation {
+        border-left-color: var(--extrapolation);
+      }
+
+      .scene-copy.lifecycle {
+        border-left-color: var(--lifecycle);
+      }
+
+      .scene-copy.proportional {
+        border-left-color: var(--proportional);
+      }
+
+      .scene-kicker {
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .scene-title {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .scene-body {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.42;
+      }
+
+      .chart-wrap {
+        position: absolute;
+        inset: 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .axis-group {
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .axis-line {
+        stroke: var(--axis);
+        stroke-width: 2;
+      }
+
+      .tick-line {
+        stroke: var(--axis);
+        stroke-width: 1.5;
+      }
+
+      .axis-label,
+      .tick-text {
+        fill: var(--ink);
+        font-family: Arial, sans-serif;
+        font-weight: 700;
+      }
+
+      .axis-label {
+        font-size: 18px;
+      }
+
+      .tick-text {
+        font-size: 16px;
+      }
+
+      .tick-sub {
+        fill: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .curve {
+        fill: none;
+        stroke-width: 4.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .curve.runaway {
+        stroke: var(--runaway);
+      }
+
+      .curve.extrapolation {
+        stroke: var(--extrapolation);
+      }
+
+      .curve.lifecycle {
+        stroke: var(--lifecycle);
+      }
+
+      .curve.proportional {
+        stroke: var(--proportional);
+      }
+
+      .scenario-label {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .scenario-label.runaway {
+        fill: var(--runaway);
+      }
+
+      .scenario-label.extrapolation {
+        fill: var(--extrapolation);
+      }
+
+      .scenario-label.lifecycle {
+        fill: var(--lifecycle);
+      }
+
+      .scenario-label.proportional {
+        fill: var(--proportional);
+      }
+
+      .scenario-label.is-visible {
+        opacity: 1;
+      }
+
+      .scenario-legend {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 18px;
+        z-index: 6;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .legend-line {
+        width: 18px;
+        height: 0;
+        border-top: 3px solid;
+      }
+
+      .legend-line.runaway {
+        border-color: var(--runaway);
+      }
+
+      .legend-line.extrapolation {
+        border-color: var(--extrapolation);
+      }
+
+      .legend-line.lifecycle {
+        border-color: var(--lifecycle);
+      }
+
+      .legend-line.proportional {
+        border-color: var(--proportional);
+      }
+
+      @media (max-width: 720px) {
+        .article {
+          padding: 20px 16px 54px;
+        }
+
+        .graph-section {
+          height: 390vh;
+        }
+
+        .scene-copy {
+          top: 10px;
+          width: calc(100% - 12px);
+          padding: 10px 12px 11px;
+        }
+
+        .scene-title {
+          font-size: 20px;
+        }
+
+        .scene-body {
+          font-size: 14px;
+        }
+
+        .axis-label {
+          font-size: 28px;
+        }
+
+        .tick-text {
+          font-size: 24px;
+        }
+
+        .tick-sub {
+          font-size: 22px;
+        }
+
+        .scenario-label {
+          font-size: 18px;
+        }
+
+        .legend-item {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <article class="article intro">
+        <h1>The forecast depends on which urban logic you carry forward</h1>
+        <div class="prose">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mattis, ipsum nec tristique aliquet, purus purus feugiat nibh, non posuere massa arcu non lectus.</p>
+          <p>Now swap the size-growth chart for a time-series forecast. All four curves begin from the same recent history and then diverge according to different assumptions about how urban concentration evolves.</p>
+          <p>Integer tempor nibh non mauris accumsan, in ultrices arcu blandit. Sed vitae risus in tellus gravida commodo.</p>
+        </div>
+      </article>
+
+      <section id="graph-section" class="graph-section" aria-label="Forecast scenarios for world population in million-plus cities">
+        <div class="graph-stage">
+          <div class="figure-shell">
+            <div id="scene-copy" class="scene-copy setup">
+              <div id="scene-kicker" class="scene-kicker">Forecast setup</div>
+              <div id="scene-title" class="scene-title">Fade in the time axis</div>
+              <div id="scene-body" class="scene-body">Start by changing the horizontal logic of the chart. We are no longer asking which cities grow faster by size, but how the world of million-plus cities evolves from 1975 to 2100.</div>
+            </div>
+
+            <div class="chart-wrap">
+              <svg viewBox="0 0 760 900" role="img" aria-label="Four future scenarios for world population in million-plus cities from 1975 to 2100">
+                <g transform="translate(88 170)">
+                  <g id="y-axis-group" class="axis-group">
+                    <line x1="0" y1="120" x2="0" y2="470" class="axis-line"></line>
+                    <line x1="-10" y1="470" x2="0" y2="470" class="tick-line"></line>
+                    <line x1="-10" y1="404" x2="0" y2="404" class="tick-line"></line>
+                    <line x1="-10" y1="338" x2="0" y2="338" class="tick-line"></line>
+                    <line x1="-10" y1="272" x2="0" y2="272" class="tick-line"></line>
+                    <line x1="-10" y1="206" x2="0" y2="206" class="tick-line"></line>
+                    <line x1="-10" y1="140" x2="0" y2="140" class="tick-line"></line>
+                    <text x="-18" y="476" text-anchor="end" class="tick-sub">0B</text>
+                    <text x="-18" y="410" text-anchor="end" class="tick-sub">1B</text>
+                    <text x="-18" y="344" text-anchor="end" class="tick-sub">2B</text>
+                    <text x="-18" y="278" text-anchor="end" class="tick-sub">3B</text>
+                    <text x="-18" y="212" text-anchor="end" class="tick-sub">4B</text>
+                    <text x="-18" y="146" text-anchor="end" class="tick-sub">5B</text>
+                    <text x="0" y="42" class="axis-label">World population in 1M+ cities</text>
+                  </g>
+
+                  <g id="x-axis-group" class="axis-group">
+                    <line x1="0" y1="470" x2="592" y2="470" class="axis-line"></line>
+                    <line x1="0" y1="470" x2="0" y2="482" class="tick-line"></line>
+                    <line x1="118.4" y1="470" x2="118.4" y2="482" class="tick-line"></line>
+                    <line x1="236.8" y1="470" x2="236.8" y2="482" class="tick-line"></line>
+                    <line x1="355.2" y1="470" x2="355.2" y2="482" class="tick-line"></line>
+                    <line x1="473.6" y1="470" x2="473.6" y2="482" class="tick-line"></line>
+                    <line x1="592" y1="470" x2="592" y2="482" class="tick-line"></line>
+                    <text x="0" y="524" text-anchor="middle" class="tick-text">1975</text>
+                    <text x="118.4" y="524" text-anchor="middle" class="tick-text">2000</text>
+                    <text x="236.8" y="524" text-anchor="middle" class="tick-text">2025</text>
+                    <text x="355.2" y="524" text-anchor="middle" class="tick-text">2050</text>
+                    <text x="473.6" y="524" text-anchor="middle" class="tick-text">2075</text>
+                    <text x="592" y="524" text-anchor="middle" class="tick-text">2100</text>
+                    <text x="296" y="578" text-anchor="middle" class="axis-label">Year</text>
+                  </g>
+
+                  <g id="runaway-group">
+                    <path id="runaway-path" class="curve runaway" d="M 0.0 433.7 L 118.4 413.9 L 236.8 374.3 L 355.2 311.6 L 473.6 235.7 L 592.0 156.5"></path>
+                    <text id="runaway-label" x="608" y="160" text-anchor="start" class="scenario-label runaway">RW</text>
+                  </g>
+
+                  <g id="extrapolation-group">
+                    <path id="extrapolation-path" class="curve extrapolation" d="M 0.0 433.7 L 118.4 413.9 L 236.8 374.3 L 355.2 328.1 L 473.6 275.3 L 592.0 225.8"></path>
+                    <text id="extrapolation-label" x="608" y="230" text-anchor="start" class="scenario-label extrapolation">EX</text>
+                  </g>
+
+                  <g id="lifecycle-group">
+                    <path id="lifecycle-path" class="curve lifecycle" d="M 0.0 433.7 L 118.4 413.9 L 236.8 374.3 L 355.2 341.3 L 473.6 308.3 L 592.0 265.4"></path>
+                    <text id="lifecycle-label" x="608" y="270" text-anchor="start" class="scenario-label lifecycle">LC</text>
+                  </g>
+
+                  <g id="proportional-group">
+                    <path id="proportional-path" class="curve proportional" d="M 0.0 433.7 L 118.4 413.9 L 236.8 374.3 L 355.2 357.8 L 473.6 334.7 L 592.0 308.3"></path>
+                    <text id="proportional-label" x="608" y="312" text-anchor="start" class="scenario-label proportional">PO</text>
+                  </g>
+                </g>
+              </svg>
+            </div>
+
+            <div class="scenario-legend">
+              <div class="legend-item"><span class="legend-line runaway"></span><span>Runaway</span></div>
+              <div class="legend-item"><span class="legend-line extrapolation"></span><span>Extrapolation</span></div>
+              <div class="legend-item"><span class="legend-line lifecycle"></span><span>Lifecycle</span></div>
+              <div class="legend-item"><span class="legend-line proportional"></span><span>Proportional</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article">
+        <div class="prose">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tincidunt lectus at tristique feugiat. Aliquam erat volutpat.</p>
+          <p>The key comparison is not just which line ends highest, but which model best matches the lifecycle evidence established in the earlier scenes.</p>
+          <p>Suspendisse eget nunc at lectus pulvinar posuere. Integer convallis erat quis justo interdum, ac vestibulum sem luctus.</p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const section = document.getElementById("graph-section");
+      const sceneCopy = document.getElementById("scene-copy");
+      const sceneKicker = document.getElementById("scene-kicker");
+      const sceneTitle = document.getElementById("scene-title");
+      const sceneBody = document.getElementById("scene-body");
+      const xAxisGroup = document.getElementById("x-axis-group");
+      const yAxisGroup = document.getElementById("y-axis-group");
+
+      const curveItems = [
+        {
+          path: document.getElementById("runaway-path"),
+          label: document.getElementById("runaway-label")
+        },
+        {
+          path: document.getElementById("extrapolation-path"),
+          label: document.getElementById("extrapolation-label")
+        },
+        {
+          path: document.getElementById("lifecycle-path"),
+          label: document.getElementById("lifecycle-label")
+        },
+        {
+          path: document.getElementById("proportional-path"),
+          label: document.getElementById("proportional-label")
+        }
+      ];
+
+      const scenes = [
+        {
+          tone: "setup",
+          kicker: "Forecast setup",
+          title: "Fade in the time axis",
+          body: "Start by changing the horizontal logic of the chart. We are no longer asking which cities grow faster by size, but how the world of million-plus cities evolves from 1975 to 2100."
+        },
+        {
+          tone: "setup",
+          kicker: "Forecast setup",
+          title: "Now add the population axis",
+          body: "The vertical scale tracks how many people live in million-plus cities worldwide. Every model will now translate the same urban future into a different total by 2100."
+        },
+        {
+          tone: "runaway",
+          kicker: "Scenario RW",
+          title: "Add runaway growth",
+          body: "In the runaway case, the biggest cities keep compounding their advantage. The population living in million-plus cities surges upward fastest."
+        },
+        {
+          tone: "extrapolation",
+          kicker: "Scenario EX",
+          title: "Add extrapolation",
+          body: "This curve simply extends recent concentration trends forward. It assumes the current direction persists, but without the most extreme feedback of runaway growth."
+        },
+        {
+          tone: "lifecycle",
+          kicker: "Scenario LC",
+          title: "Add lifecycle",
+          body: "The lifecycle model assumes today’s big-city advantage weakens as more national systems mature. Concentration keeps rising, but more slowly."
+        },
+        {
+          tone: "proportional",
+          kicker: "Scenario PO",
+          title: "Add proportional growth",
+          body: "In the proportional case, all cities grow at the same rate. Million-plus cities gain population only in line with the total urban system."
+        }
+      ];
+
+      function clamp(value, min = 0, max = 1) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function rangeProgress(progress, start, end) {
+        return clamp((progress - start) / (end - start), 0, 1);
+      }
+
+      function setupPath(path) {
+        const length = path.getTotalLength();
+        path.style.strokeDasharray = String(length);
+        path.style.strokeDashoffset = String(length);
+      }
+
+      function setFade(element, progress) {
+        element.style.opacity = String(progress);
+      }
+
+      function setCurve(path, label, progress) {
+        const length = path.getTotalLength();
+        path.style.strokeDashoffset = String(length * (1 - progress));
+        label.classList.toggle("is-visible", progress > 0.85);
+        label.style.opacity = String(clamp((progress - 0.74) / 0.26, 0, 1));
+      }
+
+      function applyScene(progress) {
+        const xAxisProgress = rangeProgress(progress, 0.04, 0.14);
+        const yAxisProgress = rangeProgress(progress, 0.14, 0.24);
+        const runawayProgress = rangeProgress(progress, 0.24, 0.4);
+        const extrapolationProgress = rangeProgress(progress, 0.4, 0.56);
+        const lifecycleProgress = rangeProgress(progress, 0.56, 0.72);
+        const proportionalProgress = rangeProgress(progress, 0.72, 0.88);
+
+        let sceneIndex = 0;
+        if (progress >= 0.72) {
+          sceneIndex = 5;
+        } else if (progress >= 0.56) {
+          sceneIndex = 4;
+        } else if (progress >= 0.4) {
+          sceneIndex = 3;
+        } else if (progress >= 0.24) {
+          sceneIndex = 2;
+        } else if (progress >= 0.14) {
+          sceneIndex = 1;
+        }
+
+        const scene = scenes[sceneIndex];
+        sceneCopy.className = `scene-copy ${scene.tone}`;
+        sceneKicker.textContent = scene.kicker;
+        sceneTitle.textContent = scene.title;
+        sceneBody.textContent = scene.body;
+
+        setFade(xAxisGroup, xAxisProgress);
+        setFade(yAxisGroup, yAxisProgress);
+        setCurve(curveItems[0].path, curveItems[0].label, runawayProgress);
+        setCurve(curveItems[1].path, curveItems[1].label, extrapolationProgress);
+        setCurve(curveItems[2].path, curveItems[2].label, lifecycleProgress);
+        setCurve(curveItems[3].path, curveItems[3].label, proportionalProgress);
+      }
+
+      function update() {
+        const rect = section.getBoundingClientRect();
+        const total = section.offsetHeight - window.innerHeight;
+        const traveled = clamp(-rect.top, 0, total);
+        const progress = total > 0 ? traveled / total : 0;
+        applyScene(progress);
+      }
+
+      let ticking = false;
+
+      function onScroll() {
+        if (ticking) {
+          return;
+        }
+
+        ticking = true;
+        requestAnimationFrame(() => {
+          update();
+          ticking = false;
+        });
+      }
+
+      function init() {
+        curveItems.forEach((item) => setupPath(item.path));
+        update();
+      }
+
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", update);
+
+      init();
+    </script>
+  </body>
+</html>
