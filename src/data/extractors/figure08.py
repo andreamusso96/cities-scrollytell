@@ -166,6 +166,16 @@ def format_percent_label(value: int) -> str:
 
 
 def build_y_axis(y_pct: np.ndarray, ci_low_pct: np.ndarray, ci_high_pct: np.ndarray) -> dict[str, Any]:
+    if config.FIGURE_08_Y_DOMAIN and config.FIGURE_08_Y_TICKS:
+        return {
+            "domain": list(config.FIGURE_08_Y_DOMAIN),
+            "ticks": [
+                {"value": value, "label": format_percent_label(value)}
+                for value in config.FIGURE_08_Y_TICKS
+            ],
+            "label": config.Y_AXIS_LABEL,
+        }
+
     raw_min = min(float(np.min(y_pct)), float(np.min(ci_low_pct)), 0.0)
     raw_max = max(float(np.max(y_pct)), float(np.max(ci_high_pct)), 0.0)
 
@@ -204,7 +214,7 @@ def format_annotation_subtitle(value: float) -> str:
     prefix = "+" if value > 0 else ""
     if math.isclose(value, 0.0, abs_tol=1e-9):
         prefix = ""
-    return f"{prefix}{value:.1f}% next-decade growth"
+    return f"{prefix}{value:.1f}%"
 
 
 def interpolate_annotation_values(

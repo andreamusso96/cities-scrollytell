@@ -8,40 +8,100 @@
   import PlaceholderCanvas from "$lib/components/PlaceholderCanvas.svelte";
   import ProseSection from "$lib/components/ProseSection.svelte";
   import StickyScene from "$lib/components/StickyScene.svelte";
-  import WorldGlobeCanvas from "$lib/components/world-globe/WorldGlobeCanvas.svelte";
-  import type { WorldGlobeScene } from "$lib/components/world-globe/types";
   import XYGraphCanvas from "$lib/components/xy-graph/XYGraphCanvas.svelte";
-  import type { XYGraph } from "$lib/components/xy-graph/types";
+  import type { XYGraph, XYLinePattern } from "$lib/components/xy-graph/types";
+  import type { PageData } from "./$types";
 
   type SceneKind =
     | "dot-comparison"
     | "future-distribution"
     | "xy-world"
+    | "xy-regions"
+    | "xy-usa-periods"
+    | "xy-usa-korea-periods"
     | "xy-scenarios"
     | "map-paris"
+    | "map-prd"
     | "map-ghsl"
     | "map-allocation"
-    | "world-globe"
     | "placeholder";
 
   type LegendItem = {
     label: string;
     color: string;
     shape?: "line" | "fill" | "outline";
+    linePattern?: XYLinePattern;
   };
+
+  type GeneratedLegend = {
+    id: string;
+    label: string;
+    color: string;
+    linePattern?: XYLinePattern;
+  };
+
+  type GeneratedXYFigure = {
+    id: string;
+    kind: SceneKind;
+    graph: XYGraph;
+    legend?: GeneratedLegend[];
+  };
+
+  type GeneratedLayeredMapStep = {
+    id: string;
+    visibleLayerIds: string[];
+  };
+
+  type GeneratedLayeredMapFigure = {
+    id: string;
+    kind: "layered-map-paris" | "layered-map-prd";
+    map: LayeredMapScene;
+    scenes: GeneratedLayeredMapStep[];
+  };
+
+  type GeneratedFutureDistributionScene = Omit<FutureDistributionScene, "maxFutureByBin"> & {
+    id: string;
+    title: string;
+  };
+
+  type GeneratedFutureDistributionFigure = {
+    id: string;
+    kind: "future-distribution";
+    meta: {
+      brick: {
+        maxFutureByBin: number[];
+      };
+    };
+    scenes: GeneratedFutureDistributionScene[];
+  };
+
+  type GeneratedFigures = {
+    figure02: GeneratedFutureDistributionFigure;
+    figure03: GeneratedLayeredMapFigure;
+    figure07: GeneratedLayeredMapFigure;
+    figure08: GeneratedXYFigure;
+    figure09: GeneratedXYFigure;
+    figure11: GeneratedXYFigure;
+    figure12: GeneratedXYFigure;
+    figure13: GeneratedXYFigure;
+  };
+
+  export let data: PageData;
+
+  $: generatedFigures = data.generatedFigures as GeneratedFigures;
 
   const introParagraphs = [
     "Take two cities. One has 100,000 people. The other has 10 million. The bigger one does not just contain more people. Those people are qualitatively different. They are more productive, as measured by their wage, which is 74% higher.",
-    "They are more innovative: they are 3.5 times more likely to produce a patent. As a result, wealth and innovation concentrate. In the United States, the ten most innovative metros account for 23% of the population, but 48% of patents and 33% of GDP."
+    "They are more innovative: they are 3.5 times more likely to produce a patent. As a result, wealth and innovation concentrate. In the United States, the ten most innovative metros account for 23% of the population, but 48% of patents and 33% of GDP.",
+    "And when we get to fronteer knowledge this is even more pronounced. People in large cities are more 3.5 time more likely to produce any type of patent, but are X times more likely to produce a patent in a fronteer industry like farma or advanaced tech.",
+        "The general idea is that there are non-linear scaling laws. As city get bigger --- their scale increases --- the people within them become qualitatively different, e.g.,they are more innovative, more productive.",
+        "The scaling pattern, however, cuts both ways. The downsides scale too. For example, people in big cities have X% higher CO2 emissions. They are X% more likely to contract sexually transmitted diseases. They spend X% more time in traffic and X% more of their salary on their homes.",
+        "Put simply, big cities amplify invention and income, but they also amplify congestion, land pressure, infrastructure stress."
   ];
 
   const proseSections: Array<{ heading?: string; paragraphs: string[] }> = [
     {
       paragraphs: [
-        "And when we get to fronteer knowledge this is even more pronounced. People in large cities are more 3.5 time more likely to produce any type of patent, but are X times more likely to produce a patent in a fronteer industry like farma or advanaced tech.",
-        "The general idea is that there are non-linear scaling laws. As city get bigger --- their scale increases --- the people within them become qualitatively different, e.g.,they are more innovative, more productive.",
-        "The scaling pattern, however, cuts both ways. The downsides scale too. For example, people in big cities have X% higher CO2 emissions. They are X% more likely to contract sexually transmitted diseases. They spend X% more time in traffic and X% more of their salary on their homes.",
-        "Put simply, big cities amplify invention and income, but they also amplify congestion, land pressure, infrastructure stress.",
         "So whether we are all going to live in megacities is a curiosity. It is a crucial determinant of how much wealth we can produce, where our technological frontier sits, and how we are going to impact and consume the resources of our planet.",
         "Cities overall are growing fast. Every 2 months the urban population adds 20 million people. That is one New York City worth of people. It was not always like this. In the 1800s, urbanization was a thing of few countries. Mostly industrializing countries in the west. England was first, followed by Benelux area. Then the US. Latin America. Southern Europe. North Africa. Evereyone else. [Check the sequence is correct]. Today, every country is either urban or rapidly urbanizing. More than 50% of humanity lives in cities. And in the next 75 years, cities are projected to add about X billion residents.",
         "Where will these people go? Small towns or sprawling mega-cities? Three scenarios are possible.",
@@ -123,6 +183,22 @@
       ]
     }
   ];
+
+  const displayedProseSections = proseSections.reduce<Array<{ heading?: string; paragraphs: string[] }>>(
+    (sections, section, index) => {
+      if (index === 5 && sections[4]) {
+        sections[4] = {
+          heading: sections[4].heading,
+          paragraphs: [...sections[4].paragraphs, ...section.paragraphs]
+        };
+        return sections;
+      }
+
+      sections.push(section);
+      return sections;
+    },
+    []
+  );
 
   const stickyScenes: Array<{
     id: string;
@@ -206,28 +282,17 @@
       ]
     },
     {
-      id: "figure-06",
-      kind: "world-globe",
-      ariaLabel: "Figure 6",
-      pinDurationVh: 420,
-      tailHoldVh: 110,
-      steps: [
-        { id: "globe-a", kicker: "Global city panel", title: "Start with the globe", body: "The point is scale. The same city logic is now being applied across the world in one rotating frame.", accentColor: "#67e0cc" },
-        { id: "globe-b", kicker: "Coverage", title: "Add country coverage", body: "First make the reach explicit: this panel covers dozens of countries at once.", accentColor: "#67e0cc" },
-        { id: "globe-c", kicker: "Coverage", title: "Add population coverage", body: "Then show how much of the world population is included inside the same measurement frame.", accentColor: "#67e0cc" },
-        { id: "globe-d", kicker: "Coverage", title: "Add observations", body: "Now surface the scale of the panel itself: the dataset is not one snapshot, but millions of city-year observations.", accentColor: "#67e0cc" },
-        { id: "globe-e", kicker: "Coverage", title: "Finish with the time window", body: "Finally reveal the panel span. The same logic is applied repeatedly from 1975 to 2025.", accentColor: "#67e0cc" }
-      ]
-    },
-    {
       id: "figure-07",
-      kind: "placeholder",
+      kind: "map-prd",
       ariaLabel: "Figure 7",
-      pinDurationVh: 220,
-      placeholderLabel: "Figure 7",
-      placeholderNote: "Mock pending: megacities seem to be winning",
+      pinDurationVh: 380,
       steps: [
-        { id: "p7-a", kicker: "Figure 7", title: "Megacities seem to be winning", body: "This slot will hold the first-result visual about the apparent rise of giant cities.", accentColor: "#67e0cc" }
+        { id: "prd-a", kicker: "Pearl River Delta", title: "1975", body: "Start from the fragmented delta city field in 1975. The region is still a loose constellation of separate clusters.", accentColor: "#7a8794" },
+        { id: "prd-b", kicker: "Pearl River Delta", title: "1985", body: "By 1985 the field thickens, but most clusters are still clearly distinct.", accentColor: "#93a2b2" },
+        { id: "prd-c", kicker: "Pearl River Delta", title: "1995", body: "In 1995 the urban mass expands sharply across the delta.", accentColor: "#b2c0cf" },
+        { id: "prd-d", kicker: "Pearl River Delta", title: "2005", body: "By 2005 the major centers are visibly pushing into one another.", accentColor: "#7ed7cb" },
+        { id: "prd-e", kicker: "Pearl River Delta", title: "2015", body: "In 2015 the urbanized field becomes much more continuous across the estuary.", accentColor: "#8cf0de" },
+        { id: "prd-f", kicker: "Pearl River Delta", title: "2025", body: "By 2025 the Pearl River Delta reads as a vast composite urban region rather than a handful of isolated cities.", accentColor: "#67e0cc" }
       ]
     },
     {
@@ -243,35 +308,34 @@
     },
     {
       id: "figure-09",
-      kind: "placeholder",
+      kind: "xy-regions",
       ariaLabel: "Figure 9",
-      pinDurationVh: 220,
-      placeholderLabel: "Figure 9",
-      placeholderNote: "Mock pending: regional split",
+      pinDurationVh: 320,
       steps: [
-        { id: "p9-a", kicker: "Figure 9", title: "The world is split", body: "This slot will hold the comparison between Asia and Africa versus Europe and the Americas.", accentColor: "#67e0cc" }
+        { id: "p9-a", kicker: "Regional split", title: "Add Asia", body: "Keep the world curve as the backdrop and draw Asia first, where large cities clearly pull ahead.", accentColor: "#ff8b67" },
+        { id: "p9-b", kicker: "Regional split", title: "Add Africa", body: "Africa follows a similar pattern. Large cities there also outgrow the national urban average.", accentColor: "#f1c56d" },
+        { id: "p9-c", kicker: "Regional split", title: "Add Europe", body: "Europe bends the pattern down. The large-city advantage is much weaker.", accentColor: "#8ac6ff" },
+        { id: "p9-d", kicker: "Regional split", title: "Add the Americas", body: "In the Americas the curve flattens further and even tilts negative at the top end.", accentColor: "#b6dc7c" }
       ]
     },
     {
       id: "figure-11",
-      kind: "placeholder",
+      kind: "xy-usa-periods",
       ariaLabel: "Figure 11",
-      pinDurationVh: 220,
-      placeholderLabel: "Figure 11",
-      placeholderNote: "Mock pending: U.S. long-run series",
+      pinDurationVh: 260,
       steps: [
-        { id: "p11-a", kicker: "Figure 11", title: "The U.S. lifecycle", body: "This slot will hold the U.S. historical reconstruction from 1850 to today.", accentColor: "#67e0cc" }
+        { id: "p11-a", kicker: "U.S. lifecycle", title: "Draw the early United States", body: "In the early phase, larger U.S. cities enjoyed a strong growth premium over the national urban average.", accentColor: "#ff8b67" },
+        { id: "p11-b", kicker: "U.S. lifecycle", title: "Add the later United States", body: "Later on, the same relationship flattens substantially. The large-city advantage weakens.", accentColor: "#8ac6ff" }
       ]
     },
     {
       id: "figure-12",
-      kind: "placeholder",
+      kind: "xy-usa-korea-periods",
       ariaLabel: "Figure 12",
-      pinDurationVh: 220,
-      placeholderLabel: "Figure 12",
-      placeholderNote: "Mock pending: South Korea fast-forward",
+      pinDurationVh: 260,
       steps: [
-        { id: "p12-a", kicker: "Figure 12", title: "Korea in fast-forward", body: "This slot will hold the accelerated urban lifecycle visible in South Korea.", accentColor: "#67e0cc" }
+        { id: "p12-a", kicker: "Korea in fast-forward", title: "Add early South Korea", body: "Use the U.S. pair as the reference, then draw Korea’s early period with its steep large-city premium.", accentColor: "#ff8b67" },
+        { id: "p12-b", kicker: "Korea in fast-forward", title: "Add later South Korea", body: "Korea then moves toward the flatter later-stage pattern in just a few decades.", accentColor: "#8ac6ff" }
       ]
     },
     {
@@ -286,43 +350,6 @@
         { id: "step-d", kicker: "XY graph", title: "Add the remaining lines", body: "Additional curves then draw into the same coordinate system without changing the canvas type." }
       ]
     }
-  ];
-
-  const worldCurvePoints = [
-    { x: 10_000, y: -10 },
-    { x: 30_000, y: -9 },
-    { x: 100_000, y: -7 },
-    { x: 300_000, y: -3 },
-    { x: 1_000_000, y: 2 },
-    { x: 3_000_000, y: 8 },
-    { x: 10_000_000, y: 17 }
-  ];
-
-  const runawayPoints = [
-    { x: 1975, y: 16 },
-    { x: 2000, y: 19 },
-    { x: 2025, y: 25 },
-    { x: 2050, y: 34 },
-    { x: 2075, y: 45 },
-    { x: 2100, y: 56 }
-  ];
-
-  const lifecyclePoints = [
-    { x: 1975, y: 16 },
-    { x: 2000, y: 19 },
-    { x: 2025, y: 25 },
-    { x: 2050, y: 31 },
-    { x: 2075, y: 36 },
-    { x: 2100, y: 41 }
-  ];
-
-  const proportionalPoints = [
-    { x: 1975, y: 16 },
-    { x: 2000, y: 19 },
-    { x: 2025, y: 25 },
-    { x: 2050, y: 29 },
-    { x: 2075, y: 33 },
-    { x: 2100, y: 36 }
   ];
 
   const dotComparisonMetrics = {
@@ -387,74 +414,9 @@
     }
   } satisfies Record<string, DotComparisonScene["metric"] & NonNullable<DotComparisonScene["metric"]>>;
 
-  const futureDistributionBins = [
-    { label: "<100K", sublabel: "small cities" },
-    { label: "100K–1M", sublabel: "mid-size metros" },
-    { label: "1M–10M", sublabel: "large metros" },
-    { label: "10M+", sublabel: "megacities" }
-  ];
-
-  const futureDistributionLayouts = {
-    today: [0, 0, 0, 0],
-    balanced: [1, 4, 5, 2],
-    giants: [0, 2, 6, 4],
-    distributed: [4, 4, 3, 1]
-  };
-
-  const properBoundaryPath =
-    "M 372 286 L 414 270 L 450 290 L 464 334 L 446 378 L 404 396 L 364 382 L 344 334 Z";
-  const builtUpPath =
-    "M 278 210 C 340 182, 446 186, 516 226 C 576 268, 600 352, 566 430 C 528 496, 426 534, 322 518 C 234 504, 184 438, 188 356 C 190 290, 222 236, 278 210 Z";
-  const attractionPath =
-    "M 178 134 C 258 94, 386 86, 520 120 C 618 154, 694 236, 716 340 C 740 452, 694 540, 608 592 C 520 646, 370 650, 252 612 C 160 582, 96 510, 82 402 C 68 286, 100 194, 178 134 Z";
-
   function svgDataUri(svg: string) {
     return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
   }
-
-  const parisSatelliteImage = svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-      <defs>
-        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#0b1117"/>
-          <stop offset="100%" stop-color="#0d141b"/>
-        </linearGradient>
-        <filter id="blur" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="18"/>
-        </filter>
-      </defs>
-      <rect width="800" height="600" fill="url(#bg)"/>
-      <g opacity="0.92">
-        <path d="M30 120 C200 70, 330 150, 470 120 S690 78, 770 132" fill="none" stroke="#18242e" stroke-width="12"/>
-        <path d="M22 208 C172 168, 314 244, 468 224 S650 190, 778 240" fill="none" stroke="#14202a" stroke-width="14"/>
-        <path d="M26 316 C172 274, 320 350, 468 326 S664 290, 780 346" fill="none" stroke="#18242e" stroke-width="10"/>
-        <path d="M18 432 C164 390, 324 466, 476 440 S664 406, 782 458" fill="none" stroke="#131d26" stroke-width="13"/>
-        <path d="M84 24 L168 576" stroke="#16222c" stroke-width="10"/>
-        <path d="M248 10 L322 586" stroke="#111920" stroke-width="8"/>
-        <path d="M432 14 L470 590" stroke="#16222c" stroke-width="10"/>
-        <path d="M640 12 L592 586" stroke="#111920" stroke-width="8"/>
-      </g>
-      <g opacity="0.95">
-        <path d="M340 78 C366 110, 366 164, 336 206 C312 240, 308 282, 336 322 C372 374, 428 390, 448 438 C460 468, 458 518, 438 570" fill="none" stroke="#6fa3e7" stroke-width="10" stroke-linecap="round"/>
-        <path d="M354 96 C376 122, 376 162, 350 202 C328 236, 326 278, 352 316 C386 364, 434 384, 448 426 C456 454, 452 500, 434 548" fill="none" stroke="#8ac0ff" stroke-width="4" stroke-linecap="round" opacity="0.92"/>
-      </g>
-      <g opacity="0.62">
-        <path d="M104 116 C154 78, 230 88, 274 130 C244 180, 174 194, 120 168 Z" fill="#15241f"/>
-        <path d="M520 82 C590 62, 670 102, 694 166 C656 194, 584 204, 532 176 C510 150, 506 110, 520 82 Z" fill="#13231e"/>
-        <path d="M566 420 C638 392, 706 434, 708 492 C676 528, 602 534, 558 506 C542 474, 542 438, 566 420 Z" fill="#14251f"/>
-        <path d="M88 420 C148 394, 228 420, 248 480 C220 524, 150 540, 104 510 C82 478, 76 444, 88 420 Z" fill="#14241f"/>
-      </g>
-      <g opacity="0.2" filter="url(#blur)">
-        <ellipse cx="402" cy="314" rx="108" ry="84" fill="#ffffff"/>
-      </g>
-      <g opacity="0.3">
-        <path d="M120 236 L692 236" stroke="#1a2630" stroke-width="3" stroke-dasharray="8 12"/>
-        <path d="M138 390 L680 390" stroke="#1a2630" stroke-width="3" stroke-dasharray="8 12"/>
-        <path d="M232 140 L232 544" stroke="#1a2630" stroke-width="3" stroke-dasharray="8 12"/>
-        <path d="M538 112 L538 560" stroke="#1a2630" stroke-width="3" stroke-dasharray="8 12"/>
-      </g>
-    </svg>
-  `);
 
   const ghslBaseImage = svgDataUri(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
@@ -481,12 +443,30 @@
     </svg>
   `);
 
-  const ghslGrid = {
-    x: 175,
-    y: 95,
-    size: 450,
-    cells: 15
+  type SquareGrid = {
+    x: number;
+    y: number;
+    size: number;
+    cells: number;
+    cellWidth: number;
+    cellHeight: number;
   };
+
+  function buildParisAlignedGrid(cells: number): SquareGrid {
+    const [, , mapWidth, mapHeight] = generatedFigures.figure03.map.viewport.viewBox;
+    const size = Math.min(mapWidth, mapHeight);
+    const x = (mapWidth - size) / 2;
+    const y = (mapHeight - size) / 2;
+
+    return {
+      x,
+      y,
+      size,
+      cells,
+      cellWidth: size / cells,
+      cellHeight: size / cells
+    };
+  }
 
   type GhslCell = {
     row: number;
@@ -537,9 +517,8 @@
     return Math.min(1, Math.max(0, value));
   }
 
-  function buildGhslCells() {
-    const { x, y, size, cells } = ghslGrid;
-    const cellSize = size / cells;
+  function buildGhslCells(grid: SquareGrid) {
+    const { x, y, cells, cellWidth, cellHeight } = grid;
     const threshold = 0.52;
     const result: GhslCell[] = [];
 
@@ -551,15 +530,15 @@
           col,
           value,
           urban: value >= threshold,
-          x: x + col * cellSize,
-          y: y + row * cellSize,
-          cx: x + col * cellSize + cellSize / 2,
-          cy: y + row * cellSize + cellSize / 2
+          x: x + col * cellWidth,
+          y: y + row * cellHeight,
+          cx: x + col * cellWidth + cellWidth / 2,
+          cy: y + row * cellHeight + cellHeight / 2
         });
       }
     }
 
-    return { cells: result, cellSize, threshold };
+    return { cells: result, threshold };
   }
 
   function clusterGhslCells(cells: GhslCell[], gridCount: number) {
@@ -633,11 +612,6 @@
     return clusters;
   }
 
-  const ghslPrepared = buildGhslCells();
-  const ghslCells = ghslPrepared.cells;
-  const ghslCellSize = ghslPrepared.cellSize;
-  const ghslClusters = clusterGhslCells(ghslCells, ghslGrid.cells);
-
   const allocationBaseImage = svgDataUri(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
       <defs>
@@ -661,13 +635,6 @@
     </svg>
   `);
 
-  const allocationGrid = {
-    x: 180,
-    y: 110,
-    size: 440,
-    cells: 12
-  };
-
   type AllocationCell = {
     row: number;
     col: number;
@@ -681,46 +648,53 @@
     population: number;
   };
 
-  const districtConfigs = [
-    {
-      key: "A",
-      color: "#7ab6a7",
-      points: [
-        [180, 110],
-        [400, 110],
-        [400, 350],
-        [180, 574]
-      ] as Array<[number, number]>,
-      anchorX: 284,
-      anchorY: 208,
-      linkDirection: "down" as const
-    },
-    {
-      key: "B",
-      color: "#c8a264",
-      points: [
-        [400, 110],
-        [620, 110],
-        [620, 574],
-        [400, 350]
-      ] as Array<[number, number]>,
-      anchorX: 516,
-      anchorY: 208,
-      linkDirection: "down" as const
-    },
-    {
-      key: "C",
-      color: "#c68678",
-      points: [
-        [180, 574],
-        [400, 350],
-        [620, 574]
-      ] as Array<[number, number]>,
-      anchorX: 400,
-      anchorY: 510,
-      linkDirection: "up" as const
-    }
-  ];
+  function buildDistrictConfigs(grid: SquareGrid) {
+    const allocationMidX = grid.x + grid.size / 2;
+    const allocationMidY = grid.y + grid.size * 0.56;
+    const allocationBottom = grid.y + grid.size;
+    const allocationRight = grid.x + grid.size;
+
+    return [
+      {
+        key: "A",
+        color: "#7ab6a7",
+        points: [
+          [grid.x, grid.y],
+          [allocationMidX, grid.y],
+          [allocationMidX, allocationMidY],
+          [grid.x, allocationBottom]
+        ] as Array<[number, number]>,
+        anchorX: grid.x + grid.size * 0.24,
+        anchorY: grid.y + grid.size * 0.2,
+        linkDirection: "down" as const
+      },
+      {
+        key: "B",
+        color: "#c8a264",
+        points: [
+          [allocationMidX, grid.y],
+          [allocationRight, grid.y],
+          [allocationRight, allocationBottom],
+          [allocationMidX, allocationMidY]
+        ] as Array<[number, number]>,
+        anchorX: grid.x + grid.size * 0.76,
+        anchorY: grid.y + grid.size * 0.2,
+        linkDirection: "down" as const
+      },
+      {
+        key: "C",
+        color: "#c68678",
+        points: [
+          [grid.x, allocationBottom],
+          [allocationMidX, allocationMidY],
+          [allocationRight, allocationBottom]
+        ] as Array<[number, number]>,
+        anchorX: allocationMidX,
+        anchorY: grid.y + grid.size * 0.84,
+        linkDirection: "up" as const
+      }
+    ];
+  }
 
   function pointsToPath(points: Array<[number, number]>) {
     return `M ${points.map((point) => `${point[0]} ${point[1]}`).join(" L ")} Z`;
@@ -744,7 +718,11 @@
     return inside;
   }
 
-  function districtIndexForPoint(x: number, y: number) {
+  function districtIndexForPoint(
+    x: number,
+    y: number,
+    districtConfigs: ReturnType<typeof buildDistrictConfigs>
+  ) {
     for (let index = 0; index < districtConfigs.length; index += 1) {
       if (pointInPolygon(x, y, districtConfigs[index].points)) {
         return index;
@@ -797,25 +775,27 @@
     return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
   }
 
-  function buildAllocationCells() {
-    const { x, y, size, cells } = allocationGrid;
-    const cellSize = size / cells;
+  function buildAllocationCells(
+    grid: SquareGrid,
+    districtConfigs: ReturnType<typeof buildDistrictConfigs>
+  ) {
+    const { x, y, cells, cellWidth, cellHeight } = grid;
     const result: AllocationCell[] = [];
 
     for (let row = 0; row < cells; row += 1) {
       for (let col = 0; col < cells; col += 1) {
-        const cx = x + col * cellSize + cellSize / 2;
-        const cy = y + row * cellSize + cellSize / 2;
+        const cx = x + col * cellWidth + cellWidth / 2;
+        const cy = y + row * cellHeight + cellHeight / 2;
         result.push({
           row,
           col,
-          x: x + col * cellSize,
-          y: y + row * cellSize,
+          x: x + col * cellWidth,
+          y: y + row * cellHeight,
           cx,
           cy,
           surface: allocationSurface(col, row),
           volume: allocationVolume(col, row),
-          district: districtIndexForPoint(cx, cy),
+          district: districtIndexForPoint(cx, cy, districtConfigs),
           population: 0
         });
       }
@@ -836,26 +816,21 @@
         });
     });
 
-    return { cells: result, cellSize, totals };
+    return { cells: result, totals };
   }
 
-  const allocationPrepared = buildAllocationCells();
-  const allocationCells = allocationPrepared.cells;
-  const allocationCellSize = allocationPrepared.cellSize;
-  const allocationDistrictTotals = allocationPrepared.totals;
-
-  function isoBarPaths(x: number, y: number, size: number, height: number) {
-    const inset = 4;
+  function isoBarPaths(x: number, y: number, width: number, height: number, lift: number) {
+    const inset = Math.max(3, Math.min(width, height) * 0.08);
     const left = x + inset;
-    const right = x + size - inset;
+    const right = x + width - inset;
     const top = y + inset;
-    const bottom = y + size - inset;
-    const dx = size * 0.12;
-    const lift = Math.max(8, height);
+    const bottom = y + height - inset;
+    const dx = Math.min(width, height) * 0.12;
+    const effectiveLift = Math.max(8, lift);
 
-    const front = `M ${left} ${bottom} L ${right} ${bottom} L ${right} ${bottom - lift} L ${left} ${bottom - lift} Z`;
-    const side = `M ${right} ${bottom} L ${right + dx} ${bottom - dx} L ${right + dx} ${bottom - lift - dx} L ${right} ${bottom - lift} Z`;
-    const roof = `M ${left} ${bottom - lift} L ${right} ${bottom - lift} L ${right + dx} ${bottom - lift - dx} L ${left + dx} ${bottom - lift - dx} Z`;
+    const front = `M ${left} ${bottom} L ${right} ${bottom} L ${right} ${bottom - effectiveLift} L ${left} ${bottom - effectiveLift} Z`;
+    const side = `M ${right} ${bottom} L ${right + dx} ${bottom - dx} L ${right + dx} ${bottom - effectiveLift - dx} L ${right} ${bottom - effectiveLift} Z`;
+    const roof = `M ${left} ${bottom - effectiveLift} L ${right} ${bottom - effectiveLift} L ${right + dx} ${bottom - effectiveLift - dx} L ${left + dx} ${bottom - effectiveLift - dx} Z`;
 
     return { front, side, roof };
   }
@@ -884,146 +859,138 @@
     return stepProgress;
   }
 
-  function buildWorldCurveGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+  function cloneGraph(graph: XYGraph): XYGraph {
     return {
       xAxis: {
-        domain: [10_000, 10_000_000],
-        ticks: [
-          { value: 10_000, label: "10K" },
-          { value: 100_000, label: "100K" },
-          { value: 1_000_000, label: "1M" },
-          { value: 10_000_000, label: "10M" }
-        ],
-        label: "City population",
-        scale: "log",
-        opacity: activeStepIndex === 0 ? stepProgress : 1
+        ...graph.xAxis,
+        ticks: graph.xAxis.ticks.map((tick) => ({ ...tick }))
       },
       yAxis: {
-        domain: [-12, 22],
-        ticks: [
-          { value: -10, label: "-10%" },
-          { value: 0, label: "0%" },
-          { value: 10, label: "+10%" },
-          { value: 20, label: "+20%" }
-        ],
-        label: "Growth relative to national urban average",
-        opacity: activeStepIndex >= 1 ? (activeStepIndex === 1 ? stepProgress : 1) : 0
+        ...graph.yAxis,
+        ticks: graph.yAxis.ticks.map((tick) => ({ ...tick }))
       },
-      lines: [
-        {
-          id: "world",
-          color: "#67e0cc",
-          width: 5,
-          points: worldCurvePoints,
-          drawTo: activeStepIndex >= 2 ? stepProgress : 0
-        }
-      ],
-      annotations: [
-        {
-          id: "world-100k",
-          lineId: "world",
-          point: { x: 100_000, y: -7 },
-          title: "100K",
-          subtitle: "-7%",
-          orientation: "above"
-        },
-        {
-          id: "world-1m",
-          lineId: "world",
-          point: { x: 1_000_000, y: 2 },
-          title: "1M",
-          subtitle: "+2%",
-          orientation: "above"
-        },
-        {
-          id: "world-10m",
-          lineId: "world",
-          point: { x: 10_000_000, y: 17 },
-          title: "10M",
-          subtitle: "+17%",
-          orientation: "above",
-          align: "end",
-          dx: -12
-        }
-      ]
+      lines: graph.lines.map((line) => ({
+        ...line,
+        endLabel: line.endLabel ? { ...line.endLabel } : undefined
+      })),
+      annotations: graph.annotations?.map((annotation) => ({
+        ...annotation,
+        point: { ...annotation.point }
+      })),
+      margins: graph.margins ? { ...graph.margins } : undefined
     };
   }
 
-  function buildScenarioGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+  function cloneMap(map: LayeredMapScene): LayeredMapScene {
     return {
-      margins: {
-        right: 80
+      viewport: {
+        ...map.viewport,
+        viewBox: [...map.viewport.viewBox] as [number, number, number, number]
       },
-      xAxis: {
-        domain: [1975, 2100],
-        ticks: [
-          { value: 1975, label: "1975" },
-          { value: 2000, label: "2000" },
-          { value: 2025, label: "2025" },
-          { value: 2050, label: "2050" },
-          { value: 2075, label: "2075" },
-          { value: 2100, label: "2100" }
-        ],
-        label: "Year",
-        scale: "linear",
-        opacity: activeStepIndex === 0 ? stepProgress : 1
-      },
-      yAxis: {
-        domain: [12, 58],
-        ticks: [
-          { value: 20, label: "20%" },
-          { value: 30, label: "30%" },
-          { value: 40, label: "40%" },
-          { value: 50, label: "50%" }
-        ],
-        label: "World population in 1M+ cities",
-        opacity: activeStepIndex >= 1 ? (activeStepIndex === 1 ? stepProgress : 1) : 0
-      },
-      lines: [
-        {
-          id: "runaway",
-          color: "#ff8b67",
-          width: 5,
-          points: runawayPoints,
-          drawTo: activeStepIndex >= 2 ? (activeStepIndex === 2 ? stepProgress : 1) : 0,
-          endLabel: {
-            text: "RW",
-            dx: 10,
-            dy: 6,
-            anchor: "start",
-            placement: "right-column"
-          }
-        },
-        {
-          id: "lifecycle",
-          color: "#67e0cc",
-          width: 5,
-          points: lifecyclePoints,
-          drawTo: activeStepIndex >= 3 ? rangeProgress(stepProgress, 0, 0.72) : 0,
-          endLabel: {
-            text: "LC",
-            dx: 10,
-            dy: 6,
-            anchor: "start",
-            placement: "right-column"
-          }
-        },
-        {
-          id: "proportional",
-          color: "#8ac6ff",
-          width: 5,
-          points: proportionalPoints,
-          drawTo: activeStepIndex >= 3 ? rangeProgress(stepProgress, 0.28, 1) : 0,
-          endLabel: {
-            text: "PO",
-            dx: 10,
-            dy: 8,
-            anchor: "start",
-            placement: "right-column"
-          }
+      layers: map.layers.map((layer) => {
+        if (layer.kind === "image") {
+          return { ...layer };
         }
-      ]
+
+        if (layer.kind === "paths") {
+          return {
+            ...layer,
+            items: layer.items.map((item) => ({ ...item }))
+          };
+        }
+
+        if (layer.kind === "rects") {
+          return {
+            ...layer,
+            items: layer.items.map((item) => ({ ...item }))
+          };
+        }
+
+        return {
+          ...layer,
+          items: layer.items.map((item) => ({ ...item }))
+        };
+      })
     };
+  }
+
+  function setLineReveal(graph: XYGraph, lineId: string, drawTo: number, opacity?: number) {
+    graph.lines = graph.lines.map((line) =>
+      line.id === lineId
+        ? {
+            ...line,
+            drawTo,
+            opacity: opacity ?? line.opacity
+          }
+        : line
+    );
+  }
+
+  function buildWorldCurveGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+    const graph = cloneGraph(generatedFigures.figure08.graph);
+    graph.yAxis.label = "Growth rate (log)";
+
+    graph.xAxis.opacity = activeStepIndex === 0 ? stepProgress : 1;
+    graph.yAxis.opacity = activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1;
+    setLineReveal(graph, "world", activeStepIndex < 2 ? 0 : activeStepIndex === 2 ? stepProgress : 1);
+
+    return graph;
+  }
+
+  function buildRegionGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+    const graph = cloneGraph(generatedFigures.figure09.graph);
+    graph.yAxis.label = "Growth rate (log)";
+    const lineSteps = [
+      { id: "asia", step: 0 },
+      { id: "africa", step: 1 },
+      { id: "europe", step: 2 },
+      { id: "americas", step: 3 }
+    ];
+
+    setLineReveal(graph, "world", 1, graph.lines.find((line) => line.id === "world")?.opacity ?? 0.72);
+
+    lineSteps.forEach(({ id, step }) => {
+      const drawTo = activeStepIndex < step ? 0 : activeStepIndex === step ? stepProgress : 1;
+      setLineReveal(graph, id, drawTo);
+    });
+
+    return graph;
+  }
+
+  function buildUsaPeriodsGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+    const graph = cloneGraph(generatedFigures.figure11.graph);
+    graph.yAxis.label = "Growth rate (log)";
+
+    setLineReveal(graph, "usa-early", activeStepIndex === 0 ? stepProgress : 1);
+    setLineReveal(graph, "usa-late", activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1);
+
+    return graph;
+  }
+
+  function buildUsaKoreaPeriodsGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+    const graph = cloneGraph(generatedFigures.figure12.graph);
+    graph.yAxis.label = "Growth rate (log)";
+
+    setLineReveal(graph, "usa-early", 1);
+    setLineReveal(graph, "usa-late", 1);
+    setLineReveal(graph, "korea-early", activeStepIndex === 0 ? stepProgress : 1);
+    setLineReveal(graph, "korea-late", activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1);
+
+    return graph;
+  }
+
+  function buildScenarioGraph(activeStepIndex: number, stepProgress: number): XYGraph {
+    const graph = cloneGraph(generatedFigures.figure13.graph);
+
+    graph.xAxis.opacity = activeStepIndex === 0 ? stepProgress : 1;
+    graph.yAxis.opacity = activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1;
+
+    setLineReveal(graph, "runaway", activeStepIndex < 2 ? 0 : activeStepIndex === 2 ? stepProgress : 1);
+    setLineReveal(graph, "extrapolation", activeStepIndex < 3 ? 0 : rangeProgress(stepProgress, 0, 0.4));
+    setLineReveal(graph, "lifecycle", activeStepIndex < 3 ? 0 : rangeProgress(stepProgress, 0.2, 0.7));
+    setLineReveal(graph, "proportional", activeStepIndex < 3 ? 0 : rangeProgress(stepProgress, 0.45, 1));
+
+    return graph;
   }
 
   const dotComparisonScenes: DotComparisonScene[] = [
@@ -1070,154 +1037,126 @@
   ];
 
   function buildFutureDistributionScene(activeStepIndex: number): FutureDistributionScene {
-    const states = [
-      {
-        futureCounts: futureDistributionLayouts.today,
-        futureColor: "#2d3844",
-        futureLabel: "no future residents added yet"
-      },
-      {
-        futureCounts: futureDistributionLayouts.balanced,
-        futureColor: "#67e0cc",
-        futureLabel: "incoming residents: proportional growth"
-      },
-      {
-        futureCounts: futureDistributionLayouts.giants,
-        futureColor: "#ff8b67",
-        futureLabel: "incoming residents: concentrated in large metros"
-      },
-      {
-        futureCounts: futureDistributionLayouts.distributed,
-        futureColor: "#f0c66f",
-        futureLabel: "incoming residents: spread toward smaller cities"
-      }
-    ] as const;
-
-    const state = states[Math.min(activeStepIndex, states.length - 1)];
+    const scenes = generatedFigures.figure02.scenes;
+    const state = scenes[Math.min(activeStepIndex, scenes.length - 1)];
 
     return {
-      bins: futureDistributionBins,
-      baseCounts: [2, 8, 10, 4],
+      bins: state.bins.map((bin) => ({ ...bin })),
+      baseCounts: [...state.baseCounts],
       futureCounts: [...state.futureCounts],
+      maxFutureByBin: [...generatedFigures.figure02.meta.brick.maxFutureByBin],
       futureColor: state.futureColor,
       futureLabel: state.futureLabel
     };
   }
 
-  function buildWorldGlobeScene(): WorldGlobeScene {
-    return {
-      stepCount: 5
-    };
+  function buildParisMap(activeStepIndex: number, stepProgress: number): LayeredMapScene {
+    const map = cloneMap(generatedFigures.figure03.map);
+    const scenes = generatedFigures.figure03.scenes;
+    const currentScene = scenes[Math.min(activeStepIndex, scenes.length - 1)];
+    const previousScene = activeStepIndex > 0 ? scenes[Math.min(activeStepIndex - 1, scenes.length - 1)] : null;
+    const currentVisible = new Set(currentScene?.visibleLayerIds ?? []);
+    const previousVisible = new Set(previousScene?.visibleLayerIds ?? []);
+
+    map.layers = map.layers.map((layer) => {
+      if (layer.id === "satellite") {
+        return {
+          ...layer,
+          opacity: 1
+        };
+      }
+
+      const isVisible = currentVisible.has(layer.id);
+      const isNewlyVisible = isVisible && !previousVisible.has(layer.id);
+      const layerOpacity = !isVisible ? 0 : isNewlyVisible ? stepProgress : 1;
+
+      if (layer.kind !== "paths") {
+        return {
+          ...layer,
+          opacity: layerOpacity
+        };
+      }
+
+      const drawTo = layer.id.includes("boundary") ? layerOpacity : undefined;
+      const isBuiltFill = layer.id === "built-fill";
+
+      return {
+        ...layer,
+        opacity: layerOpacity,
+        items: layer.items.map((item) => ({
+          ...item,
+          fill: isBuiltFill ? "#d4d9df" : item.fill,
+          fillOpacity: isBuiltFill ? 0.4 : item.fillOpacity,
+          drawTo
+        }))
+      };
+    });
+
+    return map;
   }
 
-  function buildParisMap(activeStepIndex: number, stepProgress: number): LayeredMapScene {
-    const properReveal = stepReveal(activeStepIndex, 1, stepProgress);
-    const builtReveal = stepReveal(activeStepIndex, 2, stepProgress);
-    const attractionReveal = stepReveal(activeStepIndex, 3, stepProgress);
+  function buildPrdMap(activeStepIndex: number, stepProgress: number): LayeredMapScene {
+    const map = cloneMap(generatedFigures.figure07.map);
+    map.viewport.background = "#050607";
+    const scenes = generatedFigures.figure07.scenes;
+    const currentScene = scenes[Math.min(activeStepIndex, scenes.length - 1)];
+    const previousScene = activeStepIndex > 0 ? scenes[Math.min(activeStepIndex - 1, scenes.length - 1)] : null;
+    const currentVisible = new Set(currentScene?.visibleLayerIds ?? []);
+    const previousVisible = new Set(previousScene?.visibleLayerIds ?? []);
 
-    return {
-      viewport: {
-        viewBox: [0, 0, 800, 600],
-        background: "#0b1016"
-      },
-      layers: [
-        {
-          id: "satellite",
-          kind: "image",
-          href: parisSatelliteImage,
-          x: 0,
-          y: 0,
-          width: 800,
-          height: 600,
-          opacity: 1
-        },
-        {
-          id: "attraction-fill",
-          kind: "paths",
-          opacity: attractionReveal,
-          items: [
-            {
-              d: attractionPath,
-              fill: "#67e0cc",
-              fillOpacity: 0.1,
-              opacity: 1
-            }
-          ]
-        },
-        {
-          id: "built-fill",
-          kind: "paths",
-          opacity: builtReveal,
-          items: [
-            {
-              d: builtUpPath,
-              fill: "#cfd6dd",
-              fillOpacity: 0.22,
-              opacity: 1
-            }
-          ]
-        },
-        {
-          id: "proper-boundary",
-          kind: "paths",
-          opacity: properReveal,
-          items: [
-            {
-              d: properBoundaryPath,
-              stroke: "#ff8b67",
-              strokeWidth: 6,
-              drawTo: properReveal
-            }
-          ]
-        },
-        {
-          id: "attraction-boundary",
-          kind: "paths",
-          opacity: attractionReveal,
-          items: [
-            {
-              d: attractionPath,
-              stroke: "#67e0cc",
-              strokeWidth: 4,
-              drawTo: attractionReveal
-            }
-          ]
-        }
-      ]
-    };
+    map.layers = map.layers.map((layer) => {
+      const isVisible = currentVisible.has(layer.id);
+      const isNewlyVisible = isVisible && !previousVisible.has(layer.id);
+      const layerOpacity = !isVisible ? 0 : isNewlyVisible ? stepProgress : 1;
+
+      return {
+        ...layer,
+        opacity: layerOpacity
+      };
+    });
+
+    return map;
   }
 
   function buildGhslMap(activeStepIndex: number, stepProgress: number): LayeredMapScene {
+    const squareGrid = buildParisAlignedGrid(15);
+    const ghslPrepared = buildGhslCells(squareGrid);
+    const ghslCells = ghslPrepared.cells;
+    const ghslClusters = clusterGhslCells(ghslCells, squareGrid.cells);
     const builtReveal = stepReveal(activeStepIndex, 1, stepProgress);
     const urbanReveal = stepReveal(activeStepIndex, 2, stepProgress);
     const clusterReveal =
       activeStepIndex < 3 ? 0 : activeStepIndex > 3 ? 1 : rangeProgress(stepProgress, 0, 0.22);
+    const parisBaseLayer = generatedFigures.figure03.map.layers.find((layer) => layer.kind === "image");
+    const baseHref = parisBaseLayer?.kind === "image" ? parisBaseLayer.href : ghslBaseImage;
+    const [minX, minY, mapWidth, mapHeight] = generatedFigures.figure03.map.viewport.viewBox;
+    const baseOpacity = Math.max(0.52, 0.9 - builtReveal * 0.18 - urbanReveal * 0.08 - clusterReveal * 0.06);
 
     return {
       viewport: {
-        viewBox: [0, 0, 800, 600],
-        background: "#091016"
+        viewBox: [minX, minY, mapWidth, mapHeight],
+        background: "#050607"
       },
       layers: [
         {
           id: "base-image",
           kind: "image",
-          href: ghslBaseImage,
-          x: 0,
-          y: 0,
-          width: 800,
-          height: 600,
-          opacity: 1
+          href: baseHref,
+          x: minX,
+          y: minY,
+          width: mapWidth,
+          height: mapHeight,
+          opacity: baseOpacity
         },
         {
           id: "frame-backdrop",
           kind: "rects",
           items: [
             {
-              x: ghslGrid.x,
-              y: ghslGrid.y,
-              width: ghslGrid.size,
-              height: ghslGrid.size,
+              x: squareGrid.x,
+              y: squareGrid.y,
+              width: squareGrid.size,
+              height: squareGrid.size,
               rx: 16,
               ry: 16,
               fill: "#091015",
@@ -1235,8 +1174,8 @@
           items: ghslCells.map((cell) => ({
             x: cell.x + 1.2,
             y: cell.y + 1.2,
-            width: ghslCellSize - 2.4,
-            height: ghslCellSize - 2.4,
+            width: squareGrid.cellWidth - 2.4,
+            height: squareGrid.cellHeight - 2.4,
             fill: "#d7aa72",
             fillOpacity: 0.08 + cell.value * 0.82,
             stroke: "rgba(255,255,255,0.03)",
@@ -1251,8 +1190,8 @@
           items: ghslCells.map((cell) => ({
             x: cell.x + 1.2,
             y: cell.y + 1.2,
-            width: ghslCellSize - 2.4,
-            height: ghslCellSize - 2.4,
+            width: squareGrid.cellWidth - 2.4,
+            height: squareGrid.cellHeight - 2.4,
             fill: cell.urban ? "#efe7db" : "#182027",
             fillOpacity: cell.urban ? 0.92 : 0.22,
             stroke: "rgba(255,255,255,0.04)",
@@ -1269,8 +1208,8 @@
             .map((cell) => ({
               x: cell.x + 1.2,
               y: cell.y + 1.2,
-              width: ghslCellSize - 2.4,
-              height: ghslCellSize - 2.4,
+              width: squareGrid.cellWidth - 2.4,
+              height: squareGrid.cellHeight - 2.4,
               fill: ghslClusters[cell.clusterId ?? 0]?.color ?? "#7ab6a7",
               fillOpacity: 0.92,
               stroke: "rgba(255,255,255,0.08)",
@@ -1282,50 +1221,32 @@
           id: "cluster-labels",
           kind: "labels",
           opacity: clusterReveal,
-          items: ghslClusters.slice(0, 4).map((cluster) => ({
+          items: ghslClusters.slice(0, 3).map((cluster) => ({
             x: cluster.cx,
-            y: cluster.cy + 6,
-            text: cluster.label,
+            y: cluster.cy,
+            text: `C${cluster.id}`,
             fill: "#f5efe5",
-            fontSize: 18,
+            fontSize: 34,
             fontWeight: 800,
-            anchor: "middle",
-            letterSpacing: "0.04em"
+            anchor: "middle" as const,
+            opacity: 0.98
           }))
-        },
-        {
-          id: "frame-labels",
-          kind: "labels",
-          items: [
-            {
-              x: ghslGrid.x,
-              y: 66,
-              text: "Same spatial frame",
-              fill: "rgba(245,239,229,0.76)",
-              fontSize: 20,
-              fontWeight: 700,
-              anchor: "start",
-              letterSpacing: "0.12em"
-            },
-            {
-              x: ghslGrid.x,
-              y: 572,
-              text: "15 x 15 cells. Each square = 1 km.",
-              fill: "rgba(184,173,160,0.84)",
-              fontSize: 16,
-              fontWeight: 700,
-              anchor: "start",
-              letterSpacing: "0.03em"
-            }
-          ]
         }
       ]
     };
   }
 
   function buildAllocationMap(activeStepIndex: number, stepProgress: number): LayeredMapScene {
+    const squareGrid = buildParisAlignedGrid(12);
+    const districtConfigs = buildDistrictConfigs(squareGrid);
+    const allocationPrepared = buildAllocationCells(squareGrid, districtConfigs);
+    const allocationCells = allocationPrepared.cells;
+    const allocationDistrictTotals = allocationPrepared.totals;
     const volumeReveal = activeStepIndex < 1 ? 0 : activeStepIndex > 1 ? 1 : rangeProgress(stepProgress, 0, 0.7);
     const censusReveal = activeStepIndex < 2 ? 0 : activeStepIndex > 2 ? 1 : rangeProgress(stepProgress, 0, 0.24);
+    const parisBaseLayer = generatedFigures.figure03.map.layers.find((layer) => layer.kind === "image");
+    const baseHref = parisBaseLayer?.kind === "image" ? parisBaseLayer.href : allocationBaseImage;
+    const [minX, minY, mapWidth, mapHeight] = generatedFigures.figure03.map.viewport.viewBox;
 
     const volumeFrontA: [number, number, number] = [84, 126, 142];
     const volumeFrontB: [number, number, number] = [160, 205, 222];
@@ -1340,14 +1261,14 @@
     const popTopA: [number, number, number] = [222, 193, 151];
     const popTopB: [number, number, number] = [255, 232, 184];
 
-    const districtLabelWidth = 124;
-    const districtLabelHeight = 62;
+    const districtLabelWidth = 212;
+    const districtLabelHeight = 104;
 
     const groundRects = allocationCells.map((cell) => ({
       x: cell.x + 0.8,
       y: cell.y + 0.8,
-      width: allocationCellSize - 1.6,
-      height: allocationCellSize - 1.6,
+      width: squareGrid.cellWidth - 1.6,
+      height: squareGrid.cellHeight - 1.6,
       fill: censusReveal > 0 ? districtConfigs[cell.district].color : "#433d33",
       fillOpacity: censusReveal > 0 ? 0.18 : 0.12,
       stroke: "rgba(255,255,255,0.06)",
@@ -1360,11 +1281,16 @@
         return [];
       }
 
-      const populationNorm = Math.min(1, cell.population / 2200);
-      const paths = isoBarPaths(cell.x, cell.y, allocationCellSize, cell.volume * 54);
-      const front = censusReveal > 0 ? rgb(mixTriplet(popFrontA, popFrontB, populationNorm)) : rgb(mixTriplet(volumeFrontA, volumeFrontB, cell.volume));
-      const side = censusReveal > 0 ? rgb(mixTriplet(popSideA, popSideB, populationNorm)) : rgb(mixTriplet(volumeSideA, volumeSideB, cell.volume));
-      const roof = censusReveal > 0 ? rgb(mixTriplet(popTopA, popTopB, populationNorm)) : rgb(mixTriplet(volumeTopA, volumeTopB, cell.volume));
+      const paths = isoBarPaths(
+        cell.x,
+        cell.y,
+        squareGrid.cellWidth,
+        squareGrid.cellHeight,
+        cell.volume * 54
+      );
+      const front = rgb(mixTriplet(volumeFrontA, volumeFrontB, cell.volume));
+      const side = rgb(mixTriplet(volumeSideA, volumeSideB, cell.volume));
+      const roof = rgb(mixTriplet(volumeTopA, volumeTopB, cell.volume));
 
       return [
         { id: `bar-front-${index}`, d: paths.front, fill: front, fillOpacity: 0.96, opacity: 1 },
@@ -1409,22 +1335,22 @@
       {
         id: `district-name-${district.key}`,
         x: district.anchorX,
-        y: district.anchorY - 8,
+        y: district.anchorY - 16,
         text: `ADMIN ${district.key}`,
         fill: "#f5efe5",
-        fontSize: 13,
-        fontWeight: 700,
+        fontSize: 30,
+        fontWeight: 800,
         anchor: "middle" as const,
-        letterSpacing: "0.08em",
+        letterSpacing: "0.06em",
         opacity: censusReveal
       },
       {
         id: `district-total-${district.key}`,
         x: district.anchorX,
-        y: district.anchorY + 20,
+        y: district.anchorY + 28,
         text: `${Math.round(allocationDistrictTotals[index].population / 1000)}K`,
         fill: "#f5efe5",
-        fontSize: 24,
+        fontSize: 36,
         fontWeight: 800,
         anchor: "middle" as const,
         opacity: censusReveal
@@ -1452,29 +1378,29 @@
 
     return {
       viewport: {
-        viewBox: [0, 0, 800, 600],
-        background: "#091016"
+        viewBox: [minX, minY, mapWidth, mapHeight],
+        background: "#050607"
       },
       layers: [
         {
           id: "allocation-base",
           kind: "image",
-          href: allocationBaseImage,
-          x: 0,
-          y: 0,
-          width: 800,
-          height: 600,
-          opacity: 1
+          href: baseHref,
+          x: minX,
+          y: minY,
+          width: mapWidth,
+          height: mapHeight,
+          opacity: 0.56
         },
         {
           id: "allocation-frame",
           kind: "rects",
           items: [
             {
-              x: allocationGrid.x,
-              y: allocationGrid.y,
-              width: allocationGrid.size,
-              height: allocationGrid.size,
+              x: squareGrid.x,
+              y: squareGrid.y,
+              width: squareGrid.size,
+              height: squareGrid.size,
               rx: 16,
               ry: 16,
               fill: "#10161b",
@@ -1525,41 +1451,29 @@
           kind: "labels",
           opacity: censusReveal,
           items: districtLabels
-        },
-        {
-          id: "allocation-frame-labels",
-          kind: "labels",
-          items: [
-            {
-              x: allocationGrid.x,
-              y: 66,
-              text: "Same spatial frame",
-              fill: "rgba(245,239,229,0.76)",
-              fontSize: 20,
-              fontWeight: 700,
-              anchor: "start",
-              letterSpacing: "0.12em"
-            },
-            {
-              x: allocationGrid.x,
-              y: 572,
-              text: "12 x 12 cells. Bar height = residential volume.",
-              fill: "rgba(184,173,160,0.84)",
-              fontSize: 16,
-              fontWeight: 700,
-              anchor: "start",
-              letterSpacing: "0.03em"
-            }
-          ]
         }
       ]
     };
   }
 
   function getXYGraph(kind: SceneKind, activeStepIndex: number, stepProgress: number): XYGraph {
-    return kind === "xy-world"
-      ? buildWorldCurveGraph(activeStepIndex, stepProgress)
-      : buildScenarioGraph(activeStepIndex, stepProgress);
+    if (kind === "xy-world") {
+      return buildWorldCurveGraph(activeStepIndex, stepProgress);
+    }
+
+    if (kind === "xy-regions") {
+      return buildRegionGraph(activeStepIndex, stepProgress);
+    }
+
+    if (kind === "xy-usa-periods") {
+      return buildUsaPeriodsGraph(activeStepIndex, stepProgress);
+    }
+
+    if (kind === "xy-usa-korea-periods") {
+      return buildUsaKoreaPeriodsGraph(activeStepIndex, stepProgress);
+    }
+
+    return buildScenarioGraph(activeStepIndex, stepProgress);
   }
 
   function getLayeredMap(kind: SceneKind, activeStepIndex: number, stepProgress: number): LayeredMapScene {
@@ -1569,6 +1483,10 @@
 
     if (kind === "map-allocation") {
       return buildAllocationMap(activeStepIndex, stepProgress);
+    }
+
+    if (kind === "map-prd") {
+      return buildPrdMap(activeStepIndex, stepProgress);
     }
 
     return buildParisMap(activeStepIndex, stepProgress);
@@ -1585,8 +1503,13 @@
     return buildFutureDistributionScene(activeStepIndex);
   }
 
-  function getWorldGlobe(): WorldGlobeScene {
-    return buildWorldGlobeScene();
+  function legendItemsFromGenerated(legend: GeneratedLegend[]): LegendItem[] {
+    return legend.map((item) => ({
+      label: item.label,
+      color: item.color,
+      shape: "line",
+      linePattern: item.linePattern
+    }));
   }
 
   function getLegendItems(kind: SceneKind, activeStepIndex = 0): LegendItem[] {
@@ -1611,18 +1534,61 @@
       return [{ label: "World", color: "#67e0cc", shape: "line" }];
     }
 
+    if (kind === "xy-regions") {
+      const visibleIds = ["world", "asia", "africa", "europe", "americas"].slice(0, activeStepIndex + 2);
+      return legendItemsFromGenerated(
+        (generatedFigures.figure09.legend ?? []).filter((item) => visibleIds.includes(item.id))
+      );
+    }
+
+    if (kind === "xy-usa-periods") {
+      const visibleIds = ["usa-early", "usa-late"].slice(0, activeStepIndex + 1);
+      return legendItemsFromGenerated(
+        (generatedFigures.figure11.legend ?? []).filter((item) => visibleIds.includes(item.id))
+      );
+    }
+
+    if (kind === "xy-usa-korea-periods") {
+      const visibleIds = ["usa-early", "usa-late", "korea-early", "korea-late"].slice(0, activeStepIndex + 3);
+      return legendItemsFromGenerated(
+        (generatedFigures.figure12.legend ?? []).filter((item) => visibleIds.includes(item.id))
+      );
+    }
+
     if (kind === "xy-scenarios") {
-      return [
-        { label: "Runaway", color: "#ff8b67", shape: "line" },
-        { label: "Lifecycle", color: "#67e0cc", shape: "line" },
-        { label: "Proportional", color: "#8ac6ff", shape: "line" }
-      ];
+      const visibleIds =
+        activeStepIndex < 2
+          ? []
+          : activeStepIndex === 2
+            ? ["runaway"]
+            : ["runaway", "extrapolation", "lifecycle", "proportional"];
+      return legendItemsFromGenerated(
+        (generatedFigures.figure13.legend ?? []).filter((item) => visibleIds.includes(item.id))
+      );
+    }
+
+    if (kind === "map-prd") {
+      const visibleIds = new Set(
+        generatedFigures.figure07.scenes[Math.min(activeStepIndex, generatedFigures.figure07.scenes.length - 1)]
+          ?.visibleLayerIds ?? []
+      );
+
+      return generatedFigures.figure07.map.layers.flatMap((layer) => {
+        if (layer.kind !== "paths" || !visibleIds.has(layer.id) || !layer.id.startsWith("prd-")) {
+          return [];
+        }
+
+        return [{
+          label: layer.id.replace("prd-", ""),
+          color: layer.items[0]?.fill ?? "#67e0cc",
+          shape: "fill" as const
+        }];
+      });
     }
 
     if (kind === "map-ghsl") {
       return [
-        { label: "Imagery", color: "#4e5d6d", shape: "fill" },
-        { label: "Built-up share", color: "#d7aa72", shape: "fill" },
+        { label: "Built-up area", color: "#d7aa72", shape: "fill" },
         { label: "Urban cells", color: "#efe7db", shape: "fill" },
         { label: "Clusters", color: "#7ab6a7", shape: "fill" }
       ];
@@ -1630,16 +1596,8 @@
 
     if (kind === "map-allocation") {
       return [
-        { label: "Imagery", color: "#4e5d6d", shape: "fill" },
-        { label: "Volume bar", color: "#8db8ca", shape: "fill" },
-        { label: "Admin total", color: "#efc684", shape: "fill" },
-        { label: "Allocation flow", color: "#efc684", shape: "line" }
-      ];
-    }
-
-    if (kind === "world-globe") {
-      return [
-        { label: "City polygons", color: "#67e0cc", shape: "fill" }
+        { label: "Volume", color: "#8db8ca", shape: "fill" },
+        { label: "Admin area", color: "#efc684", shape: "fill" }
       ];
     }
 
@@ -1649,9 +1607,29 @@
 
     return [
       { label: "Paris proper", color: "#ff8b67", shape: "outline" },
-      { label: "Built-up footprint", color: "#cfd6dd", shape: "fill" },
+      { label: "Built-up area", color: "#cfd6dd", shape: "fill" },
       { label: "Attraction area", color: "#67e0cc", shape: "outline" }
     ];
+  }
+
+  function getPrdTimelineItems(activeStepIndex: number) {
+    return generatedFigures.figure07.map.layers.flatMap((layer, index) => {
+      if (layer.kind !== "paths" || !layer.id.startsWith("prd-")) {
+        return [];
+      }
+
+      return [{
+        id: layer.id,
+        label: layer.id.replace("prd-", ""),
+        color: layer.items[0]?.fill ?? "#67e0cc",
+        state:
+          index < activeStepIndex
+            ? "past"
+            : index === activeStepIndex
+              ? "current"
+              : "future"
+      }];
+    });
   }
 </script>
 
@@ -1687,41 +1665,47 @@
         <DotComparisonCanvas scene={getDotComparison(scene.kind, activeStepIndex)} />
       {:else if scene.kind === "future-distribution"}
         <FutureDistributionCanvas scene={getFutureDistribution(scene.kind, activeStepIndex)} />
-      {:else if scene.kind === "world-globe"}
-        <WorldGlobeCanvas
-          scene={getWorldGlobe()}
-          {activeStepIndex}
-          {stepProgress}
-        />
       {:else if scene.kind === "placeholder"}
         <PlaceholderCanvas
           label={scene.placeholderLabel ?? "Figure placeholder"}
           note={scene.placeholderNote ?? "Mock pending"}
         />
-      {:else if scene.kind === "map-paris" || scene.kind === "map-ghsl" || scene.kind === "map-allocation"}
+      {:else if scene.kind === "map-paris" || scene.kind === "map-prd" || scene.kind === "map-ghsl" || scene.kind === "map-allocation"}
         <LayeredMapCanvas map={getLayeredMap(scene.kind, activeStepIndex, stepProgress)} />
       {:else}
         <XYGraphCanvas graph={getXYGraph(scene.kind, activeStepIndex, stepProgress)} />
       {/if}
 
       <svelte:fragment slot="legend" let:activeStepIndex>
-        <div class="graph-legend">
-          {#each getLegendItems(scene.kind, activeStepIndex) as item (item.label)}
-          <div class="legend-item">
-            <span
-              class={`legend-swatch ${item.shape ?? "line"}`}
-              style={`--legend-color: ${item.color}`}
-            ></span>
-            <span>{item.label}</span>
+        {#if scene.kind === "map-prd"}
+          <div class="graph-legend timeline-legend">
+            <div class="timeline-track"></div>
+            {#each getPrdTimelineItems(activeStepIndex) as item (item.id)}
+              <div class={`timeline-item ${item.state}`}>
+                <span class="timeline-dot" style={`--legend-color: ${item.color}`}></span>
+                <span class="timeline-label">{item.label}</span>
+              </div>
+            {/each}
           </div>
-          {/each}
-        </div>
+        {:else}
+          <div class="graph-legend">
+            {#each getLegendItems(scene.kind, activeStepIndex) as item (item.label)}
+            <div class="legend-item">
+              <span
+                class={`legend-swatch ${item.shape ?? "line"} ${item.linePattern ?? "solid"}`}
+                style={`--legend-color: ${item.color}`}
+              ></span>
+              <span>{item.label}</span>
+            </div>
+            {/each}
+          </div>
+        {/if}
       </svelte:fragment>
     </StickyScene>
 
     <ProseSection
-      heading={proseSections[index].heading}
-      paragraphs={proseSections[index].paragraphs}
+      heading={displayedProseSections[index].heading}
+      paragraphs={displayedProseSections[index].paragraphs}
     />
   {/each}
 </main>
@@ -1769,6 +1753,67 @@
     padding: 8px 12px;
   }
 
+  .timeline-legend {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px 8px;
+  }
+
+  .timeline-track {
+    position: absolute;
+    left: 9%;
+    right: 9%;
+    top: 34px;
+    height: 2px;
+    border-radius: 999px;
+    background: rgba(205, 215, 225, 0.18);
+  }
+
+  .timeline-item {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    opacity: 0.38;
+    transition: opacity 220ms ease;
+  }
+
+  .timeline-item.past,
+  .timeline-item.current {
+    opacity: 1;
+  }
+
+  .timeline-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    border: 2px solid color-mix(in srgb, var(--legend-color) 82%, white);
+    background: var(--legend-color);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--card) 88%, transparent);
+  }
+
+  .timeline-item.current .timeline-dot {
+    width: 18px;
+    height: 18px;
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--card) 88%, transparent),
+      0 0 18px color-mix(in srgb, var(--legend-color) 42%, transparent);
+  }
+
+  .timeline-label {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
   .legend-item {
     display: inline-flex;
     align-items: center;
@@ -1790,6 +1835,20 @@
     height: 4px;
     border-radius: 999px;
     background: var(--legend-color);
+  }
+
+  .legend-swatch.line.dashed {
+    background: repeating-linear-gradient(
+      to right,
+      var(--legend-color) 0 10px,
+      transparent 10px 16px
+    );
+  }
+
+  .legend-swatch.line.dotted {
+    background:
+      radial-gradient(circle, var(--legend-color) 58%, transparent 62%)
+      center / 8px 4px repeat-x;
   }
 
   .legend-swatch.fill,
@@ -1818,6 +1877,32 @@
       gap: 8px 12px;
       padding-left: 10px;
       padding-right: 10px;
+    }
+
+    .timeline-legend {
+      gap: 8px;
+      padding: 10px 10px 8px;
+    }
+
+    .timeline-track {
+      left: 10%;
+      right: 10%;
+      top: 30px;
+    }
+
+    .timeline-dot {
+      width: 12px;
+      height: 12px;
+    }
+
+    .timeline-item.current .timeline-dot {
+      width: 16px;
+      height: 16px;
+    }
+
+    .timeline-label {
+      font-size: 9px;
+      letter-spacing: 0.06em;
     }
   }
 </style>

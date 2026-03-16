@@ -11,8 +11,6 @@
     xPositions: [80, 250, 420, 590]
   };
 
-  const maxFutureByBin = [4, 4, 6, 4];
-
   function futureY(baseCount: number, futureIndex: number) {
     return (
       chart.baselineY -
@@ -49,7 +47,7 @@
           ></rect>
         {/each}
 
-        {#each Array.from({ length: maxFutureByBin[binIndex] }) as _, futureIndex (futureIndex)}
+        {#each Array.from({ length: scene.maxFutureByBin[binIndex] ?? 0 }) as _, futureIndex (futureIndex)}
           <rect
             class="block"
             x={chart.xPositions[binIndex]}
@@ -89,7 +87,7 @@
   }
 
   .axis-label {
-    fill: var(--muted);
+    fill: var(--ink);
     font-family: Arial, sans-serif;
     font-size: 24px;
     font-weight: 700;

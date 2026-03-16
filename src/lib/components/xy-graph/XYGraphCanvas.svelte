@@ -104,6 +104,18 @@
     return line.opacity ?? 1;
   }
 
+  function lineDashArray(line: XYLine) {
+    if (line.linePattern === "dotted") {
+      return "1 11";
+    }
+
+    if (line.linePattern === "dashed") {
+      return "14 10";
+    }
+
+    return undefined;
+  }
+
   function anchorValue(anchor?: XYTextAnchor) {
     return anchor ?? "middle";
   }
@@ -199,6 +211,7 @@
       cumulativeRatios
     };
   });
+  $: clipPrefix = `xy-${graph.lines.map((line) => line.id).join("-").replace(/[^a-zA-Z0-9_-]/g, "-")}`;
   $: renderedLineMap = new Map(renderedLines.map((line) => [line.id, line]));
   $: renderedAnnotations = (graph.annotations ?? []).flatMap((annotation) => {
     const line = renderedLineMap.get(annotation.lineId);
@@ -295,6 +308,19 @@
   aria-label="XY graph"
   preserveAspectRatio="xMidYMid meet"
 >
+  <defs>
+    {#each renderedLines as line, index (line.id)}
+      <clipPath id={`${clipPrefix}-${index}`}>
+        <rect
+          x={plotLeft - 12}
+          y="0"
+          width={(plotRight - plotLeft + 24) * line.drawTo}
+          height={VIEW_HEIGHT}
+        ></rect>
+      </clipPath>
+    {/each}
+  </defs>
+
   <g class="axis-group" style:opacity={xAxisOpacity}>
     <line class="axis-line" x1={plotLeft} y1={plotBottom} x2={plotRight} y2={plotBottom}></line>
 
@@ -328,7 +354,7 @@
   </g>
 
   <g class="line-group">
-    {#each renderedLines as line (line.id)}
+    {#each renderedLines as line, index (line.id)}
       <path
         class="line-path"
         d={line.d}
@@ -337,8 +363,8 @@
         stroke-width={line.width ?? 5}
         stroke-linecap="round"
         stroke-linejoin="round"
-        stroke-dasharray={line.length}
-        stroke-dashoffset={line.length * (1 - line.drawTo)}
+        stroke-dasharray={lineDashArray(line)}
+        clip-path={`url(#${clipPrefix}-${index})`}
         style:opacity={lineOpacity(line)}
       ></path>
     {/each}

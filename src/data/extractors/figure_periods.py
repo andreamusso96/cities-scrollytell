@@ -96,6 +96,16 @@ def fit_curve(
 
 
 def build_multi_curve_y_axis(curve_results: list[dict[str, np.ndarray | float]]) -> dict[str, Any]:
+    if config.PERIODS_Y_DOMAIN and config.PERIODS_Y_TICKS:
+        return {
+            "domain": list(config.PERIODS_Y_DOMAIN),
+            "ticks": [
+                {"value": value, "label": format_percent_label(value)}
+                for value in config.PERIODS_Y_TICKS
+            ],
+            "label": config.Y_AXIS_LABEL,
+        }
+
     raw_min = 0.0
     raw_max = 0.0
     for result in curve_results:
@@ -142,6 +152,7 @@ def build_lines(
                 "id": period["id"],
                 "color": period["color"],
                 "width": config.LINE_WIDTH,
+                **({"linePattern": period["linePattern"]} if period.get("linePattern") else {}),
                 "points": build_line_points(x_population, y_pct),
                 "endLabel": {
                     "text": period["shortLabel"],
@@ -156,7 +167,15 @@ def build_lines(
 
 
 def build_legend(period_specs: list[dict[str, str]]) -> list[dict[str, str]]:
-    return [{"id": period["id"], "label": period["label"], "color": period["color"]} for period in period_specs]
+    return [
+        {
+            "id": period["id"],
+            "label": period["label"],
+            "color": period["color"],
+            **({"linePattern": period["linePattern"]} if period.get("linePattern") else {}),
+        }
+        for period in period_specs
+    ]
 
 
 def build_meta(

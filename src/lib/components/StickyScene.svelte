@@ -77,7 +77,7 @@
           <div class="scene-body">{steps[activeStepIndex]?.body}</div>
         </div>
 
-        <div class="scene-canvas scene-box">
+        <div class="scene-canvas">
           <slot
             activeStep={steps[activeStepIndex]}
             activeStepIndex={activeStepIndex}
@@ -85,7 +85,7 @@
           />
         </div>
 
-        <div class="scene-legend scene-box">
+        <div class="scene-legend">
           <slot name="legend" {activeStepIndex} />
         </div>
       </div>
@@ -171,11 +171,15 @@
     position: relative;
     width: 100%;
     aspect-ratio: 4 / 3;
+    background: transparent;
     overflow: visible;
   }
 
   .scene-legend {
     min-height: clamp(44px, 6svh, 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .step-stack {

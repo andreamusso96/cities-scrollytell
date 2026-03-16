@@ -1,4 +1,5 @@
 export type XYScaleType = "linear" | "log";
+export type XYLinePattern = "solid" | "dashed" | "dotted";
 
 export type XYTick = {
   value: number;
@@ -36,6 +37,7 @@ export type XYLine = {
   drawTo?: number;
   opacity?: number;
   width?: number;
+  linePattern?: XYLinePattern;
   endLabel?: XYEndpointLabel;
 };
 

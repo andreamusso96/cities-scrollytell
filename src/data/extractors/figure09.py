@@ -102,6 +102,16 @@ def fit_region_curve(
 
 
 def build_regional_y_axis(curve_results: list[dict[str, np.ndarray | float]]) -> dict[str, Any]:
+    if config.FIGURE_09_Y_DOMAIN and config.FIGURE_09_Y_TICKS:
+        return {
+            "domain": list(config.FIGURE_09_Y_DOMAIN),
+            "ticks": [
+                {"value": value, "label": format_percent_label(value)}
+                for value in config.FIGURE_09_Y_TICKS
+            ],
+            "label": config.Y_AXIS_LABEL,
+        }
+
     raw_min = 0.0
     raw_max = 0.0
     for result in curve_results:

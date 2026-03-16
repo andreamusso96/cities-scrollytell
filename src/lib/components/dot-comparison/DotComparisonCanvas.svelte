@@ -99,8 +99,6 @@
     aria-label="Two dot piles comparing a 100K metro with a 10M metro"
     preserveAspectRatio="xMidYMid meet"
   >
-    <rect x="0" y="0" width="800" height="600" fill="#0f141c"></rect>
-
     <defs>
       <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stop-color="#59dec8" stop-opacity="0.22"></stop>
