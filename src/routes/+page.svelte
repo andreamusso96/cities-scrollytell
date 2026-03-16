@@ -1,12 +1,28 @@
 <script lang="ts">
+  import DotComparisonCanvas from "$lib/components/dot-comparison/DotComparisonCanvas.svelte";
+  import type { DotComparisonScene } from "$lib/components/dot-comparison/types";
+  import FutureDistributionCanvas from "$lib/components/future-distribution/FutureDistributionCanvas.svelte";
+  import type { FutureDistributionScene } from "$lib/components/future-distribution/types";
   import LayeredMapCanvas from "$lib/components/layered-map/LayeredMapCanvas.svelte";
   import type { LayeredMapScene } from "$lib/components/layered-map/types";
+  import PlaceholderCanvas from "$lib/components/PlaceholderCanvas.svelte";
   import ProseSection from "$lib/components/ProseSection.svelte";
   import StickyScene from "$lib/components/StickyScene.svelte";
+  import WorldGlobeCanvas from "$lib/components/world-globe/WorldGlobeCanvas.svelte";
+  import type { WorldGlobeScene } from "$lib/components/world-globe/types";
   import XYGraphCanvas from "$lib/components/xy-graph/XYGraphCanvas.svelte";
   import type { XYGraph } from "$lib/components/xy-graph/types";
 
-  type SceneKind = "xy-world" | "xy-scenarios" | "map-paris" | "map-ghsl" | "map-allocation";
+  type SceneKind =
+    | "dot-comparison"
+    | "future-distribution"
+    | "xy-world"
+    | "xy-scenarios"
+    | "map-paris"
+    | "map-ghsl"
+    | "map-allocation"
+    | "world-globe"
+    | "placeholder";
 
   type LegendItem = {
     label: string;
@@ -14,53 +30,96 @@
     shape?: "line" | "fill" | "outline";
   };
 
-  const proseSections = [
+  const introParagraphs = [
+    "Take two cities. One has 100,000 people. The other has 10 million. The bigger one does not just contain more people. Those people are qualitatively different. They are more productive, as measured by their wage, which is 74% higher.",
+    "They are more innovative: they are 3.5 times more likely to produce a patent. As a result, wealth and innovation concentrate. In the United States, the ten most innovative metros account for 23% of the population, but 48% of patents and 33% of GDP."
+  ];
+
+  const proseSections: Array<{ heading?: string; paragraphs: string[] }> = [
     {
-      heading: "Prose scene 1",
       paragraphs: [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris congue, justo eu feugiat pretium, tellus magna volutpat arcu, vitae feugiat lectus turpis sed risus.",
-        "Suspendisse potenti. Cras euismod, nibh nec blandit suscipit, augue mauris aliquet augue, vitae faucibus risus orci id velit.",
-        "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer dictum, purus a pulvinar tempor, nisl mauris facilisis sem, sed cursus elit lorem a nunc."
+        "And when we get to fronteer knowledge this is even more pronounced. People in large cities are more 3.5 time more likely to produce any type of patent, but are X times more likely to produce a patent in a fronteer industry like farma or advanaced tech.",
+        "The general idea is that there are non-linear scaling laws. As city get bigger --- their scale increases --- the people within them become qualitatively different, e.g.,they are more innovative, more productive.",
+        "The scaling pattern, however, cuts both ways. The downsides scale too. For example, people in big cities have X% higher CO2 emissions. They are X% more likely to contract sexually transmitted diseases. They spend X% more time in traffic and X% more of their salary on their homes.",
+        "Put simply, big cities amplify invention and income, but they also amplify congestion, land pressure, infrastructure stress.",
+        "So whether we are all going to live in megacities is a curiosity. It is a crucial determinant of how much wealth we can produce, where our technological frontier sits, and how we are going to impact and consume the resources of our planet.",
+        "Cities overall are growing fast. Every 2 months the urban population adds 20 million people. That is one New York City worth of people. It was not always like this. In the 1800s, urbanization was a thing of few countries. Mostly industrializing countries in the west. England was first, followed by Benelux area. Then the US. Latin America. Southern Europe. North Africa. Evereyone else. [Check the sequence is correct]. Today, every country is either urban or rapidly urbanizing. More than 50% of humanity lives in cities. And in the next 75 years, cities are projected to add about X billion residents.",
+        "Where will these people go? Small towns or sprawling mega-cities? Three scenarios are possible.",
+        "In one, new urban residents spread across large and small cities alike, and the overall shape of the urban system stays roughly intact. That means that a good share of the whole population, say around X%, will continue to live in cities with fewer than 1M people.",
+        "Another scenarios, the biggest cities absorb a disproportionate share of growth. People move to these urban behemoths. They grow faster than the rest and gobble up an every increasing share of the population. If today X% of the world population lives in 1M+ cities, in 2100 it could be X% or even much higher. Eventually, there will be just a couple of massive cities dominating the world population.",
+        "In third scenario growth leans toward smaller cities, producing a more distributed urban future. The small cities get more of the pie. They grow faster than the big ones. Their X% share today becomes larger over time. And altough they grow larger, the population remains distributed across many places instead of piling up in a handfull of winners."
       ]
     },
     {
-      heading: "Prose scene 2",
       paragraphs: [
-        "Curabitur aliquam feugiat quam, ac tincidunt neque fringilla sit amet. Praesent vehicula, purus sed tincidunt suscipit, metus libero commodo augue, sed sodales nibh ligula vitae sem.",
-        "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec pharetra varius lorem, non hendrerit mauris volutpat eget.",
-        "Aliquam erat volutpat. Sed et lorem sit amet ipsum iaculis malesuada. Donec rhoncus velit vitae risus imperdiet, ut elementum erat luctus."
+        "So, which of these futures is more likely? That is the real question. The world is urbanizing fast, but which cities are absorbing that growth?",
+        "Answering this question is hard. And the reason why its hard might be different from what you expect. Or at least it was different from what I expected. We use this word \"city\" to describe this thing where people live near each other.",
+        "But the more I ponder the question \"what is a city\" the more it becomes hard to answer. Its one of those abstractions that make sweep all the complexity under the rug. But once you lift the rug, its a total mess.",
+        "Take for example Paris. If you ask the French government what is Paris they might point you to the Legal borders of the city. This is an area of just 105.4 square kilometers and had about 2.11 million residents in 2022. This border is a fossil of historical accident. If you take a satellite picture of paris, you see that the built-up area has spilled way beyond the border in a much broader area. Various parts of the banlieu are effectively one physical unit with paris. And you can push it even further. Let's say now you consider not only the physical city, but the attraction area. The area from where people move into paris for work or other reasons. The people who are connected to paris but by invisble ties. Then that area is most of northern france. It stretched across 18,940.7 square kilometers and holds 13.24 million people. I guess you start seeing the problem: What is Paris? This question is hard to answer for Paris. But to understand where the world population is headed we have to answer them for every single damn city on this planet."
       ]
     },
     {
-      heading: "Prose scene 3",
       paragraphs: [
-        "Nam euismod, lorem vel auctor tincidunt, felis turpis ultrices lorem, at pretium turpis turpis non massa. Ut ultrices mauris et mi finibus, ac ullamcorper nulla sagittis.",
-        "Quisque tempor massa non purus facilisis, vitae tempor lectus ultrices. Integer luctus lectus eget vulputate blandit.",
-        "Aenean non orci non erat fermentum finibus. Integer pellentesque felis in varius feugiat, arcu nisl viverra purus, id dictum est libero vitae nibh."
+        "For most of history, answering this questions was impossible. Not hard, impossible. You would have to put everyone in aggreement, every statistical agency on the planet, abotu the definition of city, and then maintain that agreement across time.",
+        "Then satellites started quietly building a memory of the planet. Landsat has been observing the Earth since the 1970s. Sentinel-2 added much sharper optical imagery in the 2010s. Today, the planet get's photographed every second by a different satellites. This imagery made it possible to skip all the agreement. It created a picture of the earth that is comparable across all places, and adjusting the resolution also across all times. With some wizardry one could use those pictures to reconstruct cities and their populations.",
+        "The basic idea is simple. First, you start from the pictures. You break this pictures into small cells. For each cell, you esitmate how much of each cell is physically built up: roofs, roads, blocks, industrial surfaces, the material footprint of settlement. With this data you can trace the boundaries of physical cities. That is, you get a grid 1kmx1km cells covering the whole planet, and its kinda easy to say whether a cell is urban or not. This is the work of the GHSL a european initiative.",
+        "In my work, I take these grid to construct cities. The algorithm is simpl. First, I identify which cells count as urban. Then, I connect neighboring urban cells into clusters. Each cluster is a city."
       ]
     },
     {
-      heading: "Prose scene 4",
       paragraphs: [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pulvinar leo sed lectus egestas, in interdum mi feugiat. Proin aliquet faucibus nibh, et facilisis tellus ultricies vitae.",
-        "Nullam et semper ligula. Sed placerat tempus nibh, non consequat tellus gravida eu. Integer egestas, nibh ac vestibulum interdum, lectus lectus efficitur sem, vel vulputate nisl justo ac ex.",
-        "Vestibulum mattis turpis vitae sem accumsan, sit amet euismod elit rhoncus. Donec consequat velit in eros tincidunt, vitae posuere augue porttitor."
+        "Next, I need to assign it a population. After all, we are interested in the population growth.",
+        "Doing that require quite a bit of extra effort. You start by estimating the physical volume of houses in the cells. You look at shadows, re-project harmonize, to infer how a 3D volume of the built up material in a cell. You collect census totals reported for administrative areas. These areas tile up the whole worrld into small pieces. They might be of different size in different countries.Usually they are farily small, but not always so. Given the population in these areas, you redistributes those residents into grid cells using their volume from before. Where there is more volume, more people are assigned.Tada, you know have an guess, a pretty educated one, of how many people live in eavch 1kmx1km cell of the world. I then take this and my city boundaries, sum up all the people within the boundaries and get the population of the city in some givne year."
       ]
     },
     {
-      heading: "Prose scene 5",
       paragraphs: [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer iaculis mi at mauris congue, in vulputate enim feugiat. Mauris pretium massa ac mauris efficitur, et feugiat velit interdum.",
-        "Donec varius pretium lorem, in tincidunt purus faucibus vel. Phasellus sed mi vehicula, lacinia tortor vitae, tristique erat. Curabitur sed dui at erat tempus viverra.",
-        "Morbi dictum, tortor sed varius tincidunt, justo justo tincidunt lectus, ac viverra nisi sapien et ipsum. Vivamus eget urna ac lectus porttitor posuere."
+        "Using that procedure, I build a dataset of global cities that covers 99 countries, about 94% of the world’s population, from 1975 to 2025, with 1,604,593 city-year observations."
       ]
     },
     {
-      heading: "Prose scene 6",
       paragraphs: [
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, dui sed accumsan convallis, purus ipsum interdum orci, sit amet cursus justo mauris vitae lacus.",
-        "Praesent mollis, nunc nec accumsan maximus, neque dolor congue odio, vel luctus mauris augue vitae massa. Integer aliquet dignissim augue, sed tincidunt justo pulvinar at.",
-        "Mauris blandit augue sed varius vulputate. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque sit amet libero a purus faucibus tincidunt."
+        "At first glance, the giants really do seem to be winning. The share of the world population living in million-plus cities rose from 11% in 1975 to 24% in 2025. And that in 10M+ cities rose from X% to X%. This trend is clear in developing coutnreis. Take for instance, Shenzen. It was a fisherman village in 1980 and its a 150 million metropolis today."
+      ]
+    },
+    {
+      paragraphs: [
+        "Acoss the global data, larger cities often appear to outpace smaller ones. If we plot the size of city on the x-axis and its growth on the y-axis we observe that over time large cities outpaced their peers."
+      ]
+    },
+    {
+      paragraphs: [
+        "Now this is self-reinforcing: If larger cities grow faster, they become larger, and this leads them to grow even faster, and so becom even larger. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities.",
+        "Yet, when you split the data, a different pattern appears. The average 1M+ city in Asia and Africa outgrew its national urban average by about 7% between 1975 and 2025. But in Europe, these cities barely outgrew the national average and in the Americas, 1M+ cities actually grew about 1.6% more slowly than the national average."
+      ]
+    },
+    {
+      paragraphs: [
+        "At first, that looks like a geographic divide: perhaps Asia and Africa are giant-city regions, while Europe and the Americas are not. But another hypothesis is that timing matters: What looks like a map of regional difference is, to a large extent, a map of countries sitting at different stages of the same process.",
+        "One way to check this is oreder countries on the x-axis by how much they are urbanized, and on the y-axis use a metric of how steep is teh curve between growth and size. How much large cities grow faster. When we do this, we observe a neat downward sloping correlation. More urbanized countries tend to see their large cities outgrowing the rest less.",
+        "But to really determine this a cross-sectional snapshot is not enough. WE need a longitudinal series.",
+        "The United States provides likely the one of the few longitudinal snapshot that are long enough to capture this phenoomenon. Long before satellites, long before digital maps, long before modern geographic information systems, the United States was already collecting census material rich enough that it can be turned back into a map of urban development. Census bureau officers went around the country, they asked registered individual people in individual places, every 10 years [More about how the census was collected]. These handwritten documents were passed down in library through generation, until recentrly a massive project transformed those old project in machine readable format, linked across years, matched to old places. The result of this massice effort is the: IPUMS Full Count now makes available over 800 million individual-level census records for 1850–1950.",
+        "I took those records and reconstructed cities from 1850 to today. I constructed first grids of population and then aggregated them to cities. Surpsingly, these incredbile long run data. shows exactly the pattern the global data hint at. Early on, large U.S. cities had a strong growth advantage. Over time, that advantage weakened dramatically, until today its roughly flat."
+      ]
+    },
+    {
+      paragraphs: [
+        "Another historical accident allows us to dig deeper. South Korea's economic miracle. Korea’s postwar transformation was not merely fast. It was historically extreme. The IMF describes three decades through the 1965-1995, in which annual real income growth averaged over 8% per year. The World Bank describes urbanization rising from 28% in 1960 to 79% in 1996, and GDP per person climbing from about $158 in 1960 to above $31,000 by 2020. That is development in fast-forward. This massive development pace implies that our global cities dataset 1975-2025 sees much of Korea's development. Of no other countries can be said the same.",
+        "And guess what. Korea shows much the same plot in a few decades. Early on, Seoul and the largest Korean cities pull away hard. Later, the advantage fades. Put differntly, we continue to see evidence of this urban lyfecylce where big cities take the lead and but then petter out."
+      ]
+    },
+    {
+      paragraphs: [
+        "Why would that be? The causes are likely many. Here is my take. Early in development, distance is expensive, markets are thin, and much of the economy is still tied tightly to land. Then transport improves. Manufacturing scales. Rail, ports, power, finance, universities, and state capacity reward concentration. Once one place gets ahead, the feedback loops start. Firms want access to customers. Workers go where the jobs are. Suppliers follow firms. Infrastructure follows everyone. A city that got a little ahead can suddenly get far ahead. Essentially, its like the arrival of modern technology opens new vast opportunities and large cities are the first to seize them.",
+        "Then the systme. start hitting its limit. The logic changes. The rural reservoir shrinks. Transport and infrastructure spread outward. Secondary cities become capable of supporting their own thick labor markets. Land and housing costs bite harder in the biggest cores. Some growth spills into suburbs and satellites. S. All these conspire to slow the giants down.",
+        "So where does this leaves us going forward? Where are we headed in 2100? If current 1975–2025 size-growth patterns were simply extended forward, that figure would be about 42%. But the self-reinforcing nature suggested above could push this even higher. The lifecycle model suggests instead somewhere around 38%. Relative to the straight extrapolation, that means about 450 million fewer people in million-plus cities by the end of the century."
+      ]
+    },
+    {
+      paragraphs: [
+        "That is not a bookkeeping difference. The same scaling logic applies: these 450 million inhabitants will have see less wealth, invention, but also less inequality and climate risk as compared to a world where they had lived in large cities, and this will be visible in the aggregate, from global economic growth to climate change.",
+        "So are we all going to live in giant cities?",
+        "Probably not. At least not in the runaway way that a first glance at global city growth estimates suggests. But the giants forged by the large growth advantage in the early phases of urbanization will remain, amplifying wealth, invention, ambition, pressure, inequality, climate risk, and much more."
       ]
     }
   ];
@@ -71,40 +130,47 @@
     ariaLabel: string;
     pinDurationVh: number;
     tailHoldVh?: number;
+    placeholderLabel?: string;
+    placeholderNote?: string;
     steps: Array<{
       id: string;
       kicker: string;
       title: string;
       body: string;
+      accentColor?: string;
     }>;
   }> = [
     {
-      id: "sticky-1",
-      kind: "xy-world",
-      ariaLabel: "Sticky test scene one",
-      pinDurationVh: 300,
+      id: "figure-01",
+      kind: "dot-comparison",
+      ariaLabel: "Figure 1",
+      pinDurationVh: 360,
+      tailHoldVh: 96,
       steps: [
-        { id: "step-1", kicker: "XY graph", title: "Load the x-axis", body: "Start by fading in the horizontal axis so the reader can anchor the population scale first." },
-        { id: "step-2", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical axis and its scale. The chart only starts talking once both directions are legible." },
-        { id: "step-3", kicker: "XY graph", title: "Draw the first line", body: "Finally draw the first curve with scroll. This is the most basic reusable analytic canvas." }
+        { id: "dot-a", kicker: "City comparison", title: "Start with the two piles", body: "Use the same dot grammar on both sides. One city is sparse and legible; the other is dense enough to feel like a machine.", accentColor: "#67e0cc" },
+        { id: "dot-b", kicker: "GDP", title: "Add output per person", body: "With respect to a person in a 100K metro, a person in a 10M city earns 24% more.", accentColor: "#8ac6ff" },
+        { id: "dot-c", kicker: "Patents", title: "Now add invention", body: "With respect to a person in a 100K metro, a person in a 10M city produces 109% more patents.", accentColor: "#67e0cc" },
+        { id: "dot-d", kicker: "Housing", title: "Now add housing pressure", body: "With respect to a person in a 100K metro, a person in a 10M city pays 41% more for housing.", accentColor: "#ff8d6b" },
+        { id: "dot-e", kicker: "CO2", title: "Finish with emissions", body: "With respect to a person in a 100K metro, a person in a 10M city consumes 32% more CO2.", accentColor: "#f2c56f" }
       ]
     },
     {
-      id: "sticky-2",
-      kind: "xy-scenarios",
-      ariaLabel: "Sticky test scene two",
-      pinDurationVh: 320,
+      id: "figure-02",
+      kind: "future-distribution",
+      ariaLabel: "Figure 2",
+      pinDurationVh: 340,
+      tailHoldVh: 96,
       steps: [
-        { id: "step-a", kicker: "XY graph", title: "Load the x-axis again", body: "The second chart should teach the frame the same way: start with the horizontal axis only." },
-        { id: "step-b", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical scale, keeping the same graph shell while the values change." },
-        { id: "step-c", kicker: "XY graph", title: "Draw the first scenario", body: "One curve can draw first while the others stay hidden." },
-        { id: "step-d", kicker: "XY graph", title: "Add the remaining lines", body: "Additional curves then draw into the same coordinate system without changing the canvas type." }
+        { id: "future-a", kicker: "Urbanization futures", title: "Today", body: "Start with the current distribution. The baseline already leans toward large metros, but it does not settle the future.", accentColor: "#2d3844" },
+        { id: "future-b", kicker: "Urbanization futures", title: "Balanced growth", body: "Now add the next wave proportionally. Every bin grows, but the overall shape stays almost unchanged.", accentColor: "#67e0cc" },
+        { id: "future-c", kicker: "Urbanization futures", title: "Giants win", body: "In this scenario, most new residents funnel into the large-metro bins. The right side swells fast.", accentColor: "#ff8b67" },
+        { id: "future-d", kicker: "Urbanization futures", title: "Smaller cities catch up", body: "Here the added population spreads leftward. Growth still happens everywhere, but much more of it lands in smaller places.", accentColor: "#f0c66f" }
       ]
     },
     {
-      id: "sticky-3",
+      id: "figure-03",
       kind: "map-paris",
-      ariaLabel: "Layered Paris boundary scene",
+      ariaLabel: "Figure 3",
       pinDurationVh: 360,
       steps: [
         { id: "paris-a", kicker: "Boundary problem", title: "Basemap only", body: "Start with a fixed spatial frame. Nothing moves yet; the point is to lock the reader into one region." },
@@ -115,9 +181,9 @@
       ]
     },
     {
-      id: "sticky-4",
+      id: "figure-04",
       kind: "map-ghsl",
-      ariaLabel: "Layered GHSL pipeline scene",
+      ariaLabel: "Figure 4",
       pinDurationVh: 420,
       tailHoldVh: 132,
       steps: [
@@ -128,15 +194,96 @@
       ]
     },
     {
-      id: "sticky-5",
+      id: "figure-05",
       kind: "map-allocation",
-      ariaLabel: "Layered population allocation scene",
+      ariaLabel: "Figure 5",
       pinDurationVh: 360,
       tailHoldVh: 112,
       steps: [
         { id: "alloc-a", kicker: "Residential signal", title: "Estimate residential building heights", body: "Start from imagery again. Roof texture and shadow hint at how much residential volume each cell contains." },
         { id: "alloc-b", kicker: "Residential volume", title: "Turn the grid into a 3D residential volume map", body: "Bars rise where residential built volume is larger. This becomes the weight used for redistribution." },
         { id: "alloc-c", kicker: "Census redistribution", title: "Administrative totals are pushed back into the grid", body: "Each district total is split across its cells. More residential volume receives a larger population share." }
+      ]
+    },
+    {
+      id: "figure-06",
+      kind: "world-globe",
+      ariaLabel: "Figure 6",
+      pinDurationVh: 420,
+      tailHoldVh: 110,
+      steps: [
+        { id: "globe-a", kicker: "Global city panel", title: "Start with the globe", body: "The point is scale. The same city logic is now being applied across the world in one rotating frame.", accentColor: "#67e0cc" },
+        { id: "globe-b", kicker: "Coverage", title: "Add country coverage", body: "First make the reach explicit: this panel covers dozens of countries at once.", accentColor: "#67e0cc" },
+        { id: "globe-c", kicker: "Coverage", title: "Add population coverage", body: "Then show how much of the world population is included inside the same measurement frame.", accentColor: "#67e0cc" },
+        { id: "globe-d", kicker: "Coverage", title: "Add observations", body: "Now surface the scale of the panel itself: the dataset is not one snapshot, but millions of city-year observations.", accentColor: "#67e0cc" },
+        { id: "globe-e", kicker: "Coverage", title: "Finish with the time window", body: "Finally reveal the panel span. The same logic is applied repeatedly from 1975 to 2025.", accentColor: "#67e0cc" }
+      ]
+    },
+    {
+      id: "figure-07",
+      kind: "placeholder",
+      ariaLabel: "Figure 7",
+      pinDurationVh: 220,
+      placeholderLabel: "Figure 7",
+      placeholderNote: "Mock pending: megacities seem to be winning",
+      steps: [
+        { id: "p7-a", kicker: "Figure 7", title: "Megacities seem to be winning", body: "This slot will hold the first-result visual about the apparent rise of giant cities.", accentColor: "#67e0cc" }
+      ]
+    },
+    {
+      id: "figure-08",
+      kind: "xy-world",
+      ariaLabel: "Figure 8",
+      pinDurationVh: 300,
+      steps: [
+        { id: "step-1", kicker: "XY graph", title: "Load the x-axis", body: "Start by fading in the horizontal axis so the reader can anchor the population scale first." },
+        { id: "step-2", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical axis and its scale. The chart only starts talking once both directions are legible." },
+        { id: "step-3", kicker: "XY graph", title: "Draw the first line", body: "Finally draw the first curve with scroll. This is the most basic reusable analytic canvas." }
+      ]
+    },
+    {
+      id: "figure-09",
+      kind: "placeholder",
+      ariaLabel: "Figure 9",
+      pinDurationVh: 220,
+      placeholderLabel: "Figure 9",
+      placeholderNote: "Mock pending: regional split",
+      steps: [
+        { id: "p9-a", kicker: "Figure 9", title: "The world is split", body: "This slot will hold the comparison between Asia and Africa versus Europe and the Americas.", accentColor: "#67e0cc" }
+      ]
+    },
+    {
+      id: "figure-11",
+      kind: "placeholder",
+      ariaLabel: "Figure 11",
+      pinDurationVh: 220,
+      placeholderLabel: "Figure 11",
+      placeholderNote: "Mock pending: U.S. long-run series",
+      steps: [
+        { id: "p11-a", kicker: "Figure 11", title: "The U.S. lifecycle", body: "This slot will hold the U.S. historical reconstruction from 1850 to today.", accentColor: "#67e0cc" }
+      ]
+    },
+    {
+      id: "figure-12",
+      kind: "placeholder",
+      ariaLabel: "Figure 12",
+      pinDurationVh: 220,
+      placeholderLabel: "Figure 12",
+      placeholderNote: "Mock pending: South Korea fast-forward",
+      steps: [
+        { id: "p12-a", kicker: "Figure 12", title: "Korea in fast-forward", body: "This slot will hold the accelerated urban lifecycle visible in South Korea.", accentColor: "#67e0cc" }
+      ]
+    },
+    {
+      id: "figure-13",
+      kind: "xy-scenarios",
+      ariaLabel: "Figure 13",
+      pinDurationVh: 320,
+      steps: [
+        { id: "step-a", kicker: "XY graph", title: "Load the x-axis again", body: "The second chart should teach the frame the same way: start with the horizontal axis only." },
+        { id: "step-b", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical scale, keeping the same graph shell while the values change." },
+        { id: "step-c", kicker: "XY graph", title: "Draw the first scenario", body: "One curve can draw first while the others stay hidden." },
+        { id: "step-d", kicker: "XY graph", title: "Add the remaining lines", body: "Additional curves then draw into the same coordinate system without changing the canvas type." }
       ]
     }
   ];
@@ -177,6 +324,82 @@
     { x: 2075, y: 33 },
     { x: 2100, y: 36 }
   ];
+
+  const dotComparisonMetrics = {
+    gdp: {
+      title: "GDP",
+      verb: "earns",
+      delta: "24%",
+      tail: "more",
+      color: "#8ac6ff",
+      smallActive: [6, 8, 15, 17, 24, 26, 33, 35, 42, 44, 51, 53, 60, 62, 69, 71],
+      largeActive: Array.from({ length: 240 }, (_, index) => index),
+      smallFade: 0.1,
+      largeFade: 0.08,
+      glow: 0.24,
+      warning: 0,
+      co2: 0
+    },
+    patents: {
+      title: "Patents",
+      verb: "produces",
+      delta: "109%",
+      tail: "more patents",
+      color: "#67e0cc",
+      smallActive: [2, 6, 13, 20, 28, 35, 44, 51, 63],
+      largeActive: Array.from({ length: 160 }, (_, index) => index),
+      smallFade: 0.08,
+      largeFade: 0.07,
+      glow: 0.2,
+      warning: 0,
+      co2: 0
+    },
+    housing: {
+      title: "Housing",
+      verb: "pays",
+      delta: "41%",
+      tail: "more for housing",
+      color: "#ff8d6b",
+      smallActive: [0, 1, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 53, 54, 62, 63, 70, 71],
+      largeFilter: {
+        mode: "outer-ring",
+        minDist: 0.72
+      },
+      smallFade: 0.12,
+      largeFade: 0.1,
+      glow: 0.08,
+      warning: 0.22,
+      co2: 0
+    },
+    co2: {
+      title: "CO2",
+      verb: "consumes",
+      delta: "32%",
+      tail: "more CO2",
+      color: "#f2c56f",
+      smallActive: [0, 3, 8, 12, 17, 21, 26, 30, 35, 39, 44, 48, 53, 57, 62, 66, 69, 71],
+      largeActive: Array.from({ length: 560 }, (_, index) => index).filter((index) => index % 2 === 0),
+      smallFade: 0.12,
+      largeFade: 0.1,
+      glow: 0.12,
+      warning: 0.08,
+      co2: 0.14
+    }
+  } satisfies Record<string, DotComparisonScene["metric"] & NonNullable<DotComparisonScene["metric"]>>;
+
+  const futureDistributionBins = [
+    { label: "<100K", sublabel: "small cities" },
+    { label: "100K–1M", sublabel: "mid-size metros" },
+    { label: "1M–10M", sublabel: "large metros" },
+    { label: "10M+", sublabel: "megacities" }
+  ];
+
+  const futureDistributionLayouts = {
+    today: [0, 0, 0, 0],
+    balanced: [1, 4, 5, 2],
+    giants: [0, 2, 6, 4],
+    distributed: [4, 4, 3, 1]
+  };
 
   const properBoundaryPath =
     "M 372 286 L 414 270 L 450 290 L 464 334 L 446 378 L 404 396 L 364 382 L 344 334 Z";
@@ -803,6 +1026,90 @@
     };
   }
 
+  const dotComparisonScenes: DotComparisonScene[] = [
+    {
+      smallLabel: "100K metro",
+      largeLabel: "10M metro",
+      metric: null,
+      baseGlow: 0.1,
+      baseWarning: 0,
+      baseCo2: 0
+    },
+    {
+      smallLabel: "100K metro",
+      largeLabel: "10M metro",
+      metric: dotComparisonMetrics.gdp,
+      baseGlow: 0.1,
+      baseWarning: 0,
+      baseCo2: 0
+    },
+    {
+      smallLabel: "100K metro",
+      largeLabel: "10M metro",
+      metric: dotComparisonMetrics.patents,
+      baseGlow: 0.1,
+      baseWarning: 0,
+      baseCo2: 0
+    },
+    {
+      smallLabel: "100K metro",
+      largeLabel: "10M metro",
+      metric: dotComparisonMetrics.housing,
+      baseGlow: 0.1,
+      baseWarning: 0,
+      baseCo2: 0
+    },
+    {
+      smallLabel: "100K metro",
+      largeLabel: "10M metro",
+      metric: dotComparisonMetrics.co2,
+      baseGlow: 0.1,
+      baseWarning: 0,
+      baseCo2: 0
+    }
+  ];
+
+  function buildFutureDistributionScene(activeStepIndex: number): FutureDistributionScene {
+    const states = [
+      {
+        futureCounts: futureDistributionLayouts.today,
+        futureColor: "#2d3844",
+        futureLabel: "no future residents added yet"
+      },
+      {
+        futureCounts: futureDistributionLayouts.balanced,
+        futureColor: "#67e0cc",
+        futureLabel: "incoming residents: proportional growth"
+      },
+      {
+        futureCounts: futureDistributionLayouts.giants,
+        futureColor: "#ff8b67",
+        futureLabel: "incoming residents: concentrated in large metros"
+      },
+      {
+        futureCounts: futureDistributionLayouts.distributed,
+        futureColor: "#f0c66f",
+        futureLabel: "incoming residents: spread toward smaller cities"
+      }
+    ] as const;
+
+    const state = states[Math.min(activeStepIndex, states.length - 1)];
+
+    return {
+      bins: futureDistributionBins,
+      baseCounts: [2, 8, 10, 4],
+      futureCounts: [...state.futureCounts],
+      futureColor: state.futureColor,
+      futureLabel: state.futureLabel
+    };
+  }
+
+  function buildWorldGlobeScene(): WorldGlobeScene {
+    return {
+      stepCount: 5
+    };
+  }
+
   function buildParisMap(activeStepIndex: number, stepProgress: number): LayeredMapScene {
     const properReveal = stepReveal(activeStepIndex, 1, stepProgress);
     const builtReveal = stepReveal(activeStepIndex, 2, stepProgress);
@@ -1267,7 +1574,39 @@
     return buildParisMap(activeStepIndex, stepProgress);
   }
 
-  function getLegendItems(kind: SceneKind): LegendItem[] {
+  function getDotComparison(kind: SceneKind, activeStepIndex: number): DotComparisonScene {
+    return dotComparisonScenes[Math.min(activeStepIndex, dotComparisonScenes.length - 1)];
+  }
+
+  function getFutureDistribution(
+    kind: SceneKind,
+    activeStepIndex: number
+  ): FutureDistributionScene {
+    return buildFutureDistributionScene(activeStepIndex);
+  }
+
+  function getWorldGlobe(): WorldGlobeScene {
+    return buildWorldGlobeScene();
+  }
+
+  function getLegendItems(kind: SceneKind, activeStepIndex = 0): LegendItem[] {
+    if (kind === "dot-comparison") {
+      return [
+        { label: "GDP", color: "#8ac6ff", shape: "fill" },
+        { label: "Patents", color: "#67e0cc", shape: "fill" },
+        { label: "Housing", color: "#ff8d6b", shape: "fill" },
+        { label: "CO2", color: "#f2c56f", shape: "fill" }
+      ];
+    }
+
+    if (kind === "future-distribution") {
+      const scene = buildFutureDistributionScene(activeStepIndex);
+      return [
+        { label: "Current urban population", color: "#2d3844", shape: "fill" },
+        { label: "Incoming future residents", color: scene.futureColor, shape: "fill" }
+      ];
+    }
+
     if (kind === "xy-world") {
       return [{ label: "World", color: "#67e0cc", shape: "line" }];
     }
@@ -1298,6 +1637,16 @@
       ];
     }
 
+    if (kind === "world-globe") {
+      return [
+        { label: "City polygons", color: "#67e0cc", shape: "fill" }
+      ];
+    }
+
+    if (kind === "placeholder") {
+      return [];
+    }
+
     return [
       { label: "Paris proper", color: "#ff8b67", shape: "outline" },
       { label: "Built-up footprint", color: "#cfd6dd", shape: "fill" },
@@ -1307,33 +1656,22 @@
 </script>
 
 <svelte:head>
-  <title>Minimal scrollytell scaffold</title>
+  <title>Are we all going to live in megacities?</title>
   <meta
     name="description"
-    content="Minimal SvelteKit and Scrollama scaffold with prose scenes, sticky scenes, XY graphs, and layered map reveals."
+    content="Template scroll built from outline5 with the current mock figure components in their article order."
   />
 </svelte:head>
 
 <main class="page">
   <article class="article intro">
-    <h1>Minimal scrollytell scaffold</h1>
+    <h1>Are we all going to live in megacities?</h1>
     <div class="prose">
-      <p>
-        This version is intentionally stripped down. It proves the app shell first:
-        prose sections, sticky scenes, one reusable XY graph family, and one reusable
-        layered map family.
-      </p>
-      <p>
-        The third sticky scene ports the mock Paris boundary reveal into the same
-        centered template, using dummy geometry and a fake satellite-like base layer.
-      </p>
+      {#each introParagraphs as paragraph}
+        <p>{paragraph}</p>
+      {/each}
     </div>
   </article>
-
-  <ProseSection
-    heading={proseSections[0].heading}
-    paragraphs={proseSections[0].paragraphs}
-  />
 
   {#each stickyScenes as scene, index (scene.id)}
     <StickyScene
@@ -1345,14 +1683,30 @@
       let:activeStepIndex
       let:stepProgress
     >
-      {#if scene.kind === "map-paris" || scene.kind === "map-ghsl" || scene.kind === "map-allocation"}
+      {#if scene.kind === "dot-comparison"}
+        <DotComparisonCanvas scene={getDotComparison(scene.kind, activeStepIndex)} />
+      {:else if scene.kind === "future-distribution"}
+        <FutureDistributionCanvas scene={getFutureDistribution(scene.kind, activeStepIndex)} />
+      {:else if scene.kind === "world-globe"}
+        <WorldGlobeCanvas
+          scene={getWorldGlobe()}
+          {activeStepIndex}
+          {stepProgress}
+        />
+      {:else if scene.kind === "placeholder"}
+        <PlaceholderCanvas
+          label={scene.placeholderLabel ?? "Figure placeholder"}
+          note={scene.placeholderNote ?? "Mock pending"}
+        />
+      {:else if scene.kind === "map-paris" || scene.kind === "map-ghsl" || scene.kind === "map-allocation"}
         <LayeredMapCanvas map={getLayeredMap(scene.kind, activeStepIndex, stepProgress)} />
       {:else}
         <XYGraphCanvas graph={getXYGraph(scene.kind, activeStepIndex, stepProgress)} />
       {/if}
 
-      <div slot="legend" class="graph-legend">
-        {#each getLegendItems(scene.kind) as item (item.label)}
+      <svelte:fragment slot="legend" let:activeStepIndex>
+        <div class="graph-legend">
+          {#each getLegendItems(scene.kind, activeStepIndex) as item (item.label)}
           <div class="legend-item">
             <span
               class={`legend-swatch ${item.shape ?? "line"}`}
@@ -1360,13 +1714,14 @@
             ></span>
             <span>{item.label}</span>
           </div>
-        {/each}
-      </div>
+          {/each}
+        </div>
+      </svelte:fragment>
     </StickyScene>
 
     <ProseSection
-      heading={proseSections[index + 1].heading}
-      paragraphs={proseSections[index + 1].paragraphs}
+      heading={proseSections[index].heading}
+      paragraphs={proseSections[index].paragraphs}
     />
   {/each}
 </main>

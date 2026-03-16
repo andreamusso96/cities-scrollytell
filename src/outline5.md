@@ -77,8 +77,6 @@ At first, that looks like a geographic divide: perhaps Asia and Africa are giant
 
 One way to check this is oreder countries on the x-axis by how much they are urbanized, and on the y-axis use a metric of how steep is teh curve between growth and size. How much large cities grow faster. When we do this, we observe a neat downward sloping correlation. More urbanized countries tend to see their large cities outgrowing the rest less. 
 
-[Figure 10]
-
 But to really determine this a cross-sectional snapshot is not enough. WE need a longitudinal series. 
 
 The United States provides likely the one of the few longitudinal snapshot that are long enough to capture this phenoomenon. Long before satellites, long before digital maps, long before modern geographic information systems, the United States was already collecting census material rich enough that it can be turned back into a map of urban development. Census bureau officers went around the country, they asked registered individual people in individual places, every 10 years [More about how the census was collected]. These handwritten documents were passed down in library through generation, until recentrly a massive project transformed those old project in machine readable format, linked across years, matched to old places. The result of this massice effort is the: IPUMS Full Count now makes available over 800 million individual-level census records for 1850–1950. 

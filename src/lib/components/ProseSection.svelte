@@ -1,10 +1,12 @@
 <script lang="ts">
-  export let heading: string;
+  export let heading: string | undefined = undefined;
   export let paragraphs: string[] = [];
 </script>
 
 <article class="article">
-  <h2>{heading}</h2>
+  {#if heading}
+    <h2>{heading}</h2>
+  {/if}
   <div class="prose">
     {#each paragraphs as paragraph}
       <p>{paragraph}</p>

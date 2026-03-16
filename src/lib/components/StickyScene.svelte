@@ -8,6 +8,7 @@
     kicker: string;
     title: string;
     body: string;
+    accentColor?: string;
   };
 
   export let sceneId: string;
@@ -67,7 +68,10 @@
   <div class="sticky-stage">
     <div class="sticky-frame">
       <div class="scene-shell">
-        <div class="scene-card scene-box">
+        <div
+          class="scene-card scene-box"
+          style={`--scene-accent: ${steps[activeStepIndex]?.accentColor ?? "#67e0cc"}`}
+        >
           <div class="scene-kicker">{steps[activeStepIndex]?.kicker}</div>
           <div class="scene-title">{steps[activeStepIndex]?.title}</div>
           <div class="scene-body">{steps[activeStepIndex]?.body}</div>
@@ -82,7 +86,7 @@
         </div>
 
         <div class="scene-legend scene-box">
-          <slot name="legend" />
+          <slot name="legend" {activeStepIndex} />
         </div>
       </div>
     </div>
@@ -137,12 +141,12 @@
     width: 100%;
     min-height: clamp(136px, 18svh, 184px);
     padding: 12px 14px 13px;
-    border-left: 4px solid #67e0cc;
+    border-left: 4px solid var(--scene-accent, #67e0cc);
   }
 
   .scene-kicker {
     margin-bottom: 8px;
-    color: var(--muted);
+    color: color-mix(in srgb, var(--scene-accent, #67e0cc) 56%, var(--muted));
     font-family: Arial, sans-serif;
     font-size: 11px;
     font-weight: 700;
