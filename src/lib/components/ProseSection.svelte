@@ -16,7 +16,7 @@
 
 <style>
   .article {
-    max-width: 720px;
+    max-width: 550px;
     margin: 0 auto;
     padding: 26px 18px 56px;
   }

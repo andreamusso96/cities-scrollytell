@@ -117,7 +117,7 @@
   }
 
   .sticky-frame {
-    width: min(100%, 680px);
+    width: min(100%, 550px);
   }
 
   .scene-shell {

@@ -344,10 +344,10 @@
       ariaLabel: "Figure 13",
       pinDurationVh: 320,
       steps: [
-        { id: "step-a", kicker: "XY graph", title: "Load the x-axis again", body: "The second chart should teach the frame the same way: start with the horizontal axis only." },
-        { id: "step-b", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical scale, keeping the same graph shell while the values change." },
-        { id: "step-c", kicker: "XY graph", title: "Draw the first scenario", body: "One curve can draw first while the others stay hidden." },
-        { id: "step-d", kicker: "XY graph", title: "Add the remaining lines", body: "Additional curves then draw into the same coordinate system without changing the canvas type." }
+        { id: "step-a", kicker: "XY graph", title: "Load the x-axis again", body: "The second chart should teach the frame the same way: start with the horizontal axis only.", accentColor: "#cfd6dd" },
+        { id: "step-b", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical scale, keeping the same graph shell while the values change.", accentColor: "#cfd6dd" },
+        { id: "step-c", kicker: "XY graph", title: "Draw the first scenario", body: "One curve can draw first while the others stay hidden.", accentColor: "#ff8b67" },
+        { id: "step-d", kicker: "XY graph", title: "Add the remaining lines", body: "Additional curves then draw into the same coordinate system without changing the canvas type.", accentColor: "#f1c56d" }
       ]
     }
   ];
@@ -1717,7 +1717,7 @@
   }
 
   .article {
-    max-width: 720px;
+    max-width: 550px;
     margin: 0 auto;
     padding: 26px 18px 56px;
   }
