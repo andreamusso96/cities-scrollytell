@@ -16,6 +16,7 @@ from figure08 import (
     fit_world_curve,
     format_percent_label,
     interpolate_annotation_values,
+    log10_growth_to_percent,
     validate_table_name,
 )
 
@@ -87,16 +88,16 @@ def fit_region_curve(
     y_partial, confidence_interval = model.partial_dependence(term=0, X=x_grid_2d, width=0.95)
 
     average_log_growth = float(df_average_growth["log_average_growth"].mean())
-    y_fitted = average_log_growth + y_partial
-    ci_low = average_log_growth + confidence_interval[:, 0]
-    ci_high = average_log_growth + confidence_interval[:, 1]
+    y_fitted_log = average_log_growth + y_partial
+    ci_low_log = average_log_growth + confidence_interval[:, 0]
+    ci_high_log = average_log_growth + confidence_interval[:, 1]
 
     return {
         "x_log": x_grid,
         "x_population": np.power(10.0, x_grid),
-        "y_pct": y_fitted * 100.0,
-        "ci_low_pct": ci_low * 100.0,
-        "ci_high_pct": ci_high * 100.0,
+        "y_pct": log10_growth_to_percent(y_fitted_log),
+        "ci_low_pct": log10_growth_to_percent(ci_low_log),
+        "ci_high_pct": log10_growth_to_percent(ci_high_log),
         "average_log_growth": average_log_growth,
     }
 

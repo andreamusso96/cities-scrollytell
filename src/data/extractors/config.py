@@ -128,10 +128,10 @@ LINE_WIDTH = 5
 LEGEND_LABEL = "World"
 
 X_AXIS_LABEL = "City population"
-Y_AXIS_LABEL = "Growth relative to national urban average"
+Y_AXIS_LABEL = "Decade growth rate"
 
-FIGURE_08_Y_DOMAIN = [-1, 15]
-FIGURE_08_Y_TICKS = [0, 5, 10, 15]
+FIGURE_08_Y_DOMAIN = [-5, 40]
+FIGURE_08_Y_TICKS = [0, 10, 20, 30, 40]
 
 ANNOTATION_TEXT = {
     100_000: "100K",
@@ -148,8 +148,8 @@ ANNOTATION_LAYOUT = {
 FIGURE_09_KIND = "xy-regions"
 FIGURE_09_WORLD_OPACITY = 0.72
 FIGURE_09_MARGINS = {"right": 88}
-FIGURE_09_Y_DOMAIN = [-1, 15]
-FIGURE_09_Y_TICKS = [0, 5, 10, 15]
+FIGURE_09_Y_DOMAIN = [-5, 40]
+FIGURE_09_Y_TICKS = [0, 10, 20, 30, 40]
 FIGURE_09_REGION_ORDER = ["Asia", "Africa", "Europe", "Americas"]
 FIGURE_09_REGIONS = {
     "Asia": {
@@ -187,8 +187,8 @@ FIGURE_09_REGIONS = {
 }
 
 PERIODS_GRAPH_MARGINS = {"right": 88}
-PERIODS_Y_DOMAIN = [-12, 12]
-PERIODS_Y_TICKS = [-10, 0, 10]
+PERIODS_Y_DOMAIN = [-25, 35]
+PERIODS_Y_TICKS = [-20, -10, 0, 10, 20, 30]
 
 FIGURE_03_KIND = "layered-map-paris"
 FIGURE_03_VIEWPORT_BACKGROUND = "#0b1016"

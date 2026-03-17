@@ -4,9 +4,9 @@
   export let scene: FutureDistributionScene;
 
   const chart = {
-    baselineY: 510,
-    blockHeight: 20,
-    blockGap: 6,
+    baselineY: 676,
+    blockHeight: 24,
+    blockGap: 8,
     blockWidth: 118,
     xPositions: [80, 250, 420, 590]
   };
@@ -22,16 +22,16 @@
 
 <div class="future-scene">
   <svg
-    viewBox="0 0 800 600"
+    viewBox="0 0 800 800"
     role="img"
     aria-label="Four urban size bins with alternate future population distributions"
     preserveAspectRatio="xMidYMid meet"
   >
     <g>
-      <line x1="62" y1="510" x2="726" y2="510" stroke="#1c232b" stroke-width="2"></line>
-      <line x1="62" y1="96" x2="62" y2="510" stroke="#1c232b" stroke-width="2"></line>
+      <line x1="62" y1={chart.baselineY} x2="726" y2={chart.baselineY} stroke="#1c232b" stroke-width="2"></line>
+      <line x1="62" y1="116" x2="62" y2={chart.baselineY} stroke="#1c232b" stroke-width="2"></line>
 
-      <text x="62" y="56" class="axis-label">Urban population by city-size bin</text>
+      <text x="62" y="70" class="axis-label">Urban population by city-size bin</text>
 
       {#each scene.baseCounts as baseCount, binIndex (binIndex)}
         {#each Array.from({ length: baseCount }) as _, blockIndex (blockIndex)}
@@ -62,10 +62,20 @@
       {/each}
 
       {#each scene.bins as bin, index (bin.label)}
-        <text x={chart.xPositions[index] + chart.blockWidth / 2} y="560" text-anchor="middle" class="bin-label">
+        <text
+          x={chart.xPositions[index] + chart.blockWidth / 2}
+          y={chart.baselineY + 58}
+          text-anchor="middle"
+          class="bin-label"
+        >
           {bin.label}
         </text>
-        <text x={chart.xPositions[index] + chart.blockWidth / 2} y="584" text-anchor="middle" class="bin-sub">
+        <text
+          x={chart.xPositions[index] + chart.blockWidth / 2}
+          y={chart.baselineY + 88}
+          text-anchor="middle"
+          class="bin-sub"
+        >
           {bin.sublabel}
         </text>
       {/each}

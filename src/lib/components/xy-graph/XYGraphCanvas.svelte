@@ -11,11 +11,11 @@
   } from "./types";
 
   const VIEW_WIDTH = 800;
-  const VIEW_HEIGHT = 600;
+  const VIEW_HEIGHT = 800;
   const DEFAULT_MARGINS: XYMargins = {
-    top: 102,
+    top: 128,
     right: 42,
-    bottom: 132,
+    bottom: 160,
     left: 128
   };
 
@@ -331,7 +331,7 @@
     {/each}
 
     {#if graph.xAxis.label}
-      <text class="axis-label x-label" x={(plotLeft + plotRight) / 2} y={VIEW_HEIGHT - 28} text-anchor="middle">
+      <text class="axis-label x-label" x={(plotLeft + plotRight) / 2} y={VIEW_HEIGHT - 36} text-anchor="middle">
         {graph.xAxis.label}
       </text>
     {/if}
@@ -347,7 +347,7 @@
     {/each}
 
     {#if graph.yAxis.label}
-      <text class="axis-label y-label" x={plotLeft} y={plotTop - 32} text-anchor="start">
+      <text class="axis-label y-label" x={plotLeft} y={plotTop - 40} text-anchor="start">
         {graph.yAxis.label}
       </text>
     {/if}

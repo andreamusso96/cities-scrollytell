@@ -150,7 +150,7 @@
     {
       paragraphs: [
         "Now this is self-reinforcing: If larger cities grow faster, they become larger, and this leads them to grow even faster, and so becom even larger. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities.",
-        "Yet, when you split the data, a different pattern appears. The average 1M+ city in Asia and Africa outgrew its national urban average by about 7% between 1975 and 2025. But in Europe, these cities barely outgrew the national average and in the Americas, 1M+ cities actually grew about 1.6% more slowly than the national average."
+        "Yet, when you split the data, a different pattern appears. In Asia and Africa, the largest cities still post very high decade growth rates. In Europe the curve is much flatter, and in the Americas it can even bend negative at the top end."
       ]
     },
     {
@@ -313,7 +313,7 @@
       pinDurationVh: 320,
       steps: [
         { id: "p9-a", kicker: "Regional split", title: "Add Asia", body: "Keep the world curve as the backdrop and draw Asia first, where large cities clearly pull ahead.", accentColor: "#ff8b67" },
-        { id: "p9-b", kicker: "Regional split", title: "Add Africa", body: "Africa follows a similar pattern. Large cities there also outgrow the national urban average.", accentColor: "#f1c56d" },
+        { id: "p9-b", kicker: "Regional split", title: "Add Africa", body: "Africa follows a similar pattern. Large cities there also post high decade growth rates.", accentColor: "#f1c56d" },
         { id: "p9-c", kicker: "Regional split", title: "Add Europe", body: "Europe bends the pattern down. The large-city advantage is much weaker.", accentColor: "#8ac6ff" },
         { id: "p9-d", kicker: "Regional split", title: "Add the Americas", body: "In the Americas the curve flattens further and even tilts negative at the top end.", accentColor: "#b6dc7c" }
       ]
@@ -324,8 +324,8 @@
       ariaLabel: "Figure 11",
       pinDurationVh: 260,
       steps: [
-        { id: "p11-a", kicker: "U.S. lifecycle", title: "Draw the early United States", body: "In the early phase, larger U.S. cities enjoyed a strong growth premium over the national urban average.", accentColor: "#ff8b67" },
-        { id: "p11-b", kicker: "U.S. lifecycle", title: "Add the later United States", body: "Later on, the same relationship flattens substantially. The large-city advantage weakens.", accentColor: "#8ac6ff" }
+        { id: "p11-a", kicker: "U.S. lifecycle", title: "Draw the early United States", body: "In the early phase, larger U.S. cities posted much higher decade growth rates.", accentColor: "#ff8b67" },
+        { id: "p11-b", kicker: "U.S. lifecycle", title: "Add the later United States", body: "Later on, the same relationship flattens substantially. The growth advantage of size weakens.", accentColor: "#8ac6ff" }
       ]
     },
     {
@@ -334,7 +334,7 @@
       ariaLabel: "Figure 12",
       pinDurationVh: 260,
       steps: [
-        { id: "p12-a", kicker: "Korea in fast-forward", title: "Add early South Korea", body: "Use the U.S. pair as the reference, then draw Korea’s early period with its steep large-city premium.", accentColor: "#ff8b67" },
+        { id: "p12-a", kicker: "Korea in fast-forward", title: "Add early South Korea", body: "Use the U.S. pair as the reference, then draw Korea’s early period with its steep big-city growth curve.", accentColor: "#ff8b67" },
         { id: "p12-b", kicker: "Korea in fast-forward", title: "Add later South Korea", body: "Korea then moves toward the flatter later-stage pattern in just a few decades.", accentColor: "#8ac6ff" }
       ]
     },
@@ -928,7 +928,6 @@
 
   function buildWorldCurveGraph(activeStepIndex: number, stepProgress: number): XYGraph {
     const graph = cloneGraph(generatedFigures.figure08.graph);
-    graph.yAxis.label = "Growth rate (log)";
 
     graph.xAxis.opacity = activeStepIndex === 0 ? stepProgress : 1;
     graph.yAxis.opacity = activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1;
@@ -939,7 +938,6 @@
 
   function buildRegionGraph(activeStepIndex: number, stepProgress: number): XYGraph {
     const graph = cloneGraph(generatedFigures.figure09.graph);
-    graph.yAxis.label = "Growth rate (log)";
     const lineSteps = [
       { id: "asia", step: 0 },
       { id: "africa", step: 1 },
@@ -959,7 +957,6 @@
 
   function buildUsaPeriodsGraph(activeStepIndex: number, stepProgress: number): XYGraph {
     const graph = cloneGraph(generatedFigures.figure11.graph);
-    graph.yAxis.label = "Growth rate (log)";
 
     setLineReveal(graph, "usa-early", activeStepIndex === 0 ? stepProgress : 1);
     setLineReveal(graph, "usa-late", activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1);
@@ -969,7 +966,6 @@
 
   function buildUsaKoreaPeriodsGraph(activeStepIndex: number, stepProgress: number): XYGraph {
     const graph = cloneGraph(generatedFigures.figure12.graph);
-    graph.yAxis.label = "Growth rate (log)";
 
     setLineReveal(graph, "usa-early", 1);
     setLineReveal(graph, "usa-late", 1);

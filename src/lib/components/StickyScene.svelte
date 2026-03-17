@@ -170,7 +170,7 @@
   .scene-canvas {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     background: transparent;
     overflow: visible;
   }

@@ -69,8 +69,8 @@
     return points;
   }
 
-  const smallPoints = buildGridPile(72, 224, 238, 8, 24, 1.5, 6, 4);
-  const largePoints = buildDensePile(560, 574, 234, 156, 4.25, 9);
+  const smallPoints = buildGridPile(72, 224, 316, 8, 26, 1.5, 6.4, 4);
+  const largePoints = buildDensePile(560, 574, 308, 172, 4.35, 9);
 
   const baseSmallOpacity = 0.96;
   const baseLargeOpacity = 0.9;
@@ -94,7 +94,7 @@
 
 <div class="dot-scene">
   <svg
-    viewBox="0 0 800 600"
+    viewBox="0 0 800 800"
     role="img"
     aria-label="Two dot piles comparing a 100K metro with a 10M metro"
     preserveAspectRatio="xMidYMid meet"
@@ -116,16 +116,16 @@
 
     <line
       x1={dividerX}
-      y1="74"
+      y1="122"
       x2={dividerX}
-      y2="412"
+      y2="542"
       stroke="#1f252d"
       stroke-width="1.5"
     ></line>
 
-    <circle cx="574" cy="234" r="184" fill="url(#centerGlow)" opacity={glowOpacity}></circle>
-    <circle cx="574" cy="234" r="196" fill="url(#warningGlow)" opacity={warningOpacity}></circle>
-    <circle cx="574" cy="234" r="204" fill="url(#co2Glow)" opacity={co2Opacity}></circle>
+    <circle cx="574" cy="308" r="196" fill="url(#centerGlow)" opacity={glowOpacity}></circle>
+    <circle cx="574" cy="308" r="208" fill="url(#warningGlow)" opacity={warningOpacity}></circle>
+    <circle cx="574" cy="308" r="216" fill="url(#co2Glow)" opacity={co2Opacity}></circle>
 
     <g aria-hidden="true">
       {#each smallPoints as point, index (index)}
@@ -181,8 +181,8 @@
       </g>
     {/if}
 
-    <text x="224" y="482" text-anchor="middle" class="city-label">{scene.smallLabel}</text>
-    <text x="574" y="482" text-anchor="middle" class="city-label">{scene.largeLabel}</text>
+    <text x="224" y="670" text-anchor="middle" class="city-label">{scene.smallLabel}</text>
+    <text x="574" y="670" text-anchor="middle" class="city-label">{scene.largeLabel}</text>
   </svg>
 </div>
 
