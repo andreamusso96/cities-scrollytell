@@ -91,114 +91,96 @@
   $: generatedFigures = data.generatedFigures as GeneratedFigures;
 
   const introParagraphs = [
-    "Take two cities. One has 100,000 people. The other has 10 million. The bigger one does not just contain more people. Those people are qualitatively different. They are more productive, as measured by their wage, which is 74% higher.",
-    "They are more innovative: they are 3.5 times more likely to produce a patent. As a result, wealth and innovation concentrate. In the United States, the ten most innovative metros account for 23% of the population, but 48% of patents and 33% of GDP.",
-    "And when we get to fronteer knowledge this is even more pronounced. People in large cities are more 3.5 time more likely to produce any type of patent, but are X times more likely to produce a patent in a fronteer industry like farma or advanaced tech.",
-        "The general idea is that there are non-linear scaling laws. As city get bigger --- their scale increases --- the people within them become qualitatively different, e.g.,they are more innovative, more productive.",
-        "The scaling pattern, however, cuts both ways. The downsides scale too. For example, people in big cities have X% higher CO2 emissions. They are X% more likely to contract sexually transmitted diseases. They spend X% more time in traffic and X% more of their salary on their homes.",
-        "Put simply, big cities amplify invention and income, but they also amplify congestion, land pressure, infrastructure stress."
+    "Take two cities. One has 100,000 people. The other has 10 million. The large one is not just an inflated version of the small ones. It's different. Its people are different. They produce more: they earn 74% higher salaries. They connect more: their social networks are three times as dense. They innovate more: they are 3.5 times more likely to produce a patent.",
+    "That 3.5 times more patents figure is the average. But for frontier fields, the multiplier is actually much bigger. For example, people in large cities are 14 times more likely to produce patents in computer hardware and software, and 40 times more likely to publish a paper in neuroscience.",
+    "The general idea is that of nonlinear scaling laws. As cities get bigger, outcomes do not just increase: they change qualitatively. The upsides grow: people become more innovative, more productive, more connected. But the downsides grow too. People in big cities are 5 times more likely to be robbed. They are 8 times more likely to contract syphilis. They spend 4 times longer in traffic. Cities amplify everything: the good and the bad alike.",
+    "So, whether we all end up living in megacities is not just a curiosity. It is an important determinant of how much wealth we can produce, where our technological frontier sits, and how heavily we draw on the planet's resources."
   ];
 
   const proseSections: Array<{ heading?: string; paragraphs: string[] }> = [
     {
       paragraphs: [
-        "So whether we are all going to live in megacities is a curiosity. It is a crucial determinant of how much wealth we can produce, where our technological frontier sits, and how we are going to impact and consume the resources of our planet.",
-        "Cities overall are growing fast. Every 2 months the urban population adds 20 million people. That is one New York City worth of people. It was not always like this. In the 1800s, urbanization was a thing of few countries. Mostly industrializing countries in the west. England was first, followed by Benelux area. Then the US. Latin America. Southern Europe. North Africa. Evereyone else. [Check the sequence is correct]. Today, every country is either urban or rapidly urbanizing. More than 50% of humanity lives in cities. And in the next 75 years, cities are projected to add about X billion residents.",
-        "Where will these people go? Small towns or sprawling mega-cities? Three scenarios are possible.",
-        "In one, new urban residents spread across large and small cities alike, and the overall shape of the urban system stays roughly intact. That means that a good share of the whole population, say around X%, will continue to live in cities with fewer than 1M people.",
-        "Another scenarios, the biggest cities absorb a disproportionate share of growth. People move to these urban behemoths. They grow faster than the rest and gobble up an every increasing share of the population. If today X% of the world population lives in 1M+ cities, in 2100 it could be X% or even much higher. Eventually, there will be just a couple of massive cities dominating the world population.",
-        "In third scenario growth leans toward smaller cities, producing a more distributed urban future. The small cities get more of the pie. They grow faster than the big ones. Their X% share today becomes larger over time. And altough they grow larger, the population remains distributed across many places instead of piling up in a handfull of winners."
+        "Cities are growing fast. Every two months, the global urban population grows by 20 million people. That is one New York City worth of people. Every two months.",
+        "It was not always like this. In the 1800s, urbanization was a thing of few countries. England industrialized and urbanized first. The rest of Western Europe and the US followed. Then Latin America. Then everyone else. Today, most countries are either already urban or rapidly urbanizing. Well over half of humanity lives in cities. And in the next 75 years, cities are projected to add about 2.4 billion residents.",
+        "Where will these people go? Small towns or sprawling megacities? Three scenarios are possible.",
+        "In the first, new urban residents spread across large and small cities alike, and the overall shape of the urban system stays roughly intact. That means a majority of the population (i.e., above 50%) will continue to live in cities with fewer than 1 million people.",
+        "In the second scenario, the biggest cities absorb a disproportionate share of growth. People move to these urban behemoths. They grow faster than the rest and gobble up an every increasing share of the population. If today less than two billion people live in 1M+ cities, in 2100 it could be four billion or even more. Eventually, a handful of massive cities could dominate the world population.",
+        "In a third, growth leans toward smaller cities, producing a more distributed urban future. The small cities get more of the pie. They grow faster than the big ones. Their over 50% share today becomes larger over time. And although they might grow larger, the population remains distributed across many places instead of piling up in a handful of winners."
       ]
     },
     {
       paragraphs: [
-        "So, which of these futures is more likely? That is the real question. The world is urbanizing fast, but which cities are absorbing that growth?",
-        "Answering this question is hard. And the reason why its hard might be different from what you expect. Or at least it was different from what I expected. We use this word \"city\" to describe this thing where people live near each other.",
-        "But the more I ponder the question \"what is a city\" the more it becomes hard to answer. Its one of those abstractions that make sweep all the complexity under the rug. But once you lift the rug, its a total mess.",
-        "Take for example Paris. If you ask the French government what is Paris they might point you to the Legal borders of the city. This is an area of just 105.4 square kilometers and had about 2.11 million residents in 2022. This border is a fossil of historical accident. If you take a satellite picture of paris, you see that the built-up area has spilled way beyond the border in a much broader area. Various parts of the banlieu are effectively one physical unit with paris. And you can push it even further. Let's say now you consider not only the physical city, but the attraction area. The area from where people move into paris for work or other reasons. The people who are connected to paris but by invisble ties. Then that area is most of northern france. It stretched across 18,940.7 square kilometers and holds 13.24 million people. I guess you start seeing the problem: What is Paris? This question is hard to answer for Paris. But to understand where the world population is headed we have to answer them for every single damn city on this planet."
+        "So, which of these futures is more likely? The world is urbanizing fast, but which cities are absorbing that growth?",
+        "Answering this question is hard. And the reason might not be what you expect. It wasn't what I expected. We use the word 'city' as if everyone agrees on what it means. But the more I ponder the question \"what is a city\" the more it becomes hard to answer. Its one of those abstractions that sweep all the complexity under the rug. But lift the rug, and it's a total mess",
+        "Take, for example, Paris. If you ask the French government what is Paris they might point you to the legal borders of the city. This is an area of just 105.4 square kilometers with about 2 million residents. Pull up a satellite image of Paris and a it tells a different story. The built-up area has spilled way beyond the border of the historical core, and much of the banlieue is physically continuous with it: one built mass, no gap. The legal border starts to look like a fossil of historical accident.",
+        "And it doesn't stop there. Consider not just the physical city, but the attraction area: the area from which people flow into Paris for work, shopping, family, connected by invisible ties. That area covers most of northern France. It stretches across 18,940.7 square kilometers and holds 13.24 million people. You see the problem: What is Paris? The legal borders? The physical city? The attraction area? This question is hard to answer for Paris. But to understand where the world population is headed, we have to answer it for every single city on the planet!"
       ]
     },
     {
       paragraphs: [
-        "For most of history, answering this questions was impossible. Not hard, impossible. You would have to put everyone in aggreement, every statistical agency on the planet, abotu the definition of city, and then maintain that agreement across time.",
-        "Then satellites started quietly building a memory of the planet. Landsat has been observing the Earth since the 1970s. Sentinel-2 added much sharper optical imagery in the 2010s. Today, the planet get's photographed every second by a different satellites. This imagery made it possible to skip all the agreement. It created a picture of the earth that is comparable across all places, and adjusting the resolution also across all times. With some wizardry one could use those pictures to reconstruct cities and their populations.",
-        "The basic idea is simple. First, you start from the pictures. You break this pictures into small cells. For each cell, you esitmate how much of each cell is physically built up: roofs, roads, blocks, industrial surfaces, the material footprint of settlement. With this data you can trace the boundaries of physical cities. That is, you get a grid 1kmx1km cells covering the whole planet, and its kinda easy to say whether a cell is urban or not. This is the work of the GHSL a european initiative.",
-        "In my work, I take these grid to construct cities. The algorithm is simpl. First, I identify which cells count as urban. Then, I connect neighboring urban cells into clusters. Each cluster is a city."
+        "For most of history, answering this question was impossible. Not hard. Impossible. You would need every statistical agency on the planet to agree on what a city is, and then maintain that agreement across time. Good luck with that.",
+        "Then satellites started quietly building a memory of the planet. Landsat has been observing the Earth since the 1970s. Sentinel-2 added much sharper optical imagery in the 2010s. Today, the planet is photographed continuously by dozens of satellites. This imagery made it possible to skip all the agreement. It created a picture of the Earth that is comparable across all places and, at the right resolution, across all times.",
+        "The basic idea is simple. You start from the pictures. You break them into small cells. For each cell, you estimate how much of it is physically built up: the material footprint of settlement: roofs, roads, blocks, industrial surfaces. With this data you can trace the boundaries of physical cities. The result is a grid of 1km x 1km cells covering the whole planet, and for each one it's fairly easy to say: urban or not. This is the work of the GHSL (Global Human Settlement Layer), a European initiative.",
+        "In my work, I use these grids to construct cities. First, I identify which cells count as urban. Then, I connect neighboring urban cells into clusters. Each cluster is a city. This definition is far from perfect. For instance, it fails to capture the gravity a big city exerts on its nearby towns. But it is easy to define and easy to compare across the whole planet. That makes it the only viable candidate for a global analysis."
       ]
     },
     {
       paragraphs: [
-        "Next, I need to assign it a population. After all, we are interested in the population growth.",
-        "Doing that require quite a bit of extra effort. You start by estimating the physical volume of houses in the cells. You look at shadows, re-project harmonize, to infer how a 3D volume of the built up material in a cell. You collect census totals reported for administrative areas. These areas tile up the whole worrld into small pieces. They might be of different size in different countries.Usually they are farily small, but not always so. Given the population in these areas, you redistributes those residents into grid cells using their volume from before. Where there is more volume, more people are assigned.Tada, you know have an guess, a pretty educated one, of how many people live in eavch 1kmx1km cell of the world. I then take this and my city boundaries, sum up all the people within the boundaries and get the population of the city in some givne year."
+        "Next, I need to assign each city a population. After all, we are interested in population growth. Doing that requires quite a bit of extra effort. You start again by tiling the world into 1km by 1km cells. You then estimate the physical volume of buildings in each cell through a series of complex calculations that I will kindly spare you from.",
+        "Alongside the building volumes, you collect census totals reported for administrative areas. These are small subdivisions that tile the whole world. Their size varies by country, which makes them hard to compare. You redistribute the populations of these areas across grid cells, proportional to each cell's built volume. Where there is more volume, more people are assigned. Tada: with this simple trick you now have a pretty educated guess of how many people live in each 1km by 1km cell on the planet. Again, shoutout to GHSL for this amazing work.",
+        "I then overlay my city boundaries and sum up population counts inside them. This yields the population of each city. I then repeat this across years to get a time series of city growth (the actual thing I do is slightly more advanced, can you guess what's the problem with the above approach?)"
       ]
     },
     {
       paragraphs: [
-        "Using that procedure, I build a dataset of global cities that covers 99 countries, about 94% of the world’s population, from 1975 to 2025, with 1,604,593 city-year observations."
+        "Using the above procedure, I build one of the most comprehensive city-population datasets in existence. It covers 50 years (1975-2025), 99 countries, about 94% of the world's population, with 1,604,593 city-year observations.",
+        "The data shows the rise of massive giants. Nowhere is this more visible than in the Pearl River Delta. In 1975 the Pearl River Delta: home of Shenzhen, Hong Kong, and Guangzhou: was a largely rural Chinese region. Then Deng Xiaoping set up special economic zones in the area, and the region boomed. But when I say boomed, I mean it exploded. In less than 50 years, a bunch of medium-sized urban agglomerations thickened, merged, and started behaving like one enormous urban machine. Today, over 64 million people live in this delta. Innovation runs at a breakneck pace. Firms are at the cutting edge of robotics and automation: DJI, BYD, and a growing roster of companies pushing the frontier of what machines can do. I think this delta is on track to overtake Silicon Valley as the world's leading technology hub in the 21st century."
       ]
     },
     {
       paragraphs: [
-        "At first glance, the giants really do seem to be winning. The share of the world population living in million-plus cities rose from 11% in 1975 to 24% in 2025. And that in 10M+ cities rose from X% to X%. This trend is clear in developing coutnreis. Take for instance, Shenzen. It was a fisherman village in 1980 and its a 150 million metropolis today."
+        "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Plot city size on the horizontal axis and decade growth on the vertical axis, and the curve slopes upward. 10M people cities grew almost 10% faster than 100K people cities.",
+        "It is important to notice that this logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities."
       ]
     },
     {
       paragraphs: [
-        "Acoss the global data, larger cities often appear to outpace smaller ones. If we plot the size of city on the x-axis and its growth on the y-axis we observe that over time large cities outpaced their peers."
+        "Yet, when you split the data, a different pattern appears. In Asia and Africa, the largest cities still post very high decade growth rates. In Europe the curve is much flatter, and in the Americas it can even bend negative at the top end.",
+        "At first, that looks like a geographic divide: perhaps Asia and Africa are giant-city regions, while Europe and the Americas are not. But there is another possibility: timing matters. What looks like a map of regional difference is, to a large extent, a map of countries sitting at different stages of the same process.",
+        "One way to test this is to order countries by their level of urbanization on the x-axis, and on the y-axis plot how much faster their large cities grow relative to the rest. When we do this, we see a clean downward-sloping relationship. The more urbanized a country, the less its large cities outgrow the rest."
       ]
     },
     {
       paragraphs: [
-        "Now this is self-reinforcing: If larger cities grow faster, they become larger, and this leads them to grow even faster, and so becom even larger. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities.",
-        "Yet, when you split the data, a different pattern appears. In Asia and Africa, the largest cities still post very high decade growth rates. In Europe the curve is much flatter, and in the Americas it can even bend negative at the top end."
+        "This gives us a hypothesis. Maybe whether large cities outgrow small ones is not universal. Maybe it depends on where a country sits in the urbanization process. The later the stage, the less the giants pull ahead. This is consistent with the cross-sectional evidence. But a snapshot is not enough to prove it. We need to watch the same countries over time.",
+        "The United States provides one of the few longitudinal records long enough to capture this. Long before satellites, long before digital maps, long before any of the tools I described earlier, the United States was already collecting census material rich enough to reconstruct a map of urban development. Census officers went around the country, counted people in their homes, every ten years. These handwritten documents were passed down in libraries through generations, until recently a massive effort transformed those old records into machine-readable format: linked across years, matched to places. The result is IPUMS Full Count, which now makes available over 800 million individual-level census records for 1850-1950.",
+        "I took those records and reconstructed cities from 1850 to today. First I built population grids, then aggregated them into clusters using the same method as before. Surprisingly, this incredible long-run dataset shows exactly the pattern the global data hint at. Early on, large U.S. cities had a strong growth advantage. Over time, that advantage weakened dramatically, until today it's roughly flat."
       ]
     },
     {
       paragraphs: [
-        "At first, that looks like a geographic divide: perhaps Asia and Africa are giant-city regions, while Europe and the Americas are not. But another hypothesis is that timing matters: What looks like a map of regional difference is, to a large extent, a map of countries sitting at different stages of the same process.",
-        "One way to check this is oreder countries on the x-axis by how much they are urbanized, and on the y-axis use a metric of how steep is teh curve between growth and size. How much large cities grow faster. When we do this, we observe a neat downward sloping correlation. More urbanized countries tend to see their large cities outgrowing the rest less.",
-        "But to really determine this a cross-sectional snapshot is not enough. WE need a longitudinal series.",
-        "The United States provides likely the one of the few longitudinal snapshot that are long enough to capture this phenoomenon. Long before satellites, long before digital maps, long before modern geographic information systems, the United States was already collecting census material rich enough that it can be turned back into a map of urban development. Census bureau officers went around the country, they asked registered individual people in individual places, every 10 years [More about how the census was collected]. These handwritten documents were passed down in library through generation, until recentrly a massive project transformed those old project in machine readable format, linked across years, matched to old places. The result of this massice effort is the: IPUMS Full Count now makes available over 800 million individual-level census records for 1850–1950.",
-        "I took those records and reconstructed cities from 1850 to today. I constructed first grids of population and then aggregated them to cities. Surpsingly, these incredbile long run data. shows exactly the pattern the global data hint at. Early on, large U.S. cities had a strong growth advantage. Over time, that advantage weakened dramatically, until today its roughly flat."
+        "Another case lets us dig deeper: South Korea's economic miracle. Korea's postwar transformation was not merely fast. It was historically extreme. From 1965 to 1995, annual real income growth averaged over 8%. Urbanization rose from 28% in 1960 to 79% by 1996. GDP per person climbed from about $158 to above $31,000. That is development in fast-forward. And it means our 1975-2025 dataset captures much of Korea's transformation in real time. No other country in the data offers anything comparable.",
+        "And the result is striking. Korea traces the same arc in just a few decades. Early on, Seoul and the largest Korean cities pull away hard. Later, the advantage fades. Put differently, we continue to see evidence of an urban lifecycle: big cities take the lead early but then lose their growth premium later."
       ]
     },
     {
       paragraphs: [
-        "Another historical accident allows us to dig deeper. South Korea's economic miracle. Korea’s postwar transformation was not merely fast. It was historically extreme. The IMF describes three decades through the 1965-1995, in which annual real income growth averaged over 8% per year. The World Bank describes urbanization rising from 28% in 1960 to 79% in 1996, and GDP per person climbing from about $158 in 1960 to above $31,000 by 2020. That is development in fast-forward. This massive development pace implies that our global cities dataset 1975-2025 sees much of Korea's development. Of no other countries can be said the same.",
-        "And guess what. Korea shows much the same plot in a few decades. Early on, Seoul and the largest Korean cities pull away hard. Later, the advantage fades. Put differntly, we continue to see evidence of this urban lyfecylce where big cities take the lead and but then petter out."
+        "Why would that be? The causes are likely many. Here is my take. Early in development, distance is expensive, markets are thin, and much of the economy is still tied tightly to land. Then transport improves. Manufacturing scales. Rail, ports, power, finance, universities, and state capacity reward concentration. Once one place gets ahead, the feedback loops start. Firms want access to customers. Workers go where the jobs are. Suppliers follow firms. Infrastructure follows everyone. A city that got a little ahead can suddenly get far ahead. The arrival of modern technology opens vast new opportunities, and large cities are the first to seize them.",
+        "Then the system starts hitting its limits. The rural reservoir shrinks. Transport and infrastructure spread outward. Secondary cities become capable of supporting their own deep labor markets. Land and housing costs bite harder in the biggest cores. Some growth spills into suburbs and satellites. All these forces conspire to slow the giants down.",
+        "So where does this leave us by 2100? Today, about 1.9 billion people live in cities of a million or more. If current 1975-2025 size-growth patterns were simply extended forward, that number would reach about 3.9 billion by 2100. The self-reinforcing logic could push it even higher, to 4.3 billion. But the lifecycle model suggests something lower: around 3.4 billion. That is about 410 million fewer people in million-plus cities than the straight extrapolation, and 890 million fewer than the runaway scenario."
       ]
     },
     {
       paragraphs: [
-        "Why would that be? The causes are likely many. Here is my take. Early in development, distance is expensive, markets are thin, and much of the economy is still tied tightly to land. Then transport improves. Manufacturing scales. Rail, ports, power, finance, universities, and state capacity reward concentration. Once one place gets ahead, the feedback loops start. Firms want access to customers. Workers go where the jobs are. Suppliers follow firms. Infrastructure follows everyone. A city that got a little ahead can suddenly get far ahead. Essentially, its like the arrival of modern technology opens new vast opportunities and large cities are the first to seize them.",
-        "Then the systme. start hitting its limit. The logic changes. The rural reservoir shrinks. Transport and infrastructure spread outward. Secondary cities become capable of supporting their own thick labor markets. Land and housing costs bite harder in the biggest cores. Some growth spills into suburbs and satellites. S. All these conspire to slow the giants down.",
-        "So where does this leaves us going forward? Where are we headed in 2100? If current 1975–2025 size-growth patterns were simply extended forward, that figure would be about 42%. But the self-reinforcing nature suggested above could push this even higher. The lifecycle model suggests instead somewhere around 38%. Relative to the straight extrapolation, that means about 450 million fewer people in million-plus cities by the end of the century."
-      ]
-    },
-    {
-      paragraphs: [
-        "That is not a bookkeeping difference. The same scaling logic applies: these 450 million inhabitants will have see less wealth, invention, but also less inequality and climate risk as compared to a world where they had lived in large cities, and this will be visible in the aggregate, from global economic growth to climate change.",
-        "So are we all going to live in giant cities?",
-        "Probably not. At least not in the runaway way that a first glance at global city growth estimates suggests. But the giants forged by the large growth advantage in the early phases of urbanization will remain, amplifying wealth, invention, ambition, pressure, inequality, climate risk, and much more."
+        "That is not a bookkeeping difference. The same scaling logic applies. Those hundreds of millions of people who will not move to large cities will generate less wealth and less invention, but also less disease, less crime, and less pressure on infrastructure. The difference will show up everywhere, from global economic growth to the speed at which pandemics spread.",
+        "So, are we all going to live in giant cities?",
+        "Probably not. At least not in the runaway sense that a first look at global city growth would suggest. But the giants forged in the early phases of urbanization will remain, amplifying wealth, invention, ambition, inequality, and climate risk for the rest of the century."
       ]
     }
   ];
 
-  const displayedProseSections = proseSections.reduce<Array<{ heading?: string; paragraphs: string[] }>>(
-    (sections, section, index) => {
-      if (index === 5 && sections[4]) {
-        sections[4] = {
-          heading: sections[4].heading,
-          paragraphs: [...sections[4].paragraphs, ...section.paragraphs]
-        };
-        return sections;
-      }
-
-      sections.push(section);
-      return sections;
-    },
-    []
-  );
+  const referencesPlaceholder =
+    "Still have to add the references here! Working on it, will do it soon.";
 
   const stickyScenes: Array<{
     id: string;
@@ -223,11 +205,11 @@
       pinDurationVh: 360,
       tailHoldVh: 96,
       steps: [
-        { id: "dot-a", kicker: "City comparison", title: "Start with the two piles", body: "Use the same dot grammar on both sides. One city is sparse and legible; the other is dense enough to feel like a machine.", accentColor: "#67e0cc" },
-        { id: "dot-b", kicker: "GDP", title: "Add output per person", body: "With respect to a person in a 100K metro, a person in a 10M city earns 24% more.", accentColor: "#8ac6ff" },
-        { id: "dot-c", kicker: "Patents", title: "Now add invention", body: "With respect to a person in a 100K metro, a person in a 10M city produces 109% more patents.", accentColor: "#67e0cc" },
-        { id: "dot-d", kicker: "Housing", title: "Now add housing pressure", body: "With respect to a person in a 100K metro, a person in a 10M city pays 41% more for housing.", accentColor: "#ff8d6b" },
-        { id: "dot-e", kicker: "CO2", title: "Finish with emissions", body: "With respect to a person in a 100K metro, a person in a 10M city consumes 32% more CO2.", accentColor: "#f2c56f" }
+        { id: "dot-a", kicker: "City comparison", title: "Same people, different urban machine", body: "A city with 10 million residents is not just a scaled-up small town. It changes the outcomes for the people inside it.", accentColor: "#67e0cc" },
+        { id: "dot-b", kicker: "Output", title: "Bigger cities raise the baseline", body: "Dense cities make it easier for skills, firms, and opportunities to find each other. That pushes output per person upward.", accentColor: "#8ac6ff" },
+        { id: "dot-c", kicker: "Innovation", title: "Ideas scale even faster", body: "The inventive payoff is steeper than the economic one. Big cities do not just host more ideas; they help ideas meet.", accentColor: "#67e0cc" },
+        { id: "dot-d", kicker: "Crime", title: "Scale amplifies the downsides too", body: "The same closeness that makes big cities productive also makes them dangerous. People are five times more likely to be robbed.", accentColor: "#ff8d6b" },
+        { id: "dot-e", kicker: "Disease", title: "Proximity has a biological cost", body: "Dense networks do not just transmit ideas. They transmit pathogens, making the contraction of diseases much more likely.", accentColor: "#f2c56f" }
       ]
     },
     {
@@ -237,10 +219,10 @@
       pinDurationVh: 340,
       tailHoldVh: 96,
       steps: [
-        { id: "future-a", kicker: "Urbanization futures", title: "Today", body: "Start with the current distribution. The baseline already leans toward large metros, but it does not settle the future.", accentColor: "#2d3844" },
-        { id: "future-b", kicker: "Urbanization futures", title: "Balanced growth", body: "Now add the next wave proportionally. Every bin grows, but the overall shape stays almost unchanged.", accentColor: "#67e0cc" },
-        { id: "future-c", kicker: "Urbanization futures", title: "Giants win", body: "In this scenario, most new residents funnel into the large-metro bins. The right side swells fast.", accentColor: "#ff8b67" },
-        { id: "future-d", kicker: "Urbanization futures", title: "Smaller cities catch up", body: "Here the added population spreads leftward. Growth still happens everywhere, but much more of it lands in smaller places.", accentColor: "#f0c66f" }
+        { id: "future-a", kicker: "Urbanization futures", title: "The world already leans big", body: "Start with the current distribution. Large metros already hold a huge share of urban life (circa 40%), but today's shape does not tell you tomorrow's.", accentColor: "#2d3844" },
+        { id: "future-b", kicker: "Urbanization futures", title: "Balanced growth keeps the shape", body: "If every size class absorbs newcomers in roughly today's proportions, the whole distribution gets taller without changing much.", accentColor: "#67e0cc" },
+        { id: "future-c", kicker: "Urbanization futures", title: "A megacity future bends right", body: "If the largest metros outgrow the rest, the right-hand side swells fast and urban growth becomes more concentrated.", accentColor: "#ff8b67" },
+        { id: "future-d", kicker: "Urbanization futures", title: "A distributed future bends left", body: "If smaller and mid-sized places absorb more of the next wave, the world still urbanizes, just less through runaway concentration.", accentColor: "#f0c66f" }
       ]
     },
     {
@@ -249,11 +231,11 @@
       ariaLabel: "Figure 3",
       pinDurationVh: 360,
       steps: [
-        { id: "paris-a", kicker: "Boundary problem", title: "Basemap only", body: "Start with a fixed spatial frame. Nothing moves yet; the point is to lock the reader into one region." },
-        { id: "paris-b", kicker: "Administrative boundary", title: "Draw the legal core", body: "First reveal a compact legal city around the historic core. This is the smallest definition." },
-        { id: "paris-c", kicker: "Morphological footprint", title: "Reveal the built city", body: "Then add the contiguous built-up footprint. It is clearly larger than the administrative core." },
-        { id: "paris-d", kicker: "Attraction area", title: "Reveal the wider region", body: "Finally add the broader commuting and attraction area. The same place now covers far more territory." },
-        { id: "paris-e", kicker: "Measurement problem", title: "The border changes the city", body: "Nothing moved on the map. Only the border changed, and yet the city became radically larger." }
+        { id: "paris-a", kicker: "Boundary problem", title: "Hold the map still", body: "Nothing on the ground changes from one step to the next. Only the definition does." },
+        { id: "paris-b", kicker: "Administrative city", title: "The legal city is the narrowest city", body: "Paris proper is a compact official core. It is real, but it is only one way to draw the city." },
+        { id: "paris-c", kicker: "Built city", title: "The city people actually recognize is larger", body: "Once you follow the built-up area, Paris spills well beyond its legal edge." },
+        { id: "paris-d", kicker: "Attraction area", title: "The functional city is larger again", body: "Commutes, labour markets, and daily ties pull the city far past the visible core." },
+        { id: "paris-e", kicker: "Measurement problem", title: "The border is doing the work", body: "Same landscape, different boundary, different answer. That is exactly why city measurement is hard." }
       ]
     },
     {
@@ -263,10 +245,10 @@
       pinDurationVh: 420,
       tailHoldVh: 132,
       steps: [
-        { id: "ghsl-a", kicker: "Input surface", title: "Satellites see surfaces, not city names", body: "Start with one fixed frame. At this point the algorithm has not classified anything." },
-        { id: "ghsl-b", kicker: "Built-up fraction", title: "Estimate built-up share cell by cell", body: "A regular grid samples the landscape. Some cells are barely built up; others are mostly settlement surface." },
-        { id: "ghsl-c", kicker: "Urban classification", title: "Apply a cutoff: urban or non-urban", body: "The continuous surface becomes a clean binary classification. Cells above the threshold turn solid." },
-        { id: "ghsl-d", kicker: "Cluster construction", title: "Merge neighboring urban cells", body: "Adjacency does the rest. Contiguous urban cells collapse into a small number of candidate city clusters." }
+        { id: "ghsl-a", kicker: "Input surface", title: "Satellites do not see city names", body: "They see roofs, roads, blocks, empty land, and everything in between. The raw input is physical surface." },
+        { id: "ghsl-b", kicker: "Built-up signal", title: "Every cell gets an urban score", body: "Some cells are barely settled. Others are intensely built. The grid turns a landscape into a comparable surface." },
+        { id: "ghsl-c", kicker: "Urban cutoff", title: "A threshold creates an urban footprint", body: "At some point a place stops reading as scattered settlement and starts reading as urban." },
+        { id: "ghsl-d", kicker: "City clustering", title: "Adjacency turns footprint into cities", body: "Once neighbouring urban cells are connected, city boundaries emerge from the pattern itself." }
       ]
     },
     {
@@ -276,9 +258,9 @@
       pinDurationVh: 360,
       tailHoldVh: 112,
       steps: [
-        { id: "alloc-a", kicker: "Residential signal", title: "Estimate residential building heights", body: "Start from imagery again. Roof texture and shadow hint at how much residential volume each cell contains." },
-        { id: "alloc-b", kicker: "Residential volume", title: "Turn the grid into a 3D residential volume map", body: "Bars rise where residential built volume is larger. This becomes the weight used for redistribution." },
-        { id: "alloc-c", kicker: "Census redistribution", title: "Administrative totals are pushed back into the grid", body: "Each district total is split across its cells. More residential volume receives a larger population share." }
+        { id: "alloc-a", kicker: "Residential signal", title: "To count people, look for residential mass", body: "Built volume is a better clue than raw land area. A dense cell full of housing is not the same as a low-rise fringe." },
+        { id: "alloc-b", kicker: "Population weights", title: "Volume becomes weight", body: "The more residential mass a cell contains, the larger the share of population it is likely to receive." },
+        { id: "alloc-c", kicker: "Census anchor", title: "Administrative counts keep the map honest", body: "Census totals fix how many people must be allocated. The spatial surface decides where within those areas they most likely live." }
       ]
     },
     {
@@ -287,12 +269,12 @@
       ariaLabel: "Figure 7",
       pinDurationVh: 380,
       steps: [
-        { id: "prd-a", kicker: "Pearl River Delta", title: "1975", body: "Start from the fragmented delta city field in 1975. The region is still a loose constellation of separate clusters.", accentColor: "#7a8794" },
-        { id: "prd-b", kicker: "Pearl River Delta", title: "1985", body: "By 1985 the field thickens, but most clusters are still clearly distinct.", accentColor: "#93a2b2" },
-        { id: "prd-c", kicker: "Pearl River Delta", title: "1995", body: "In 1995 the urban mass expands sharply across the delta.", accentColor: "#b2c0cf" },
-        { id: "prd-d", kicker: "Pearl River Delta", title: "2005", body: "By 2005 the major centers are visibly pushing into one another.", accentColor: "#7ed7cb" },
-        { id: "prd-e", kicker: "Pearl River Delta", title: "2015", body: "In 2015 the urbanized field becomes much more continuous across the estuary.", accentColor: "#8cf0de" },
-        { id: "prd-f", kicker: "Pearl River Delta", title: "2025", body: "By 2025 the Pearl River Delta reads as a vast composite urban region rather than a handful of isolated cities.", accentColor: "#67e0cc" }
+        { id: "prd-a", kicker: "Pearl River Delta", title: "1975: a constellation, not yet a corridor", body: "The delta is urban, but in fragments. The major centres still read as separate places.", accentColor: "#7a8794" },
+        { id: "prd-b", kicker: "Pearl River Delta", title: "1985: the gaps start closing", body: "Urban land spreads outward, but the system is still mostly a set of distinct clusters.", accentColor: "#93a2b2" },
+        { id: "prd-c", kicker: "Pearl River Delta", title: "1995: growth thickens the field", body: "By the mid-1990s the delta is no longer a loose scatter. Expansion begins to fill the spaces between the major centres.", accentColor: "#b2c0cf" },
+        { id: "prd-d", kicker: "Pearl River Delta", title: "2005: separate cities start behaving like one region", body: "The largest clusters are now pushing into each other. Distance within the delta is becoming less decisive.", accentColor: "#7ed7cb" },
+        { id: "prd-e", kicker: "Pearl River Delta", title: "2015: continuity becomes the new fact", body: "What used to be separated by open land increasingly reads as one continuous urban fabric.", accentColor: "#8cf0de" },
+        { id: "prd-f", kicker: "Pearl River Delta", title: "2025: the winner is the region", body: "By 2025 the Pearl River Delta feels less like a handful of cities and more like a mega-region built from their fusion.", accentColor: "#67e0cc" }
       ]
     },
     {
@@ -301,9 +283,9 @@
       ariaLabel: "Figure 8",
       pinDurationVh: 300,
       steps: [
-        { id: "step-1", kicker: "XY graph", title: "Load the x-axis", body: "Start by fading in the horizontal axis so the reader can anchor the population scale first." },
-        { id: "step-2", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical axis and its scale. The chart only starts talking once both directions are legible." },
-        { id: "step-3", kicker: "XY graph", title: "Draw the first line", body: "Finally draw the first curve with scroll. This is the most basic reusable analytic canvas." }
+        { id: "step-1", kicker: "Global pattern", title: "Read the curve from left to right", body: "Small cities sit on the left, giant ones on the right. The whole question is whether the line rises with size." },
+        { id: "step-2", kicker: "Global pattern", title: "Globally, it does", body: "Across the full sample, larger cities tend to post higher decade growth rates." },
+        { id: "step-3", kicker: "Global pattern", title: "That is the runaway logic", body: "If size is associated with faster growth, today's large cities become tomorrow's giants, and the giants keep compounding." }
       ]
     },
     {
@@ -312,10 +294,10 @@
       ariaLabel: "Figure 9",
       pinDurationVh: 320,
       steps: [
-        { id: "p9-a", kicker: "Regional split", title: "Add Asia", body: "Keep the world curve as the backdrop and draw Asia first, where large cities clearly pull ahead.", accentColor: "#ff8b67" },
-        { id: "p9-b", kicker: "Regional split", title: "Add Africa", body: "Africa follows a similar pattern. Large cities there also post high decade growth rates.", accentColor: "#f1c56d" },
-        { id: "p9-c", kicker: "Regional split", title: "Add Europe", body: "Europe bends the pattern down. The large-city advantage is much weaker.", accentColor: "#8ac6ff" },
-        { id: "p9-d", kicker: "Regional split", title: "Add the Americas", body: "In the Americas the curve flattens further and even tilts negative at the top end.", accentColor: "#b6dc7c" }
+        { id: "p9-a", kicker: "Regional split", title: "In Asia, scale still pays clearly", body: "The line rises with size. Larger cities still enjoy a visible growth premium.", accentColor: "#ff8b67" },
+        { id: "p9-b", kicker: "Regional split", title: "Africa points the same way", body: "The direction is similar: large cities also post high decade growth rates.", accentColor: "#f1c56d" },
+        { id: "p9-c", kicker: "Regional split", title: "Europe is much flatter", body: "Big cities still matter, but the extra growth associated with size is much weaker.", accentColor: "#8ac6ff" },
+        { id: "p9-d", kicker: "Regional split", title: "The Americas can even bend back down", body: "At the top end, some very large cities no longer outgrow the rest. Size stops being an automatic advantage.", accentColor: "#b6dc7c" }
       ]
     },
     {
@@ -324,8 +306,8 @@
       ariaLabel: "Figure 11",
       pinDurationVh: 260,
       steps: [
-        { id: "p11-a", kicker: "U.S. lifecycle", title: "Draw the early United States", body: "In the early phase, larger U.S. cities posted much higher decade growth rates.", accentColor: "#ff8b67" },
-        { id: "p11-b", kicker: "U.S. lifecycle", title: "Add the later United States", body: "Later on, the same relationship flattens substantially. The growth advantage of size weakens.", accentColor: "#8ac6ff" }
+        { id: "p11-a", kicker: "U.S. lifecycle", title: "Early urban America favored the biggest cities", body: "In the nineteenth and early twentieth centuries, the size-growth curve rises strongly with city size.", accentColor: "#ff8b67" },
+        { id: "p11-b", kicker: "U.S. lifecycle", title: "Later urban America looks flatter", body: "Once the system matures, the extra growth associated with size becomes much weaker.", accentColor: "#8ac6ff" }
       ]
     },
     {
@@ -334,8 +316,8 @@
       ariaLabel: "Figure 12",
       pinDurationVh: 260,
       steps: [
-        { id: "p12-a", kicker: "Korea in fast-forward", title: "Add early South Korea", body: "Use the U.S. pair as the reference, then draw Korea’s early period with its steep big-city growth curve.", accentColor: "#ff8b67" },
-        { id: "p12-b", kicker: "Korea in fast-forward", title: "Add later South Korea", body: "Korea then moves toward the flatter later-stage pattern in just a few decades.", accentColor: "#8ac6ff" }
+        { id: "p12-a", kicker: "South Korea", title: "Early on, the giants surge", body: "In the first phase, the largest Korean cities enjoy a strong growth premium.", accentColor: "#ff8b67" },
+        { id: "p12-b", kicker: "South Korea", title: "Then maturity arrives fast", body: "In just a few decades, Korea shifts toward the flatter later-stage pattern that took much longer in the United States.", accentColor: "#8ac6ff" }
       ]
     },
     {
@@ -344,10 +326,10 @@
       ariaLabel: "Figure 13",
       pinDurationVh: 320,
       steps: [
-        { id: "step-a", kicker: "XY graph", title: "Load the x-axis again", body: "The second chart should teach the frame the same way: start with the horizontal axis only.", accentColor: "#cfd6dd" },
-        { id: "step-b", kicker: "XY graph", title: "Now add the y-axis", body: "Then fade in the vertical scale, keeping the same graph shell while the values change.", accentColor: "#cfd6dd" },
-        { id: "step-c", kicker: "XY graph", title: "Draw the first scenario", body: "One curve can draw first while the others stay hidden.", accentColor: "#ff8b67" },
-        { id: "step-d", kicker: "XY graph", title: "Add the remaining lines", body: "Additional curves then draw into the same coordinate system without changing the canvas type.", accentColor: "#f1c56d" }
+        { id: "step-a", kicker: "Competing futures", title: "All four lines share the same history", body: "Up to the present, every scenario starts from the same observed rise in million-plus cities.", accentColor: "#cfd6dd" },
+        { id: "step-b", kicker: "Competing futures", title: "Runaway is the upper bound", body: "If the big-city premium never fades, concentration keeps climbing hard.", accentColor: "#ff8b67" },
+        { id: "step-c", kicker: "Competing futures", title: "Simple extrapolation is not neutral", body: "Just extending today's pattern forward still produces a sharply more concentrated world.", accentColor: "#f1c56d" },
+        { id: "step-d", kicker: "Competing futures", title: "Lifecycle is the middle path", body: "The most plausible future is neither flat nor runaway: giants keep growing, but their edge gradually weakens.", accentColor: "#67e0cc" }
       ]
     }
   ];
@@ -926,6 +908,16 @@
     );
   }
 
+  function linearAxisReveal(axis: XYGraph["xAxis"], value: number) {
+    const [min, max] = axis.domain;
+
+    if (max <= min) {
+      return 1;
+    }
+
+    return Math.min(Math.max((value - min) / (max - min), 0), 1);
+  }
+
   function buildWorldCurveGraph(activeStepIndex: number, stepProgress: number): XYGraph {
     const graph = cloneGraph(generatedFigures.figure08.graph);
 
@@ -977,14 +969,24 @@
 
   function buildScenarioGraph(activeStepIndex: number, stepProgress: number): XYGraph {
     const graph = cloneGraph(generatedFigures.figure13.graph);
+    const sharedHistoryDrawTo = linearAxisReveal(graph.xAxis, 2025);
 
-    graph.xAxis.opacity = activeStepIndex === 0 ? stepProgress : 1;
-    graph.yAxis.opacity = activeStepIndex < 1 ? 0 : activeStepIndex === 1 ? stepProgress : 1;
+    graph.xAxis.opacity = 1;
+    graph.yAxis.opacity = 1;
 
-    setLineReveal(graph, "runaway", activeStepIndex < 2 ? 0 : activeStepIndex === 2 ? stepProgress : 1);
-    setLineReveal(graph, "extrapolation", activeStepIndex < 3 ? 0 : rangeProgress(stepProgress, 0, 0.4));
-    setLineReveal(graph, "lifecycle", activeStepIndex < 3 ? 0 : rangeProgress(stepProgress, 0.2, 0.7));
-    setLineReveal(graph, "proportional", activeStepIndex < 3 ? 0 : rangeProgress(stepProgress, 0.45, 1));
+    if (activeStepIndex === 0) {
+      const historyReveal = sharedHistoryDrawTo * stepProgress;
+      setLineReveal(graph, "runaway", historyReveal);
+      setLineReveal(graph, "extrapolation", historyReveal, 0.6);
+      setLineReveal(graph, "lifecycle", historyReveal, 0.6);
+      setLineReveal(graph, "proportional", historyReveal, 0.6);
+      return graph;
+    }
+
+    setLineReveal(graph, "runaway", activeStepIndex === 1 ? sharedHistoryDrawTo + (1 - sharedHistoryDrawTo) * stepProgress : 1);
+    setLineReveal(graph, "extrapolation", activeStepIndex >= 2 ? (activeStepIndex === 2 ? sharedHistoryDrawTo + (1 - sharedHistoryDrawTo) * stepProgress : 1) : sharedHistoryDrawTo, activeStepIndex >= 2 ? undefined : 0.6);
+    setLineReveal(graph, "lifecycle", activeStepIndex < 3 ? sharedHistoryDrawTo : sharedHistoryDrawTo + (1 - sharedHistoryDrawTo) * rangeProgress(stepProgress, 0, 0.7), activeStepIndex < 3 ? 0.6 : undefined);
+    setLineReveal(graph, "proportional", activeStepIndex < 3 ? sharedHistoryDrawTo : sharedHistoryDrawTo + (1 - sharedHistoryDrawTo) * rangeProgress(stepProgress, 0.25, 1), activeStepIndex < 3 ? 0.6 : undefined);
 
     return graph;
   }
@@ -1553,11 +1555,13 @@
 
     if (kind === "xy-scenarios") {
       const visibleIds =
-        activeStepIndex < 2
+        activeStepIndex === 0
           ? []
-          : activeStepIndex === 2
+          : activeStepIndex === 1
             ? ["runaway"]
-            : ["runaway", "extrapolation", "lifecycle", "proportional"];
+            : activeStepIndex === 2
+              ? ["runaway", "extrapolation"]
+              : ["runaway", "extrapolation", "lifecycle", "proportional"];
       return legendItemsFromGenerated(
         (generatedFigures.figure13.legend ?? []).filter((item) => visibleIds.includes(item.id))
       );
@@ -1700,10 +1704,17 @@
     </StickyScene>
 
     <ProseSection
-      heading={displayedProseSections[index].heading}
-      paragraphs={displayedProseSections[index].paragraphs}
+      heading={proseSections[index].heading}
+      paragraphs={proseSections[index].paragraphs}
     />
   {/each}
+
+  <article class="article references-section">
+    <h3 class="references-heading">References</h3>
+    <div class="prose">
+      <p>{referencesPlaceholder}</p>
+    </div>
+  </article>
 </main>
 
 <style>
@@ -1727,6 +1738,17 @@
     font-size: clamp(34px, 7vw, 64px);
     line-height: 0.95;
     letter-spacing: -0.03em;
+  }
+
+  .references-section {
+    padding-top: 8px;
+  }
+
+  .references-heading {
+    margin: 0 0 14px;
+    font-size: clamp(20px, 4.6vw, 28px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
   }
 
   .prose {

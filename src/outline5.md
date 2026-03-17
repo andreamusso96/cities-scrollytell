@@ -40,7 +40,7 @@ So, whether we all end up living in megacities is not just a curiosity. It is an
 
 Cities are growing fast. Every two months, the global urban population grows by 20 million people. That is one New York City worth of people. Every two months. 
 
-It was not always like this. In the 1800s, urbanization was a thing of few countries. England industrialized and urbanized first. The rest of Western Europe and the US followed. Then Latin America. Then everyone else. Today, most countries are either already urban or rapidly urbanizing. Well over half of humanity lives in cities. And in the next 75 years, cities are projected to add about X billion residents.
+It was not always like this. In the 1800s, urbanization was a thing of few countries. England industrialized and urbanized first. The rest of Western Europe and the US followed. Then Latin America. Then everyone else. Today, most countries are either already urban or rapidly urbanizing. Well over half of humanity lives in cities. And in the next 75 years, cities are projected to add about 2.4 billion residents.
 
 Where will these people go? Small towns or sprawling megacities? Three scenarios are possible.
 
@@ -216,9 +216,9 @@ The data shows the rise of massive giants. Nowhere is this more visible than in 
 
 [END FIGURE 7]
 
-But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Plot city size on the horizontal axis and decade growth on the vertical axis, and the curve slopes upward. Bigger cities tend to post higher growth rates.
+But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Plot city size on the horizontal axis and decade growth on the vertical axis, and the curve slopes upward. 10M people cities grew almost 10% faster than 100K people cities.
 
-This logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities.
+It is important to notice that this logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities.
 
 [FIGURE 8]
 
@@ -319,7 +319,7 @@ Why would that be? The causes are likely many. Here is my take. Early in develop
 
 Then the system starts hitting its limits. The rural reservoir shrinks. Transport and infrastructure spread outward. Secondary cities become capable of supporting their own deep labor markets. Land and housing costs bite harder in the biggest cores. Some growth spills into suburbs and satellites. All these forces conspire to slow the giants down.
 
-So where does this leave us by 2100? Today, about X billion people live in cities of a million or more. If current 1975–2025 size-growth patterns were simply extended forward, that number would reach about X billion by 2100. The self-reinforcing logic could push it even higher, to X billion. But the lifecycle model suggests something lower: around X billion. That is about X million fewer people in million-plus cities than the straight extrapolation, and X million fewer than the runaway scenario.
+So where does this leave us by 2100? Today, about 1.9 billion people live in cities of a million or more. If current 1975–2025 size-growth patterns were simply extended forward, that number would reach about 3.9 billion by 2100. The self-reinforcing logic could push it even higher, to 4.3 billion. But the lifecycle model suggests something lower: around 3.4 billion. That is about 410 million fewer people in million-plus cities than the straight extrapolation, and 890 million fewer than the runaway scenario.
 
 [FIGURE 13]
 
@@ -348,8 +348,12 @@ So where does this leave us by 2100? Today, about X billion people live in citie
 
 [END FIGURE 13]
 
-That is not a bookkeeping difference. The same scaling logic applies: these 450 million inhabitants will generate less wealth, invention, but also less disease and crime as compared to a world where they had lived in large cities, and this will be visible in the aggregate, from global economic growth to pandemics. 
+That is not a bookkeeping difference. The same scaling logic applies. Those hundreds of millions of people who will not move to large cities will generate less wealth and less invention, but also less disease, less crime, and less pressure on infrastructure. The difference will show up everywhere, from global economic growth to the speed at which pandemics spread.
 
-So are we all going to live in giant cities?
+So, are we all going to live in giant cities?
 
-Probably not. At least not in the runaway way that a first glance at global city growth estimates suggests. But the giants forged by the large growth advantage in the early phases of urbanization will remain, amplifying wealth, invention, ambition, pressure, inequality, climate risk, and much more. 
+Probably not. At least not in the runaway sense that a first look at global city growth would suggest. But the giants forged in the early phases of urbanization will remain, amplifying wealth, invention, ambition, inequality, and climate risk for the rest of the century.
+
+## References
+
+Still have to add the references here! Working on it will do it soon. 
