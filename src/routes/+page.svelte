@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import DotComparisonCanvas from "$lib/components/dot-comparison/DotComparisonCanvas.svelte";
   import type { DotComparisonScene } from "$lib/components/dot-comparison/types";
   import FutureDistributionCanvas from "$lib/components/future-distribution/FutureDistributionCanvas.svelte";
@@ -89,6 +90,24 @@
   export let data: PageData;
 
   $: generatedFigures = data.generatedFigures as GeneratedFigures;
+
+  let articleProgress = 0;
+
+  function updateArticleProgress() {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    articleProgress =
+      scrollableHeight <= 0 ? 0 : Math.min(Math.max(scrollTop / scrollableHeight, 0), 1);
+  }
+
+  onMount(() => {
+    updateArticleProgress();
+  });
 
   const introParagraphs = [
     "Take two cities. One has 100,000 people. The other has 10 million. The large one is not just an inflated version of the small ones. It's different. Its people are different. They produce more: they earn 74% higher salaries. They connect more: their social networks are three times as dense. They innovate more: they are 3.5 times more likely to produce a patent.",
@@ -181,6 +200,7 @@
 
   const referencesPlaceholder =
     "Still have to add the references here! Working on it, will do it soon.";
+  const introScrollHint = "The data and story unfold as you scroll down.";
 
   const stickyScenes: Array<{
     id: string;
@@ -188,6 +208,7 @@
     ariaLabel: string;
     pinDurationVh: number;
     tailHoldVh?: number;
+    stepHeightMultipliers?: number[];
     placeholderLabel?: string;
     placeholderNote?: string;
     steps: Array<{
@@ -204,6 +225,7 @@
       ariaLabel: "Figure 1",
       pinDurationVh: 360,
       tailHoldVh: 96,
+      stepHeightMultipliers: [1.5, 1, 1, 1, 1],
       steps: [
         { id: "dot-a", kicker: "City comparison", title: "Same people, different urban machine", body: "A city with 10 million residents is not just a scaled-up small town. It changes the outcomes for the people inside it.", accentColor: "#67e0cc" },
         { id: "dot-b", kicker: "Output", title: "Bigger cities raise the baseline", body: "Dense cities make it easier for skills, firms, and opportunities to find each other. That pushes output per person upward.", accentColor: "#8ac6ff" },
@@ -1641,6 +1663,12 @@
   />
 </svelte:head>
 
+<svelte:window on:scroll={updateArticleProgress} on:resize={updateArticleProgress} />
+
+<div class="article-progress" aria-hidden="true">
+  <div class="article-progress-fill" style={`transform: scaleX(${articleProgress})`}></div>
+</div>
+
 <main class="page">
   <article class="article intro">
     <h1>Are we all going to live in megacities?</h1>
@@ -1657,10 +1685,37 @@
       ariaLabel={scene.ariaLabel}
       pinDurationVh={scene.pinDurationVh}
       tailHoldVh={scene.tailHoldVh}
+      stepHeightMultipliers={scene.stepHeightMultipliers}
       steps={scene.steps}
       let:activeStepIndex
       let:stepProgress
     >
+      <svelte:fragment slot="overlay" let:activeStepIndex let:stepProgress>
+        {#if scene.id === "figure-01" && activeStepIndex === 0}
+          <div
+            class="scene-intro-overlay"
+            style={`opacity: ${Math.max(0, 1 - stepProgress * 1.35)}`}
+            aria-hidden="true"
+          >
+            <div class="scene-intro-overlay-copy">
+              <div class="scene-intro-overlay-title">Scroll down to continue</div>
+              <div class="scene-intro-overlay-body">{introScrollHint}</div>
+            </div>
+            <div class="scene-intro-overlay-arrow">
+              <svg
+                class="scene-intro-overlay-arrow-svg"
+                viewBox="0 0 80 120"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d="M40 12 V88"></path>
+                <path d="M18 66 L40 90 L62 66"></path>
+              </svg>
+            </div>
+          </div>
+        {/if}
+      </svelte:fragment>
+
       {#if scene.kind === "dot-comparison"}
         <DotComparisonCanvas scene={getDotComparison(scene.kind, activeStepIndex)} />
       {:else if scene.kind === "future-distribution"}
@@ -1718,6 +1773,22 @@
 </main>
 
 <style>
+  .article-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 80;
+    height: 4px;
+    pointer-events: none;
+  }
+
+  .article-progress-fill {
+    width: 100%;
+    height: 100%;
+    transform-origin: left center;
+    background: currentColor;
+    will-change: transform;
+  }
+
   .page {
     width: 100%;
     overflow-x: clip;
@@ -1769,6 +1840,76 @@
     justify-content: center;
     gap: 10px 16px;
     padding: 8px 12px;
+  }
+
+  .scene-intro-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 16svh 18px 12svh;
+    background: rgba(74, 80, 88, 0.34);
+    backdrop-filter: blur(6px);
+  }
+
+  .scene-intro-overlay-copy {
+    max-width: 420px;
+    text-align: center;
+  }
+
+  .scene-intro-overlay-title {
+    color: var(--ink);
+    font-size: clamp(28px, 8vw, 46px);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+
+  .scene-intro-overlay-body {
+    margin-top: 12px;
+    color: #ece3d7;
+    font-size: clamp(15px, 3.9vw, 20px);
+    line-height: 1.35;
+  }
+
+  .scene-intro-overlay-arrow {
+    position: absolute;
+    left: 50%;
+    top: 66%;
+    transform: translateX(-50%);
+    width: clamp(54px, 12vw, 88px);
+    opacity: 0.95;
+    animation: intro-arrow-bounce 1.5s ease-in-out infinite;
+  }
+
+  .scene-intro-overlay-arrow-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.18));
+  }
+
+  .scene-intro-overlay-arrow-svg path {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @keyframes intro-arrow-bounce {
+    0%,
+    100% {
+      transform: translateX(-50%) translateY(0);
+      opacity: 0.7;
+    }
+
+    50% {
+      transform: translateX(-50%) translateY(10px);
+      opacity: 1;
+    }
   }
 
   .timeline-legend {
@@ -1887,6 +2028,19 @@
   }
 
   @media (max-width: 720px) {
+    .scene-intro-overlay {
+      padding: 14svh 14px 10svh;
+    }
+
+    .scene-intro-overlay-body {
+      margin-top: 10px;
+    }
+
+    .scene-intro-overlay-arrow {
+      top: 68%;
+      width: clamp(48px, 14vw, 76px);
+    }
+
     .article {
       padding: 20px 16px 54px;
     }

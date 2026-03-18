@@ -16,12 +16,16 @@
   export let ariaLabel = "";
   export let pinDurationVh = 280;
   export let tailHoldVh = 68;
+  export let stepHeightMultipliers: number[] = [];
 
   let activeStepIndex = 0;
   let stepProgress = 0;
 
   const domId = `scene-${sceneId}`;
-  const stepHeightVh = steps.length > 0 ? pinDurationVh / steps.length : pinDurationVh;
+  $: baseStepHeightVh = steps.length > 0 ? pinDurationVh / steps.length : pinDurationVh;
+  $: stepHeightsVh = steps.map(
+    (_, index) => baseStepHeightVh * Math.max(stepHeightMultipliers[index] ?? 1, 0.1)
+  );
 
   function clamp(value: number, min = 0, max = 1) {
     return Math.min(Math.max(value, min), max);
@@ -66,6 +70,10 @@
 
 <section id={domId} class="sticky-scene" aria-label={ariaLabel}>
   <div class="sticky-stage">
+    <div class="scene-overlay-layer">
+      <slot name="overlay" {activeStepIndex} {stepProgress} />
+    </div>
+
     <div class="sticky-frame">
       <div class="scene-shell">
         <div
@@ -93,8 +101,8 @@
   </div>
 
   <div class="step-stack" aria-hidden="true">
-    {#each steps as step (step.id)}
-      <div class="scene-step" style={`height: ${stepHeightVh}svh;`}></div>
+    {#each steps as step, index (step.id)}
+      <div class="scene-step" style={`height: ${stepHeightsVh[index] ?? baseStepHeightVh}svh;`}></div>
     {/each}
     <div class="scene-tail" style={`height: ${tailHoldVh}svh;`}></div>
   </div>
@@ -116,7 +124,16 @@
     padding: 0 10px;
   }
 
+  .scene-overlay-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
   .sticky-frame {
+    position: relative;
+    z-index: 2;
     width: min(100%, 550px);
   }
 
