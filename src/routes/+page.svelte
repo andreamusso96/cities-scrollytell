@@ -125,6 +125,7 @@
     [
       "The general idea is that of nonlinear scaling laws.",
       cite(6),
+      cite(9),
       " As cities get bigger, outcomes do not just increase: they change qualitatively. The upsides grow: people become more innovative, more productive, more connected. But the downsides grow too. People in big cities are 5 times more likely to be robbed. They are 8 times more likely to contract syphilis. They spend 4 times longer in traffic. Cities amplify everything: the good and the bad alike."
     ],
     "So, whether we all end up living in megacities is not just a curiosity. It is an important determinant of how much wealth we can produce, where our technological frontier sits, and how heavily we draw on the planet's resources."
@@ -136,7 +137,10 @@
         "Cities are growing fast. Every two months, the global urban population grows by 20 million people. That is one New York City worth of people. Every two months.",
         "It was not always like this. In the 1800s, urbanization was a thing of few countries. England industrialized and urbanized first. The rest of Western Europe and the US followed. Then Latin America. Then everyone else. Today, most countries are either already urban or rapidly urbanizing. Well over half of humanity lives in cities. And in the next 75 years, cities are projected to add about 2.4 billion residents.",
         "Where will these people go? Small towns or sprawling megacities? Three scenarios are possible.",
-        "In the first, new urban residents spread across large and small cities alike, and the overall shape of the urban system stays roughly intact. That means a majority of the population (i.e., above 50%) will continue to live in cities with fewer than 1 million people.",
+        [
+          "In the first, new urban residents spread across large and small cities alike, and the overall shape of the urban system stays roughly intact. That means a majority of the population (i.e., above 50%) will continue to live in cities with fewer than 1 million people.",
+          cite(10)
+        ],
         "In the second scenario, the biggest cities absorb a disproportionate share of growth. People move to these urban behemoths. They grow faster than the rest and gobble up an every increasing share of the population. If today less than two billion people live in 1M+ cities, in 2100 it could be four billion or even more. Eventually, a handful of massive cities could dominate the world population.",
         "In a third, growth leans toward smaller cities, producing a more distributed urban future. The small cities get more of the pie. They grow faster than the big ones. Their over 50% share today becomes larger over time. And although they might grow larger, the population remains distributed across many places instead of piling up in a handful of winners."
       ]
@@ -303,6 +307,20 @@
       citation:
         "Pumain, D., Paulus, F., Vacchiani-Marcuzzo, C., Lobo, J.: An evolutionary theory for interpreting urban scaling laws. Cybergeo: European Journal of Geography (2006).",
       href: "https://doi.org/10.4000/cybergeo.2519"
+    },
+    {
+      id: 9,
+      label: "Urban scaling overview",
+      citation:
+        "Rybski, D., Arcaute, E., Batty, M.: Urban scaling laws. Environment and Planning B: Urban Analytics and City Science 46(9), 1605-1610 (2019).",
+      href: "https://doi.org/10.1177/2399808319886125"
+    },
+    {
+      id: 10,
+      label: "City-size distributions",
+      citation:
+        "Gabaix, X.: Zipf's Law for Cities: An Explanation. The Quarterly Journal of Economics 114(3), 739-767 (1999).",
+      href: "https://doi.org/10.1162/003355399556133"
     }
   ];
   const introScrollHint = "The data and story unfold as you scroll down.";

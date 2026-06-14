@@ -24,10 +24,14 @@ test("renders data references instead of the placeholder", () => {
   assert.match(pageSource, /10\.1086\/261763/);
   assert.match(pageSource, /An evolutionary theory for interpreting urban scaling laws/);
   assert.match(pageSource, /10\.4000\/cybergeo\.2519/);
+  assert.match(pageSource, /Urban scaling laws/);
+  assert.match(pageSource, /10\.1177\/2399808319886125/);
+  assert.match(pageSource, /Zipf's Law for Cities: An Explanation/);
+  assert.match(pageSource, /10\.1162\/003355399556133/);
 });
 
 test("adds in-text citation markers for referenced sources", () => {
-  for (const referenceNumber of [1, 2, 3, 4, 5, 6, 7, 8]) {
+  for (const referenceNumber of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
     assert.match(pageSource, new RegExp(`cite\\(${referenceNumber}\\)`));
   }
 });
