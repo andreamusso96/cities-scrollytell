@@ -6,4 +6,3 @@ build
 src/data/assets
 __pycache__/
 *.pyc
-.DS_Store
