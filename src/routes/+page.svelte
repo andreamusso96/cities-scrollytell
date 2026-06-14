@@ -198,8 +198,38 @@
     }
   ];
 
-  const referencesPlaceholder =
-    "Still have to add the references here! Working on it, will do it soon.";
+  const references = [
+    {
+      label: "Main dataset",
+      citation:
+        "Musso, A.: Boundaries & population of cities: USA (1850-2020) and World (1975-2025). Zenodo (2025).",
+      href: "https://doi.org/10.5281/zenodo.17315337"
+    },
+    {
+      label: "Global Human Settlement Layer",
+      citation:
+        "Schiavina, M., Melchiorri, M., Pesaresi, M., Politis, P., Carneiro Freire, S.M., Maffenini, L., Florio, P., Ehrlich, D., Goch, K., Carioli, A., Uhl, J., Tommasi, P., Kemper, T.: GHSL Data Package 2023. Publications Office of the European Union, Luxembourg (2023).",
+      href: "https://doi.org/10.2760/098587"
+    },
+    {
+      label: "IPUMS full count",
+      citation:
+        "Ruggles, S., Nelson, M.A., Sobek, M., Fitch, C.A., Goeken, R., Hacker, J.D., Roberts, E., Warren, J.R.: IPUMS ancestry full count data: Version 4.0 (2024).",
+      href: "https://doi.org/10.18128/D014.V4.0"
+    },
+    {
+      label: "IPUMS NHGIS",
+      citation:
+        "Manson, S., Schroeder, J., Riper, D.V., Knowles, K., Kugler, T., Roberts, F., Ruggles, S.: IPUMS National Historical Geographic Information System: Version 19.0. IPUMS, Minneapolis, MN (2024).",
+      href: "https://doi.org/10.18128/D050.V19.0"
+    },
+    {
+      label: "Census Place Project",
+      citation:
+        "Berkes, E., Karger, E., Nencka, P.: The census place project: A method for geolocating unstructured place names. Explorations in Economic History 87, 101477 (2023).",
+      href: "https://doi.org/10.1016/j.eeh.2022.101477"
+    }
+  ];
   const introScrollHint = "The data and story unfold as you scroll down.";
 
   const stickyScenes: Array<{
@@ -1766,9 +1796,15 @@
 
   <article class="article references-section">
     <h3 class="references-heading">References</h3>
-    <div class="prose">
-      <p>{referencesPlaceholder}</p>
-    </div>
+    <ol class="reference-list">
+      {#each references as reference}
+        <li>
+          <span class="reference-label">{reference.label}</span>
+          <span>{reference.citation}</span>
+          <a href={reference.href} target="_blank" rel="noopener noreferrer">{reference.href}</a>
+        </li>
+      {/each}
+    </ol>
   </article>
 </main>
 
@@ -1820,6 +1856,42 @@
     font-size: clamp(20px, 4.6vw, 28px);
     line-height: 1.05;
     letter-spacing: -0.02em;
+  }
+
+  .reference-list {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: clamp(14px, 3.2vw, 16px);
+    line-height: 1.45;
+  }
+
+  .reference-list li {
+    color: #ddd4c8;
+  }
+
+  .reference-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #efe7db;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .reference-list a {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 4px;
+    color: #67e0cc;
+    overflow-wrap: anywhere;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
   }
 
   .prose {
