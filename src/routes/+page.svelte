@@ -167,10 +167,7 @@
     {
       paragraphs: [
         "Next, I need to assign each city a population. After all, we are interested in population growth. Doing that requires quite a bit of extra effort. You start again by tiling the world into 1km by 1km cells. You then estimate the physical volume of buildings in each cell through a series of complex calculations that I will kindly spare you from.",
-        [
-          "Alongside the building volumes, you collect census totals reported for administrative areas. These are small subdivisions that tile the whole world. Their size varies by country, which makes them hard to compare. You redistribute the populations of these areas across grid cells, proportional to each cell's built volume. Where there is more volume, more people are assigned. Tada: with this simple trick you now have a pretty educated guess of how many people live in each 1km by 1km cell on the planet. Again, shoutout to GHSL for this amazing work.",
-          cite(2)
-        ],
+        "Alongside the building volumes, you collect census totals reported for administrative areas. These are small subdivisions that tile the whole world. Their size varies by country, which makes them hard to compare. You redistribute the populations of these areas across grid cells, proportional to each cell's built volume. Where there is more volume, more people are assigned. Tada: with this simple trick you now have a pretty educated guess of how many people live in each 1km by 1km cell on the planet. Again, shoutout to GHSL for this amazing work.",
         "I then overlay my city boundaries and sum up population counts inside them. This yields the population of each city. I then repeat this across years to get a time series of city growth (the actual thing I do is slightly more advanced, can you guess what's the problem with the above approach?)"
       ]
     },
@@ -185,14 +182,8 @@
     },
     {
       paragraphs: [
-        [
-          "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Plot city size on the horizontal axis and decade growth on the vertical axis, and the curve slopes upward. 10M people cities grew almost 10% faster than 100K people cities.",
-          cite(1)
-        ],
-        [
-          "It is important to notice that this logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities.",
-          cite(7)
-        ]
+        "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Plot city size on the horizontal axis and decade growth on the vertical axis, and the curve slopes upward. 10M people cities grew almost 10% faster than 100K people cities.",
+        "It is important to notice that this logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities."
       ]
     },
     {
@@ -229,22 +220,15 @@
       paragraphs: [
         [
           "Why would that be? The causes are likely many. Here is my take. Early in development, distance is expensive, markets are thin, and much of the economy is still tied tightly to land. Then transport improves. Manufacturing scales. Rail, ports, power, finance, universities, and state capacity reward concentration. Once one place gets ahead, the feedback loops start. Firms want access to customers. Workers go where the jobs are. Suppliers follow firms. Infrastructure follows everyone. A city that got a little ahead can suddenly get far ahead. The arrival of modern technology opens vast new opportunities, and large cities are the first to seize them.",
-          cite(7),
-          cite(8)
+          cite(7)
         ],
         "Then the system starts hitting its limits. The rural reservoir shrinks. Transport and infrastructure spread outward. Secondary cities become capable of supporting their own deep labor markets. Land and housing costs bite harder in the biggest cores. Some growth spills into suburbs and satellites. All these forces conspire to slow the giants down.",
-        [
-          "So where does this leave us by 2100? Today, about 1.9 billion people live in cities of a million or more. If current 1975-2025 size-growth patterns were simply extended forward, that number would reach about 3.9 billion by 2100. The self-reinforcing logic could push it even higher, to 4.3 billion. But the lifecycle model suggests something lower: around 3.4 billion. That is about 410 million fewer people in million-plus cities than the straight extrapolation, and 890 million fewer than the runaway scenario.",
-          cite(1)
-        ]
+        "So where does this leave us by 2100? Today, about 1.9 billion people live in cities of a million or more. If current 1975-2025 size-growth patterns were simply extended forward, that number would reach about 3.9 billion by 2100. The self-reinforcing logic could push it even higher, to 4.3 billion. But the lifecycle model suggests something lower: around 3.4 billion. That is about 410 million fewer people in million-plus cities than the straight extrapolation, and 890 million fewer than the runaway scenario."
       ]
     },
     {
       paragraphs: [
-        [
-          "That is not a bookkeeping difference. The same scaling logic applies. Those hundreds of millions of people who will not move to large cities will generate less wealth and less invention, but also less disease, less crime, and less pressure on infrastructure. The difference will show up everywhere, from global economic growth to the speed at which pandemics spread.",
-          cite(6)
-        ],
+        "That is not a bookkeeping difference. The same scaling logic applies. Those hundreds of millions of people who will not move to large cities will generate less wealth and less invention, but also less disease, less crime, and less pressure on infrastructure. The difference will show up everywhere, from global economic growth to the speed at which pandemics spread.",
         "So, are we all going to live in giant cities?",
         "Probably not. At least not in the runaway sense that a first look at global city growth would suggest. But the giants forged in the early phases of urbanization will remain, amplifying wealth, invention, ambition, inequality, and climate risk for the rest of the century."
       ]

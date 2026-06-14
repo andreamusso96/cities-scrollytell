@@ -3,6 +3,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const pageSource = readFileSync(new URL("../src/routes/+page.svelte", import.meta.url), "utf8");
+const citedParagraphSource = readFileSync(
+  new URL("../src/lib/components/CitedParagraph.svelte", import.meta.url),
+  "utf8"
+);
 
 test("renders data references instead of the placeholder", () => {
   assert.doesNotMatch(pageSource, /Still have to add the references here/);
@@ -32,6 +36,13 @@ test("renders data references instead of the placeholder", () => {
 
 test("adds in-text citation markers for referenced sources", () => {
   for (const referenceNumber of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
-    assert.match(pageSource, new RegExp(`cite\\(${referenceNumber}\\)`));
+    const citationCalls = pageSource.match(new RegExp(`cite\\(${referenceNumber}\\)`, "g")) ?? [];
+
+    assert.equal(citationCalls.length, 1, `Reference ${referenceNumber} should be cited once`);
   }
+});
+
+test("separates adjacent citation markers", () => {
+  assert.match(citedParagraphSource, /previousTokenIsCitation/);
+  assert.match(citedParagraphSource, /citation-separator/);
 });
