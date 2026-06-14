@@ -1,6 +1,15 @@
 <script lang="ts">
+  import CitedParagraph from "./CitedParagraph.svelte";
+
+  type CitationRef = {
+    ref: number;
+  };
+
+  type ParagraphToken = string | CitationRef;
+  type CitedParagraphValue = string | ParagraphToken[];
+
   export let heading: string | undefined = undefined;
-  export let paragraphs: string[] = [];
+  export let paragraphs: CitedParagraphValue[] = [];
 </script>
 
 <article class="article">
@@ -9,7 +18,7 @@
   {/if}
   <div class="prose">
     {#each paragraphs as paragraph}
-      <p>{paragraph}</p>
+      <CitedParagraph {paragraph} />
     {/each}
   </div>
 </article>
@@ -31,11 +40,6 @@
   .prose {
     font-size: clamp(19px, 4.6vw, 24px);
     line-height: 1.52;
-  }
-
-  .prose p {
-    margin: 0 0 1.1em;
-    color: #ddd4c8;
   }
 
   @media (max-width: 720px) {
