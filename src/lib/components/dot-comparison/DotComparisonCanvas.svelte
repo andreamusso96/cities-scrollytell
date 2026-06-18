@@ -96,7 +96,7 @@
   <svg
     viewBox="0 0 800 800"
     role="img"
-    aria-label="Two dot piles comparing a 100K metro with a 10M metro"
+    aria-label="Two dot piles comparing a 10,000-person town with a 1 million-person city"
     preserveAspectRatio="xMidYMid meet"
   >
     <defs>

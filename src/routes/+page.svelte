@@ -120,13 +120,13 @@
   const cite = (ref: number): CitationRef => ({ ref });
 
   const introParagraphs: CitedParagraphValue[] = [
-    "Take two cities. One has 100,000 people. The other has 10 million. The large one is not just an inflated version of the small ones. It's different. Its people are different. They produce more: they earn 74% higher salaries. They connect more: their social networks are three times as dense. They innovate more: they are 3.5 times more likely to produce a patent.",
-    "That 3.5 times more patents figure is the average. But for frontier fields, the multiplier is actually much bigger. For example, people in large cities are 14 times more likely to produce patents in computer hardware and software, and 40 times more likely to publish a paper in neuroscience.",
+    "Take two cities. One has 10,000 people. The other has 1 million. The large one is not just an inflated version of the small one. It's different. Its people are different. Residents of the million-person city are almost twice as productive and more than three times as innovative. But they also spend more than twice as much time in traffic and are nearly three times more likely to contract certain diseases.",
+    "The point is not just that large cities contain more people. They change the rates at which people meet, work, invent, commute, and get exposed to one another.",
     [
       "The general idea is that of nonlinear scaling laws.",
       cite(6),
       cite(9),
-      " As cities get bigger, outcomes do not just increase: they change qualitatively. The upsides grow: people become more innovative, more productive, more connected. But the downsides grow too. People in big cities are 5 times more likely to be robbed. They are 8 times more likely to contract syphilis. They spend 4 times longer in traffic. Cities amplify everything: the good and the bad alike."
+      " As cities get bigger, outcomes do not just increase: they change qualitatively. The upsides grow: people become more innovative, more productive, more connected. But the downsides grow too: more traffic, more disease exposure, more pressure on daily life. Cities amplify everything: the good and the bad alike."
     ],
     "So, whether we all end up living in megacities is not just a curiosity. It is an important determinant of how much wealth we can produce, where our technological frontier sits, and how heavily we draw on the planet's resources."
   ];
@@ -135,7 +135,7 @@
     {
       paragraphs: [
         "Cities are growing fast. Every two months, the global urban population grows by 20 million people. That is one New York City worth of people. Every two months.",
-        "It was not always like this. In the 1800s, urbanization was a thing of few countries. England industrialized and urbanized first. The rest of Western Europe and the US followed. Then Latin America. Then everyone else. Today, most countries are either already urban or rapidly urbanizing. Well over half of humanity lives in cities. And in the next 75 years, cities are projected to add about 2.4 billion residents.",
+        "It was not always like this. In the 1800s, urbanization was a thing of few countries. England industrialized and urbanized first. The rest of Western Europe and the US followed. Then Latin America. Then everyone else. Today, most countries are either already urban or rapidly urbanizing. Well over half of humanity lives in cities. And in the next 25 years, cities are projected to add about 1 billion residents.",
         "Where will these people go? Small towns or sprawling megacities? Three scenarios are possible.",
         [
           "In the first, new urban residents spread across large and small cities alike, and the overall shape of the urban system stays roughly intact. That means a majority of the population (i.e., above 50%) will continue to live in cities with fewer than 1 million people.",
@@ -182,7 +182,7 @@
     },
     {
       paragraphs: [
-        "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Plot city size on the horizontal axis and decade growth on the vertical axis, and the curve slopes upward. 10M people cities grew almost 10% faster than 100K people cities.",
+        "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Between 1975 and 2025, cities with more than one million inhabitants in less urbanized countries grew about 7.3% faster than the average city in their respective country.",
         "It is important to notice that this logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities."
       ]
     },
@@ -197,12 +197,12 @@
       paragraphs: [
         "This gives us a hypothesis. Maybe whether large cities outgrow small ones is not universal. Maybe it depends on where a country sits in the urbanization process. The later the stage, the less the giants pull ahead. This is consistent with the cross-sectional evidence. But a snapshot is not enough to prove it. We need to watch the same countries over time.",
         [
-          "The United States provides one of the few longitudinal records long enough to capture this. Long before satellites, long before digital maps, long before any of the tools I described earlier, the United States was already collecting census material rich enough to reconstruct a map of urban development. Census officers went around the country, counted people in their homes, every ten years. These handwritten documents were passed down in libraries through generations, until recently a massive effort transformed those old records into machine-readable format: linked across years, matched to places. The result is IPUMS Full Count, which now makes available over 800 million individual-level census records for 1850-1950.",
+          "The United States provides one of the few longitudinal records long enough to capture this. Long before satellites, long before digital maps, long before any of the tools I described earlier, the United States was already collecting census material rich enough to reconstruct a map of urban development. Census officers went around the country, counted people in their homes, every ten years. These handwritten documents were passed down in libraries through generations, until recently a massive effort transformed those old records into machine-readable format: linked across years, matched to places. The resulting dataset draws on more than 500 million individual census records and matches them to roughly 40,000 historical places.",
           cite(3),
           cite(5)
         ],
         [
-          "I took those records, supplemented them with modern NHGIS place estimates, and reconstructed cities from 1850 to today. First I built population grids, then aggregated them into clusters using the same method as before. Surprisingly, this incredible long-run dataset shows exactly the pattern the global data hint at. Early on, large U.S. cities had a strong growth advantage. Over time, that advantage weakened dramatically, until today it's roughly flat.",
+          "I took those records, supplemented them with modern NHGIS place estimates, and reconstructed cities from 1850 to 2020. First I built population grids, then aggregated them into clusters using the same method as before. Surprisingly, this incredible long-run dataset shows exactly the pattern the global data hint at. Early on, large U.S. cities had a strong growth advantage. Over time, that advantage weakened dramatically. By 2020, it is roughly flat.",
           cite(4)
         ]
       ]
@@ -223,7 +223,7 @@
           cite(7)
         ],
         "Then the system starts hitting its limits. The rural reservoir shrinks. Transport and infrastructure spread outward. Secondary cities become capable of supporting their own deep labor markets. Land and housing costs bite harder in the biggest cores. Some growth spills into suburbs and satellites. All these forces conspire to slow the giants down.",
-        "So where does this leave us by 2100? Today, about 1.9 billion people live in cities of a million or more. If current 1975-2025 size-growth patterns were simply extended forward, that number would reach about 3.9 billion by 2100. The self-reinforcing logic could push it even higher, to 4.3 billion. But the lifecycle model suggests something lower: around 3.4 billion. That is about 410 million fewer people in million-plus cities than the straight extrapolation, and 890 million fewer than the runaway scenario."
+        "So where does this leave us by 2100? Today, about 1.9 billion people live in cities of a million or more. The lifecycle model suggests that by 2100, about 38% of the world's population will live in million-plus cities. Compared with simply extrapolating current trends, that is about 450 million fewer people living in large cities."
       ]
     },
     {
@@ -334,11 +334,11 @@
       tailHoldVh: 96,
       stepHeightMultipliers: [1.5, 1, 1, 1, 1],
       steps: [
-        { id: "dot-a", kicker: "City comparison", title: "Same people, different urban machine", body: "A city with 10 million residents is not just a scaled-up small town. It changes the outcomes for the people inside it.", accentColor: "#67e0cc" },
-        { id: "dot-b", kicker: "Output", title: "Bigger cities raise the baseline", body: "Dense cities make it easier for skills, firms, and opportunities to find each other. That pushes output per person upward.", accentColor: "#8ac6ff" },
-        { id: "dot-c", kicker: "Innovation", title: "Ideas scale even faster", body: "The inventive payoff is steeper than the economic one. Big cities do not just host more ideas; they help ideas meet.", accentColor: "#67e0cc" },
-        { id: "dot-d", kicker: "Crime", title: "Scale amplifies the downsides too", body: "The same closeness that makes big cities productive also makes them dangerous. People are five times more likely to be robbed.", accentColor: "#ff8d6b" },
-        { id: "dot-e", kicker: "Disease", title: "Proximity has a biological cost", body: "Dense networks do not just transmit ideas. They transmit pathogens, making the contraction of diseases much more likely.", accentColor: "#f2c56f" }
+        { id: "dot-a", kicker: "City comparison", title: "Same people, different urban machine", body: "A city with 1 million residents is not just a scaled-up 10,000-person town. It changes the outcomes for the people inside it.", accentColor: "#67e0cc" },
+        { id: "dot-b", kicker: "Productivity", title: "Bigger cities raise the baseline", body: "Dense cities make it easier for skills, firms, and opportunities to find each other. Residents are almost twice as productive.", accentColor: "#8ac6ff" },
+        { id: "dot-c", kicker: "Innovation", title: "Ideas scale even faster", body: "The inventive payoff is steeper than the economic one. Residents are more than three times as innovative.", accentColor: "#67e0cc" },
+        { id: "dot-d", kicker: "Traffic", title: "Scale amplifies the downsides too", body: "The same closeness that makes big cities productive also slows daily movement. Residents spend more than twice as much time in traffic.", accentColor: "#ff8d6b" },
+        { id: "dot-e", kicker: "Disease", title: "Proximity has a biological cost", body: "Dense networks do not just transmit ideas. Residents are nearly three times more likely to contract certain diseases.", accentColor: "#f2c56f" }
       ]
     },
     {
@@ -465,10 +465,10 @@
 
   const dotComparisonMetrics = {
     gdp: {
-      title: "GDP",
-      verb: "earns",
-      delta: "24%",
-      tail: "more",
+      title: "Productivity",
+      verb: "is",
+      delta: "almost 2x",
+      tail: "as productive",
       color: "#8ac6ff",
       smallActive: [6, 8, 15, 17, 24, 26, 33, 35, 42, 44, 51, 53, 60, 62, 69, 71],
       largeActive: Array.from({ length: 240 }, (_, index) => index),
@@ -479,10 +479,10 @@
       co2: 0
     },
     patents: {
-      title: "Patents",
-      verb: "produces",
-      delta: "109%",
-      tail: "more patents",
+      title: "Innovation",
+      verb: "is",
+      delta: "more than 3x",
+      tail: "as innovative",
       color: "#67e0cc",
       smallActive: [2, 6, 13, 20, 28, 35, 44, 51, 63],
       largeActive: Array.from({ length: 160 }, (_, index) => index),
@@ -493,10 +493,10 @@
       co2: 0
     },
     housing: {
-      title: "Housing",
-      verb: "pays",
-      delta: "41%",
-      tail: "more for housing",
+      title: "Traffic",
+      verb: "spends",
+      delta: "more than 2x",
+      tail: "as much time in traffic",
       color: "#ff8d6b",
       smallActive: [0, 1, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 53, 54, 62, 63, 70, 71],
       largeFilter: {
@@ -510,10 +510,10 @@
       co2: 0
     },
     co2: {
-      title: "CO2",
-      verb: "consumes",
-      delta: "32%",
-      tail: "more CO2",
+      title: "Disease",
+      verb: "is",
+      delta: "nearly 3x",
+      tail: "as likely to contract diseases",
       color: "#f2c56f",
       smallActive: [0, 3, 8, 12, 17, 21, 26, 30, 35, 39, 44, 48, 53, 57, 62, 66, 69, 71],
       largeActive: Array.from({ length: 560 }, (_, index) => index).filter((index) => index % 2 === 0),
@@ -1122,40 +1122,40 @@
 
   const dotComparisonScenes: DotComparisonScene[] = [
     {
-      smallLabel: "100K metro",
-      largeLabel: "10M metro",
+      smallLabel: "10K town",
+      largeLabel: "1M city",
       metric: null,
       baseGlow: 0.1,
       baseWarning: 0,
       baseCo2: 0
     },
     {
-      smallLabel: "100K metro",
-      largeLabel: "10M metro",
+      smallLabel: "10K town",
+      largeLabel: "1M city",
       metric: dotComparisonMetrics.gdp,
       baseGlow: 0.1,
       baseWarning: 0,
       baseCo2: 0
     },
     {
-      smallLabel: "100K metro",
-      largeLabel: "10M metro",
+      smallLabel: "10K town",
+      largeLabel: "1M city",
       metric: dotComparisonMetrics.patents,
       baseGlow: 0.1,
       baseWarning: 0,
       baseCo2: 0
     },
     {
-      smallLabel: "100K metro",
-      largeLabel: "10M metro",
+      smallLabel: "10K town",
+      largeLabel: "1M city",
       metric: dotComparisonMetrics.housing,
       baseGlow: 0.1,
       baseWarning: 0,
       baseCo2: 0
     },
     {
-      smallLabel: "100K metro",
-      largeLabel: "10M metro",
+      smallLabel: "10K town",
+      largeLabel: "1M city",
       metric: dotComparisonMetrics.co2,
       baseGlow: 0.1,
       baseWarning: 0,
@@ -1642,10 +1642,10 @@
   function getLegendItems(kind: SceneKind, activeStepIndex = 0): LegendItem[] {
     if (kind === "dot-comparison") {
       return [
-        { label: "GDP", color: "#8ac6ff", shape: "fill" },
-        { label: "Patents", color: "#67e0cc", shape: "fill" },
-        { label: "Housing", color: "#ff8d6b", shape: "fill" },
-        { label: "CO2", color: "#f2c56f", shape: "fill" }
+        { label: "Productivity", color: "#8ac6ff", shape: "fill" },
+        { label: "Innovation", color: "#67e0cc", shape: "fill" },
+        { label: "Traffic", color: "#ff8d6b", shape: "fill" },
+        { label: "Disease", color: "#f2c56f", shape: "fill" }
       ];
     }
 
