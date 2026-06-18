@@ -182,7 +182,7 @@
     },
     {
       paragraphs: [
-        "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Between 1975 and 2025, cities with more than one million inhabitants in less urbanized countries grew about 7.3% faster than the average city in their respective country.",
+        "But is the Pearl River Delta the exception or the rule? Across the global data, larger cities often appear to outpace smaller ones. Between 1975 and 2025, cities with more than one million inhabitants in less urbanized countries grew about 7% faster than the average city in their respective country.",
         "It is important to notice that this logic is self-reinforcing. If larger cities grow faster, they become larger, which leads them to grow even faster, which makes them larger still. A small lead turns into a large lead. Follow that logic far enough and the future starts to look like a world increasingly dominated by giant cities."
       ]
     },
